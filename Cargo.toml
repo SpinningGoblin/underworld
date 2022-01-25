@@ -6,3 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+tide = "0.16.0"
+async-std = { version = "1.10.0", features = ["attributes"] }
+serde = { version = "1.0.133", features = ["derive"] }
+underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "33e1917c1234f2b24550f850de01471129f7e0d7", features = ["serialization"] }
+serde_json = { version = "1.0.75" }
