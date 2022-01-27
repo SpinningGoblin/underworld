@@ -1455,7 +1455,7 @@ checksum = "dcf81ac59edc17cc8697ff311e8f5ef2d99fcbd9817b34cec66f90b6c3dfd987"
 [[package]]
 name = "underworld_core"
 version = "0.1.0"
-source = "git+https://github.com/derrickp/underworld_core?rev=33e1917c1234f2b24550f850de01471129f7e0d7#33e1917c1234f2b24550f850de01471129f7e0d7"
+source = "git+https://github.com/derrickp/underworld_core?rev=0dba6a0f550eea923cfb1080a6c7bfa4dd65f80a#0dba6a0f550eea923cfb1080a6c7bfa4dd65f80a"
 dependencies = [
  "rand 0.8.4",
  "serde",
