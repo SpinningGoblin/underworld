@@ -11,7 +11,7 @@ use underworld_core::generators::non_players::NonPlayerPrototype;
 
 #[derive(Serialize, Deserialize)]
 struct GenerateCharacter {
-    pub name: String,
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -31,16 +31,27 @@ fn get_port() -> u16 {
 #[async_std::main]
 async fn main() -> tide::Result<()> {
     let mut app = tide::new();
-    app.at("/generate/npc").post(generate_character);
+    app.at("/generate/npc").post(generate_character_post);
+    app.at("/generate/npc").get(generate_character_get);
     app.listen(format!("0.0.0.0:{}", get_port())).await?;
     Ok(())
 }
 
-async fn generate_character(mut req: Request<()>) -> tide::Result {
+async fn generate_character_get(req: Request<()>) -> tide::Result {
+    let GenerateCharacter { name } = req.query()?;
+
+    generate_character(name)
+}
+
+async fn generate_character_post(mut req: Request<()>) -> tide::Result {
     let GenerateCharacter { name } = req.body_json().await?;
 
+    generate_character(name)
+}
+
+fn generate_character(name: Option<String>) -> tide::Result {
     let prototype = NonPlayerPrototype {
-        name: Some(name),
+        name,
         character_generator: Box::new(CharacterPrototype::random_species_character()),
     };
 
@@ -54,5 +65,6 @@ async fn generate_character(mut req: Request<()>) -> tide::Result {
     let mut response = Response::new(200);
     let body = Body::from_json(&generated)?;
     response.set_body(body);
+
     Ok(response)
 }
