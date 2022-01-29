@@ -52,7 +52,7 @@ async fn generate_character_post(mut req: Request<()>) -> tide::Result {
 fn generate_character(name: Option<String>) -> tide::Result {
     let prototype = NonPlayerPrototype {
         name,
-        character_generator: Box::new(CharacterPrototype::random_species_character()),
+        character_generator: Box::new(CharacterPrototype::random_species_overloaded()),
     };
 
     let non_player = prototype.generate();
