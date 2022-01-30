@@ -112,10 +112,10 @@ async fn generate_room_get(req: Request<()>) -> tide::Result {
     } = req.query()?;
 
     let npc_names: Vec<String> = names
-    .map(|n| n.split(",").map(|f| f.to_string()).collect())
-    .unwrap_or_default();
+        .map(|n| n.split(",").map(|f| f.to_string()).collect())
+        .unwrap_or_default();
 
-generate_room(npc_names, max_num_characters.unwrap_or(3))
+    generate_room(npc_names, max_num_characters.unwrap_or(3))
 }
 
 async fn generate_character_get(req: Request<()>) -> tide::Result {
