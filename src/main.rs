@@ -70,6 +70,8 @@ async fn main() -> tide::Result<()> {
         .post(generate_room_description_post);
     app.at("/generate/room_description")
         .get(generate_room_description_get);
+    app.at("/").serve_dir("public")?;
+    app.at("/").serve_file("public/index.html")?;
     app.listen(format!("0.0.0.0:{}", get_port())).await?;
     Ok(())
 }
