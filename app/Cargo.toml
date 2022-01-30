@@ -1,0 +1,11 @@
+[package]
+name = "underworld_web_app"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+yew = "0.19.3"
+underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "6b28bd8800f6610413314bdd90635236c88b9b64" }
+getrandom = {version = "0.2.4", features= ["js"] }
