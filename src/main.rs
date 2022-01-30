@@ -26,7 +26,7 @@ impl Component for RoomDescriptions {
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             RoomMsg::GenerateRoom => {
-                let room_prototype = RoomPrototype::build_random(Vec::new(), 1..4);
+                let room_prototype = RoomPrototype::build_random(Vec::new(), 0..4);
                 let room = room_prototype.generate();
                 self.room_description = format!("{}", &room);
                 self.inhabitants_description = room.look_at_inhabitants();
