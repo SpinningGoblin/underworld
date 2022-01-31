@@ -398,7 +398,7 @@ dependencies = [
 [[package]]
 name = "underworld_core"
 version = "0.1.0"
-source = "git+https://github.com/derrickp/underworld_core?rev=6b28bd8800f6610413314bdd90635236c88b9b64#6b28bd8800f6610413314bdd90635236c88b9b64"
+source = "git+https://github.com/derrickp/underworld_core?rev=26ce2f7da64360070b873a8ebb20512e70a62717#26ce2f7da64360070b873a8ebb20512e70a62717"
 dependencies = [
  "enum-iterator",
  "rand",
