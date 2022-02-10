@@ -17,20 +17,10 @@ struct GenerateCharacter {
 }
 
 #[derive(Serialize, Deserialize)]
-struct GenerateRoomPostRequest {
-    #[cfg_attr(feature = "serialization", serde(default))]
-    pub names: Option<Vec<String>>,
-    #[cfg_attr(feature = "serialization", serde(default))]
-    pub max_num_characters: Option<usize>,
-}
+struct GenerateRoomPostRequest {}
 
 #[derive(Deserialize, Serialize)]
-struct GenerateRoomGetRequest {
-    #[cfg_attr(feature = "serialization", serde(default))]
-    pub names: Option<String>,
-    #[cfg_attr(feature = "serialization", serde(default))]
-    pub max_num_characters: Option<usize>,
-}
+struct GenerateRoomGetRequest {}
 
 #[derive(Serialize, Deserialize)]
 struct GeneratedNpc {
@@ -76,48 +66,20 @@ async fn main() -> tide::Result<()> {
     Ok(())
 }
 
-async fn generate_room_description_get(req: Request<()>) -> tide::Result {
-    let GenerateRoomGetRequest {
-        names,
-        max_num_characters,
-    } = req.query()?;
-
-    let npc_names: Vec<String> = names
-        .map(|n| n.split(",").map(|f| f.to_string()).collect())
-        .unwrap_or_default();
-
-    generate_room_description(npc_names, max_num_characters.unwrap_or(3))
+async fn generate_room_description_get(_req: Request<()>) -> tide::Result {
+    generate_room_description()
 }
 
-async fn generate_room_description_post(mut req: Request<()>) -> tide::Result {
-    let GenerateRoomPostRequest {
-        names,
-        max_num_characters,
-    } = req.body_json().await?;
-
-    generate_room_description(names.unwrap_or_default(), max_num_characters.unwrap_or(3))
+async fn generate_room_description_post(_req: Request<()>) -> tide::Result {
+    generate_room_description()
 }
 
-async fn generate_room_post(mut req: Request<()>) -> tide::Result {
-    let GenerateRoomPostRequest {
-        names,
-        max_num_characters,
-    } = req.body_json().await?;
-
-    generate_room(names.unwrap_or_default(), max_num_characters.unwrap_or(3))
+async fn generate_room_post(_req: Request<()>) -> tide::Result {
+    generate_room()
 }
 
-async fn generate_room_get(req: Request<()>) -> tide::Result {
-    let GenerateRoomGetRequest {
-        names,
-        max_num_characters,
-    } = req.query()?;
-
-    let npc_names: Vec<String> = names
-        .map(|n| n.split(",").map(|f| f.to_string()).collect())
-        .unwrap_or_default();
-
-    generate_room(npc_names, max_num_characters.unwrap_or(3))
+async fn generate_room_get(_req: Request<()>) -> tide::Result {
+    generate_room()
 }
 
 async fn generate_character_get(req: Request<()>) -> tide::Result {
@@ -152,8 +114,8 @@ fn generate_character(name: Option<String>) -> tide::Result {
     Ok(response)
 }
 
-fn generate_room(names: Vec<String>, max_num_characters: usize) -> tide::Result {
-    let prototype = RoomPrototype::build_random(names, 0..max_num_characters);
+fn generate_room() -> tide::Result {
+    let prototype = RoomPrototype::build_random();
     let room = prototype.generate();
     let generated = GeneratedRoom {
         room_description: format!("{}", &room),
@@ -167,8 +129,8 @@ fn generate_room(names: Vec<String>, max_num_characters: usize) -> tide::Result 
     Ok(response)
 }
 
-fn generate_room_description(names: Vec<String>, max_num_characters: usize) -> tide::Result {
-    let prototype = RoomPrototype::build_random(names, 0..max_num_characters);
+fn generate_room_description() -> tide::Result {
+    let prototype = RoomPrototype::build_random();
     let room = prototype.generate();
     let generated = GeneratedRoomDescription {
         room_description: format!("{}", &room),
