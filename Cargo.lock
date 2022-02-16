@@ -1475,7 +1475,7 @@ checksum = "dcf81ac59edc17cc8697ff311e8f5ef2d99fcbd9817b34cec66f90b6c3dfd987"
 [[package]]
 name = "underworld_core"
 version = "0.1.0"
-source = "git+https://github.com/derrickp/underworld_core?rev=ec73511b69e4bd1e9f772319f1f7b55e9d321355#ec73511b69e4bd1e9f772319f1f7b55e9d321355"
+source = "git+https://github.com/derrickp/underworld_core?rev=1a9567fc6d91c3c611fa9a9e4f4451a4df2d1ad4#1a9567fc6d91c3c611fa9a9e4f4451a4df2d1ad4"
 dependencies = [
  "enum-iterator",
  "rand 0.8.4",
