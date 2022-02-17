@@ -9,5 +9,5 @@ edition = "2021"
 tide = "0.16.0"
 async-std = { version = "1.10.0", features = ["attributes"] }
 serde = { version = "1.0.136", features = ["derive"] }
-underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "1a9567fc6d91c3c611fa9a9e4f4451a4df2d1ad4", features = ["serialization"] }
+underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "601b4d879769212207c733dc368a91514aee1871", features = ["serialization"] }
 serde_json = { version = "1.0.78" }

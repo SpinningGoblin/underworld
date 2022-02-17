@@ -10,6 +10,7 @@ use underworld_core::generators::characters::CharacterPrototype;
 use underworld_core::generators::generator::Generator;
 use underworld_core::generators::non_players::NonPlayerPrototype;
 use underworld_core::generators::rooms::RoomPrototype;
+use underworld_core::generators::name::generate_name;
 
 #[derive(Serialize, Deserialize)]
 struct GenerateCharacter {
@@ -82,21 +83,17 @@ async fn generate_room_get(_req: Request<()>) -> tide::Result {
     generate_room()
 }
 
-async fn generate_character_get(req: Request<()>) -> tide::Result {
-    let GenerateCharacter { name } = req.query()?;
-
-    generate_character(name)
+async fn generate_character_get(_req: Request<()>) -> tide::Result {
+    generate_character()
 }
 
-async fn generate_character_post(mut req: Request<()>) -> tide::Result {
-    let GenerateCharacter { name } = req.body_json().await?;
-
-    generate_character(name)
+async fn generate_character_post(_req: Request<()>) -> tide::Result {
+    generate_character()
 }
 
-fn generate_character(name: Option<String>) -> tide::Result {
+fn generate_character() -> tide::Result {
     let prototype = NonPlayerPrototype {
-        name,
+        name: generate_name(),
         character_generator: Box::new(CharacterPrototype::random_species_overloaded()),
     };
 
