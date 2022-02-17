@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 yew = "0.19.3"
-underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "1a9567fc6d91c3c611fa9a9e4f4451a4df2d1ad4" }
+underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "601b4d879769212207c733dc368a91514aee1871" }
 getrandom = {version = "0.2.4", features= ["js"] }
