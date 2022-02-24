@@ -29,7 +29,7 @@ impl Component for RoomDescriptions {
                 let room_prototype = RoomPrototype::build_random();
                 let room = room_prototype.generate();
                 self.room_description = format!("{}", &room);
-                self.inhabitants_description = room.look_at_inhabitants();
+                self.inhabitants_description = room.describe_inhabitants();
                 // the value has changed so we need to
                 // re-render for it to appear on the page
                 true
