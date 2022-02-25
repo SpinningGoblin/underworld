@@ -7,8 +7,9 @@ use tide::Body;
 use tide::Request;
 use tide::Response;
 use tide::StatusCode;
+use underworld_core::actions::action::Action;
 use underworld_core::components::rooms::room::Room;
-use underworld_core::components::rooms::room::RoomViewArgs;
+use underworld_core::components::rooms::room_view::RoomViewArgs;
 use underworld_core::{
     components::non_player::NonPlayer,
     generators::{
@@ -36,10 +37,24 @@ struct GeneratedNpc {
 }
 
 #[derive(Deserialize, Serialize)]
+struct PerformAction {
+    pub name: String,
+    pub description: String,
+    pub link: String,
+    pub http_action: String,
+}
+
+#[derive(Deserialize, Serialize)]
 struct GeneratedRoom {
     pub room_id: String,
     pub room_description: String,
     pub character_descriptions: String,
+    pub actions: Vec<PerformAction>,
+}
+
+#[derive(Deserialize, Serialize)]
+struct AllActions {
+    pub actions: Vec<PerformAction>,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -76,8 +91,9 @@ async fn main() -> tide::Result<()> {
     app.at("/generate/room_description")
         .get(generate_room_description_get);
     app.at("/rooms").get(get_all_rooms);
-    app.at("room/:id/quick_look").get(quick_look_at_room);
-    app.at("room/:id/look_at").get(look_at_room);
+    app.at("/room/:id/quick_look").post(quick_look_at_room);
+    app.at("/room/:id/look_at").post(look_at_room);
+    app.at("/room/:id/actions").get(get_all_actions);
     app.at("/").serve_dir("public")?;
     app.at("/").serve_file("public/index.html")?;
     app.listen(format!("0.0.0.0:{}", get_port())).await?;
@@ -91,7 +107,7 @@ async fn load_room(id: String) -> Option<Room> {
         Ok(it) => {
             let room: Room = serde_json::from_str(&it).unwrap();
             Some(room)
-        },
+        }
         Err(_) => None,
     }
 }
@@ -106,6 +122,39 @@ async fn get_all_rooms(_req: Request<()>) -> tide::Result {
     Ok(response)
 }
 
+async fn get_all_actions(req: Request<()>) -> tide::Result {
+    let id = req.param("id").unwrap();
+    match load_room(id.to_string()).await {
+        Some(room) => {
+            let actions: Vec<PerformAction> = room
+                .current_actions()
+                .iter()
+                .filter_map(|action| match action {
+                    Action::LookAtTarget(_) => None,
+                    Action::LookAtRoom(it) => Some(PerformAction {
+                        name: "look_at_room".to_string(),
+                        description: it.description(),
+                        link: format!("room/{}/look_at", id),
+                        http_action: "POST".to_string(),
+                    }),
+                    Action::QuickLookRoom(it) => Some(PerformAction {
+                        name: "quick_look_room".to_string(),
+                        description: it.description(),
+                        link: format!("room/{}/quick_look", id),
+                        http_action: "POST".to_string(),
+                    }),
+                })
+                .collect();
+            let all_actions = AllActions { actions };
+            let mut response = Response::new(StatusCode::Ok);
+            let body = Body::from_json(&all_actions)?;
+            response.set_body(body);
+            Ok(response)
+        }
+        None => Ok(Response::new(StatusCode::NotFound)),
+    }
+}
+
 async fn look_at_room(req: Request<()>) -> tide::Result {
     let id = req.param("id").unwrap();
     match load_room(id.to_string()).await {
@@ -114,14 +163,14 @@ async fn look_at_room(req: Request<()>) -> tide::Result {
                 can_see_hidden: false,
                 can_see_packed: false,
                 knows_character_health: false,
-                knows_names: false,
+                knows_names: true,
             };
             let view = room.look_at(args, false);
             let mut response = Response::new(StatusCode::Ok);
             let body = Body::from_json(&view)?;
             response.set_body(body);
             Ok(response)
-        },
+        }
         None => Ok(Response::new(StatusCode::NotFound)),
     }
 }
@@ -135,7 +184,7 @@ async fn quick_look_at_room(req: Request<()>) -> tide::Result {
             let body = Body::from_json(&view)?;
             response.set_body(body);
             Ok(response)
-        },
+        }
         None => Ok(Response::new(StatusCode::NotFound)),
     }
 }
@@ -194,10 +243,40 @@ async fn generate_room() -> tide::Result {
         .await
         .unwrap();
 
+    let room_id = room.identifier.id.to_string();
+
+    let mut actions: Vec<PerformAction> = room
+        .current_actions()
+        .iter()
+        .filter_map(|action| match action {
+            Action::LookAtTarget(_) => None,
+            Action::LookAtRoom(it) => Some(PerformAction {
+                name: "look_at_room".to_string(),
+                description: it.description(),
+                link: format!("room/{}/look_at", &room_id),
+                http_action: "POST".to_string(),
+            }),
+            Action::QuickLookRoom(it) => Some(PerformAction {
+                name: "quick_look_room".to_string(),
+                description: it.description(),
+                link: format!("room/{}/quick_look", &room_id),
+                http_action: "POST".to_string(),
+            }),
+        })
+        .collect();
+
+    actions.push(PerformAction {
+        name: "get_all_actions".to_string(),
+        description: "Get all actions for the room".to_string(),
+        link: format!("room/{}/actions", &room_id),
+        http_action: "GET".to_string(),
+    });
+
     let generated = GeneratedRoom {
         room_description: format!("{}", &room),
         character_descriptions: room.describe_inhabitants(),
-        room_id: room.identifier.id.to_string(),
+        room_id,
+        actions,
     };
 
     let mut response = Response::new(200);
