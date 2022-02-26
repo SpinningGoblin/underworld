@@ -122,9 +122,10 @@ async fn get_redis_connection() -> redis::aio::Connection {
 }
 
 fn get_server_url() -> String {
-    env::var("SERVER_URL")
+    let base_url = env::var("SERVER_URL")
         .ok()
-        .unwrap_or(format!("http://localhost:{}", get_port()))
+        .unwrap_or(format!("http://localhost:{}", get_port()));
+    format!("{}/api", base_url)
 }
 
 #[tokio::main]
