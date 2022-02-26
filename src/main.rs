@@ -135,7 +135,10 @@ async fn main() -> Result<(), std::io::Error> {
     let ui = api_service.swagger_ui();
     let spec = api_service.spec();
     let route = Route::new()
-        .nest("/", StaticFilesEndpoint::new("./public").index_file("index.html"))
+        .nest(
+            "/",
+            StaticFilesEndpoint::new("./public").index_file("index.html"),
+        )
         .nest("/api", api_service)
         .nest("/swagger_ui", ui)
         .at("/spec", poem::endpoint::make_sync(move |_| spec.clone()))
