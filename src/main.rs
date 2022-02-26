@@ -1,21 +1,30 @@
 use std::env;
 
+use poem::endpoint::StaticFilesEndpoint;
+use poem::listener::TcpListener;
+use poem::middleware::Cors;
+use poem::EndpointExt;
+use poem::Result;
+use poem::Route;
+use poem::Server;
+use poem_openapi::{
+    param::Path,
+    payload::{Json, PlainText},
+    ApiResponse, Object, OpenApi, OpenApiService,
+};
 use redis::AsyncCommands;
 use redis::RedisError;
-use tide::prelude::*;
-use tide::Body;
-use tide::Request;
-use tide::Response;
-use tide::StatusCode;
+use serde::Deserialize;
+use serde::Serialize;
 use underworld_core::actions::action::Action;
+use underworld_core::components::character::CharacterViewArgs;
+use underworld_core::components::non_player::NonPlayerView;
 use underworld_core::components::rooms::room::Room;
+use underworld_core::components::rooms::room_view::RoomView;
 use underworld_core::components::rooms::room_view::RoomViewArgs;
-use underworld_core::{
-    components::non_player::NonPlayer,
-    generators::{
-        characters::CharacterPrototype, generator::Generator, name::generate_name,
-        non_players::NonPlayerPrototype, rooms::RoomPrototype,
-    },
+use underworld_core::generators::{
+    characters::CharacterPrototype, generator::Generator, name::generate_name,
+    non_players::NonPlayerPrototype, rooms::RoomPrototype,
 };
 
 #[derive(Serialize, Deserialize)]
@@ -29,14 +38,14 @@ struct GenerateRoomPostRequest {}
 #[derive(Deserialize, Serialize)]
 struct GenerateRoomGetRequest {}
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Object, Deserialize)]
 struct GeneratedNpc {
-    pub non_player: NonPlayer,
+    pub non_player: NonPlayerView,
     pub inventory_description: String,
     pub species_description: String,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Object, Serialize)]
 struct PerformAction {
     pub name: String,
     pub description: String,
@@ -44,7 +53,7 @@ struct PerformAction {
     pub http_action: String,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Object, Serialize)]
 struct GeneratedRoom {
     pub room_id: String,
     pub room_description: String,
@@ -52,15 +61,48 @@ struct GeneratedRoom {
     pub actions: Vec<PerformAction>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Object, Serialize)]
 struct AllActions {
     pub actions: Vec<PerformAction>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Object, Serialize)]
 struct GeneratedRoomDescription {
     room_description: String,
     character_descriptions: String,
+}
+
+#[derive(ApiResponse)]
+enum GetResponse {
+    #[oai(status = 200)]
+    RoomIds(Json<Vec<String>>),
+
+    #[oai(status = 200)]
+    AllActions(Json<AllActions>),
+
+    #[oai(status = 404)]
+    NotFound(PlainText<String>),
+}
+
+#[derive(ApiResponse)]
+enum LookResponse {
+    #[oai(status = 404)]
+    LookAtRoom(Json<RoomView>),
+
+    #[oai(status = 404)]
+    NotFound(PlainText<String>),
+}
+
+#[derive(ApiResponse)]
+enum GenerateResponse {
+    #[oai(status = 201)]
+    RoomGenerated(Json<GeneratedRoom>),
+
+    #[oai(status = 201)]
+    RoomDescriptions(Json<GeneratedRoomDescription>),
+
+    #[oai(status = 201)]
+    CharacterGenerated(Json<GeneratedNpc>),
 }
 
 fn get_port() -> u16 {
@@ -79,28 +121,34 @@ async fn get_redis_connection() -> redis::aio::Connection {
     client.get_async_connection().await.unwrap()
 }
 
-#[async_std::main]
-async fn main() -> tide::Result<()> {
-    let mut app = tide::new();
-    app.at("/generate/npc").post(generate_character_post);
-    app.at("/generate/npc").get(generate_character_get);
-    app.at("/generate/room").post(generate_room_post);
-    app.at("/generate/room").get(generate_room_get);
-    app.at("/generate/room_description")
-        .post(generate_room_description_post);
-    app.at("/generate/room_description")
-        .get(generate_room_description_get);
-    app.at("/rooms").get(get_all_rooms);
-    app.at("/room/:id/quick_look").post(quick_look_at_room);
-    app.at("/room/:id/look_at").post(look_at_room);
-    app.at("/room/:id/actions").get(get_all_actions);
-    app.at("/").serve_dir("public")?;
-    app.at("/").serve_file("public/index.html")?;
-    app.listen(format!("0.0.0.0:{}", get_port())).await?;
+fn get_server_url() -> String {
+    env::var("SERVER_URL")
+        .ok()
+        .unwrap_or(format!("http://localhost:{}", get_port()))
+}
+
+#[tokio::main]
+async fn main() -> Result<(), std::io::Error> {
+    let api_service =
+        OpenApiService::new(UnderworldApi, "Underworld", "0.1.0").server(get_server_url());
+
+    let ui = api_service.swagger_ui();
+    let spec = api_service.spec();
+    let route = Route::new()
+        .nest("/", StaticFilesEndpoint::new("./public/index.html"))
+        .nest("/api", api_service)
+        .nest("/swagger_ui", ui)
+        .at("/spec", poem::endpoint::make_sync(move |_| spec.clone()))
+        .with(Cors::new());
+
+    let listen_url = format!("0.0.0.0:{}", get_port());
+    Server::new(TcpListener::bind(listen_url))
+        .run(route)
+        .await?;
     Ok(())
 }
 
-async fn load_room(id: String) -> Option<Room> {
+async fn load_room(id: &str) -> Option<Room> {
     let mut connection = get_redis_connection().await;
     let serialized: Result<String, RedisError> = connection.get(format!("room:{}", &id)).await;
     match serialized {
@@ -112,190 +160,183 @@ async fn load_room(id: String) -> Option<Room> {
     }
 }
 
-async fn get_all_rooms(_req: Request<()>) -> tide::Result {
-    let mut connection = get_redis_connection().await;
-    let keys: Vec<String> = connection.keys("room:*").await.unwrap();
-    let ids: Vec<String> = keys.iter().map(|k| k.replace("room:", "")).collect();
-    let mut response = Response::new(StatusCode::Ok);
-    let body = Body::from_json(&ids).unwrap();
-    response.set_body(body);
-    Ok(response)
+fn get_api_link(original: &str) -> String {
+    format!("/api/{}", original)
 }
 
-async fn get_all_actions(req: Request<()>) -> tide::Result {
-    let id = req.param("id").unwrap();
-    match load_room(id.to_string()).await {
-        Some(room) => {
-            let actions: Vec<PerformAction> = room
-                .current_actions()
-                .iter()
-                .filter_map(|action| match action {
-                    Action::LookAtTarget(_) => None,
-                    Action::LookAtRoom(it) => Some(PerformAction {
-                        name: "look_at_room".to_string(),
-                        description: it.description(),
-                        link: format!("room/{}/look_at", id),
-                        http_action: "POST".to_string(),
-                    }),
-                    Action::QuickLookRoom(it) => Some(PerformAction {
-                        name: "quick_look_room".to_string(),
-                        description: it.description(),
-                        link: format!("room/{}/quick_look", id),
-                        http_action: "POST".to_string(),
-                    }),
-                })
-                .collect();
-            let all_actions = AllActions { actions };
-            let mut response = Response::new(StatusCode::Ok);
-            let body = Body::from_json(&all_actions)?;
-            response.set_body(body);
-            Ok(response)
-        }
-        None => Ok(Response::new(StatusCode::NotFound)),
+fn get_look_at_link(room_id: &str) -> String {
+    get_api_link(&format!("room/{}/look_at", &room_id))
+}
+
+fn get_quick_look_link(room_id: &str) -> String {
+    get_api_link(&format!("room/{}/quick_look", &room_id))
+}
+
+struct UnderworldApi;
+
+#[OpenApi]
+impl UnderworldApi {
+    #[oai(path = "/rooms", method = "get")]
+    async fn get_all_room_ids(&self) -> Result<GetResponse> {
+        let mut connection = get_redis_connection().await;
+        let keys: Vec<String> = connection.keys("room:*").await.unwrap();
+        let ids: Vec<String> = keys.iter().map(|k| k.replace("room:", "")).collect();
+        Ok(GetResponse::RoomIds(Json(ids)))
     }
-}
 
-async fn look_at_room(req: Request<()>) -> tide::Result {
-    let id = req.param("id").unwrap();
-    match load_room(id.to_string()).await {
-        Some(room) => {
-            let args = RoomViewArgs {
-                can_see_hidden: false,
-                can_see_packed: false,
-                knows_character_health: false,
-                knows_names: true,
-            };
-            let view = room.look_at(args, false);
-            let mut response = Response::new(StatusCode::Ok);
-            let body = Body::from_json(&view)?;
-            response.set_body(body);
-            Ok(response)
+    #[oai(path = "/room/:id/actions", method = "get")]
+    async fn get_all_actions(&self, id: Path<String>) -> Result<GetResponse> {
+        match load_room(&id.0).await {
+            Some(room) => {
+                let actions: Vec<PerformAction> = room
+                    .current_actions()
+                    .iter()
+                    .filter_map(|action| match action {
+                        Action::LookAtTarget(_) => None,
+                        Action::LookAtRoom(it) => Some(PerformAction {
+                            name: "look_at_room".to_string(),
+                            description: it.description(),
+                            link: get_look_at_link(&id.0),
+                            http_action: "POST".to_string(),
+                        }),
+                        Action::QuickLookRoom(it) => Some(PerformAction {
+                            name: "quick_look_room".to_string(),
+                            description: it.description(),
+                            link: get_quick_look_link(&id.0),
+                            http_action: "POST".to_string(),
+                        }),
+                    })
+                    .collect();
+                let all_actions = AllActions { actions };
+                Ok(GetResponse::AllActions(Json(all_actions)))
+            }
+            None => Ok(GetResponse::NotFound(PlainText(format!(
+                "room `{}` not found",
+                &id.0
+            )))),
         }
-        None => Ok(Response::new(StatusCode::NotFound)),
     }
-}
 
-async fn quick_look_at_room(req: Request<()>) -> tide::Result {
-    let id = req.param("id").unwrap();
-    match load_room(id.to_string()).await {
-        Some(room) => {
-            let view = room.quick_look();
-            let mut response = Response::new(StatusCode::Ok);
-            let body = Body::from_json(&view)?;
-            response.set_body(body);
-            Ok(response)
+    #[oai(path = "/room/:id/look_at", method = "post")]
+    async fn look_at_room(&self, id: Path<String>) -> Result<LookResponse> {
+        match load_room(&id.0).await {
+            Some(room) => {
+                let args = RoomViewArgs {
+                    can_see_hidden: false,
+                    can_see_packed: false,
+                    knows_character_health: false,
+                    knows_names: true,
+                };
+                let view = room.look_at(args, false);
+                Ok(LookResponse::LookAtRoom(Json(view)))
+            }
+            None => Ok(LookResponse::NotFound(PlainText(format!(
+                "room `{}` not found",
+                &id.0
+            )))),
         }
-        None => Ok(Response::new(StatusCode::NotFound)),
     }
-}
 
-async fn generate_room_description_get(_req: Request<()>) -> tide::Result {
-    generate_room_description()
-}
+    #[oai(path = "/room/:id/quick_look", method = "post")]
+    async fn quick_look_at_room(&self, id: Path<String>) -> Result<LookResponse> {
+        match load_room(&id.0).await {
+            Some(room) => {
+                let view = room.quick_look();
+                Ok(LookResponse::LookAtRoom(Json(view)))
+            }
+            None => Ok(LookResponse::NotFound(PlainText(format!(
+                "room `{}` not found",
+                &id.0
+            )))),
+        }
+    }
 
-async fn generate_room_description_post(_req: Request<()>) -> tide::Result {
-    generate_room_description()
-}
+    #[oai(path = "/room/generate", method = "post")]
+    async fn generate_room(&self) -> Result<GenerateResponse> {
+        let prototype = RoomPrototype::build_random();
+        let room = prototype.generate();
+        let serialized = serde_json::to_string(&room).unwrap();
+        let mut connection = get_redis_connection().await;
+        let _: () = connection
+            .set(format!("room:{}", &room.identifier.id), serialized)
+            .await
+            .unwrap();
 
-async fn generate_room_post(_req: Request<()>) -> tide::Result {
-    generate_room().await
-}
+        let room_id = room.identifier.id.to_string();
 
-async fn generate_room_get(_req: Request<()>) -> tide::Result {
-    generate_room().await
-}
+        let mut actions: Vec<PerformAction> = room
+            .current_actions()
+            .iter()
+            .filter_map(|action| match action {
+                Action::LookAtTarget(_) => None,
+                Action::LookAtRoom(it) => Some(PerformAction {
+                    name: "look_at_room".to_string(),
+                    description: it.description(),
+                    link: get_look_at_link(&room_id),
+                    http_action: "POST".to_string(),
+                }),
+                Action::QuickLookRoom(it) => Some(PerformAction {
+                    name: "quick_look_room".to_string(),
+                    description: it.description(),
+                    link: get_quick_look_link(&room_id),
+                    http_action: "POST".to_string(),
+                }),
+            })
+            .collect();
 
-async fn generate_character_get(_req: Request<()>) -> tide::Result {
-    generate_character()
-}
+        actions.push(PerformAction {
+            name: "get_all_actions".to_string(),
+            description: "Get all actions for the room".to_string(),
+            link: get_api_link(&format!("room/{}/actions", &room_id)),
+            http_action: "GET".to_string(),
+        });
 
-async fn generate_character_post(_req: Request<()>) -> tide::Result {
-    generate_character()
-}
+        let generated = GeneratedRoom {
+            room_description: format!("{}", &room),
+            character_descriptions: room.describe_inhabitants(),
+            room_id,
+            actions,
+        };
 
-fn generate_character() -> tide::Result {
-    let prototype = NonPlayerPrototype {
-        name: generate_name(),
-        character_generator: Box::new(CharacterPrototype::random_species_overloaded()),
-    };
+        Ok(GenerateResponse::RoomGenerated(Json(generated)))
+    }
 
-    let non_player = prototype.generate();
-    let generated = GeneratedNpc {
-        inventory_description: non_player.character.describe_inventory("").clone(),
-        species_description: non_player.character.describe_species().clone(),
-        non_player,
-    };
+    #[oai(path = "/room/descriptions/generate", method = "post")]
+    async fn generate_room_description(&self) -> Result<GenerateResponse> {
+        let prototype = RoomPrototype::build_random();
+        let room = prototype.generate();
+        let generated = GeneratedRoomDescription {
+            room_description: format!("{}", &room),
+            character_descriptions: room.describe_inhabitants(),
+        };
 
-    let mut response = Response::new(StatusCode::Ok);
-    let body = Body::from_json(&generated)?;
-    response.set_body(body);
+        Ok(GenerateResponse::RoomDescriptions(Json(generated)))
+    }
 
-    Ok(response)
-}
+    #[oai(path = "/generate/npc", method = "post")]
+    async fn generate_character(&self) -> Result<GenerateResponse> {
+        let prototype = NonPlayerPrototype {
+            name: generate_name(),
+            character_generator: Box::new(CharacterPrototype::random_species_overloaded()),
+        };
 
-async fn generate_room() -> tide::Result {
-    let prototype = RoomPrototype::build_random();
-    let room = prototype.generate();
-    let serialized = serde_json::to_string(&room).unwrap();
-    let mut connection = get_redis_connection().await;
-    let _: () = connection
-        .set(format!("room:{}", &room.identifier.id), serialized)
-        .await
-        .unwrap();
+        let non_player = prototype.generate();
 
-    let room_id = room.identifier.id.to_string();
+        let character_args = CharacterViewArgs {
+            knows_health: true,
+            knows_species: true,
+            knows_life_modifier: true,
+            knows_inventory: true,
+            knows_hidden_in_inventory: true,
+            knows_packed_in_inventory: true,
+        };
 
-    let mut actions: Vec<PerformAction> = room
-        .current_actions()
-        .iter()
-        .filter_map(|action| match action {
-            Action::LookAtTarget(_) => None,
-            Action::LookAtRoom(it) => Some(PerformAction {
-                name: "look_at_room".to_string(),
-                description: it.description(),
-                link: format!("room/{}/look_at", &room_id),
-                http_action: "POST".to_string(),
-            }),
-            Action::QuickLookRoom(it) => Some(PerformAction {
-                name: "quick_look_room".to_string(),
-                description: it.description(),
-                link: format!("room/{}/quick_look", &room_id),
-                http_action: "POST".to_string(),
-            }),
-        })
-        .collect();
+        let generated = GeneratedNpc {
+            inventory_description: non_player.character.describe_inventory("").clone(),
+            species_description: non_player.character.describe_species().clone(),
+            non_player: non_player.look_at(&character_args, true, true),
+        };
 
-    actions.push(PerformAction {
-        name: "get_all_actions".to_string(),
-        description: "Get all actions for the room".to_string(),
-        link: format!("room/{}/actions", &room_id),
-        http_action: "GET".to_string(),
-    });
-
-    let generated = GeneratedRoom {
-        room_description: format!("{}", &room),
-        character_descriptions: room.describe_inhabitants(),
-        room_id,
-        actions,
-    };
-
-    let mut response = Response::new(200);
-    let body = Body::from_json(&generated)?;
-    response.set_body(body);
-
-    Ok(response)
-}
-
-fn generate_room_description() -> tide::Result {
-    let prototype = RoomPrototype::build_random();
-    let room = prototype.generate();
-    let generated = GeneratedRoomDescription {
-        room_description: format!("{}", &room),
-        character_descriptions: room.describe_inhabitants(),
-    };
-    let mut response = Response::new(200);
-    let body = Body::from_json(&generated)?;
-    response.set_body(body);
-
-    Ok(response)
+        Ok(GenerateResponse::CharacterGenerated(Json(generated)))
+    }
 }
