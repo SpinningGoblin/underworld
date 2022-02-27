@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 serde = { version = "1.0.136", features = ["derive"] }
-underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "40765dfc8160a39b3f754377fe412da926de70d0", features = ["serialization", "openapi"] }
+underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "510a34466a64557dba068077d4db08d4910c9c4c", features = ["serialization", "openapi"] }
 serde_json = { version = "1.0.78" }
 rand = "0.8.5"
 redis = { version = "0.21.5", features = ["tokio-comp"] }
