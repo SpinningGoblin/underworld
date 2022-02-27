@@ -113,7 +113,7 @@ fn get_port() -> u16 {
 }
 
 fn get_redis_url() -> String {
-    env::var("REDIS_URL").unwrap()
+    env::var("REDIS_URL").unwrap_or_else(|_| "redis://127.0.0.1".to_string())
 }
 
 async fn get_redis_connection() -> redis::aio::Connection {
@@ -336,8 +336,8 @@ impl UnderworldApi {
         };
 
         let generated = GeneratedNpc {
-            inventory_description: non_player.character.describe_inventory("").clone(),
-            species_description: non_player.character.describe_species().clone(),
+            inventory_description: non_player.character.describe_inventory(""),
+            species_description: non_player.character.describe_species(),
             non_player: non_player.look_at(&character_args, true, true),
         };
 
