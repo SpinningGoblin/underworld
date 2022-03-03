@@ -295,9 +295,18 @@ impl UnderworldApi {
             http_action: "GET".to_string(),
         });
 
+        let quick_view = room.quick_look();
+        let args = RoomViewArgs {
+            can_see_hidden: false,
+            can_see_packed: false,
+            knows_character_health: false,
+            knows_names: true,
+        };
+        let deeper_look = room.look_at(args, false);
+
         let generated = GeneratedRoom {
-            room_description: format!("{}", &room),
-            character_descriptions: room.describe_inhabitants(),
+            room_description: format!("{}", &quick_view),
+            character_descriptions: deeper_look.describe_inhabitants(),
             room_id,
             actions,
         };
@@ -309,9 +318,18 @@ impl UnderworldApi {
     async fn generate_room_description(&self) -> Result<GenerateResponse> {
         let prototype = RoomPrototype::build_random();
         let room = prototype.generate();
+
+        let quick_view = room.quick_look();
+        let args = RoomViewArgs {
+            can_see_hidden: false,
+            can_see_packed: false,
+            knows_character_health: false,
+            knows_names: true,
+        };
+        let deeper_look = room.look_at(args, false);
         let generated = GeneratedRoomDescription {
-            room_description: format!("{}", &room),
-            character_descriptions: room.describe_inhabitants(),
+            room_description: format!("{}", &quick_view),
+            character_descriptions: deeper_look.describe_inhabitants(),
         };
 
         Ok(GenerateResponse::RoomDescriptions(Json(generated)))
@@ -335,10 +353,12 @@ impl UnderworldApi {
             knows_packed_in_inventory: true,
         };
 
+        let view = non_player.look_at(&character_args, true, true);
+
         let generated = GeneratedNpc {
-            inventory_description: non_player.character.describe_inventory(""),
-            species_description: non_player.character.describe_species(),
-            non_player: non_player.look_at(&character_args, true, true),
+            inventory_description: view.character.describe_inventory(""),
+            species_description: view.character.describe_species(),
+            non_player: view,
         };
 
         Ok(GenerateResponse::CharacterGenerated(Json(generated)))
