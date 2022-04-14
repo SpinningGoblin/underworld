@@ -58,9 +58,9 @@ dependencies = [
 
 [[package]]
 name = "getrandom"
-version = "0.2.4"
+version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "418d37c8b1d42553c93648be529cb70f920d3baf8ef469b74b9638df426e0b4c"
+checksum = "9be70c98951c83b8d2f8f60d7065fa6d5146873094452a1008da8c2f1e4205ad"
 dependencies = [
  "cfg-if",
  "js-sys",
@@ -214,9 +214,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.116"
+version = "0.2.123"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "565dbd88872dbe4cc8a46e527f26483c1d1f7afa6b884a3bd6cd893d4f98da74"
+checksum = "cb691a747a7ab48abc15c5b42066eaafde10dc427e3b6ee2a1cf43db04c763bd"
 
 [[package]]
 name = "log"
@@ -388,7 +388,7 @@ dependencies = [
 [[package]]
 name = "underworld_core"
 version = "0.1.0"
-source = "git+https://github.com/derrickp/underworld_core?rev=dfb2332f3bfd5d5c98455db98b7151b766595ab0#dfb2332f3bfd5d5c98455db98b7151b766595ab0"
+source = "git+https://github.com/derrickp/underworld_core?rev=ea12b848760d7dd8e7e6de5d1b6cc6c5a3b7e081#ea12b848760d7dd8e7e6de5d1b6cc6c5a3b7e081"
 dependencies = [
  "enum-iterator",
  "rand",

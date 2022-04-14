@@ -1,5 +1,8 @@
-use underworld_core::generators::{generator::Generator, rooms::RoomPrototype};
-use underworld_core::components::rooms::room_view::RoomViewArgs;
+use underworld_core::{
+    components::rooms::room_view::RoomViewArgs,
+    generators::{generator::Generator, rooms::random_room_generator},
+    systems::view::room,
+};
 use yew::prelude::*;
 
 enum RoomMsg {
@@ -26,16 +29,16 @@ impl Component for RoomDescriptions {
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             RoomMsg::GenerateRoom => {
-                let room_prototype = RoomPrototype::build_random();
+                let room_prototype = random_room_generator(None);
                 let room = room_prototype.generate();
-                let quick_view = room.quick_look();
+                let quick_view = room::quick_look(&room);
                 let args = RoomViewArgs {
                     can_see_hidden: false,
                     can_see_packed: false,
                     knows_character_health: false,
                     knows_names: true,
                 };
-                let deeper_look = room.look_at(args, false);
+                let deeper_look = room::look_at(&room, args, false);
                 self.room_description = format!("{}", &quick_view);
                 self.inhabitants_description = deeper_look.describe_inhabitants();
                 // the value has changed so we need to
