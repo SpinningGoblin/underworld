@@ -8,6 +8,7 @@ pub enum GameError {
     General,
     NoPlayerCharacterSet,
     UnknownPlayerCharacter,
+    GameNotFound,
 }
 
 impl Display for GameError {
@@ -16,6 +17,7 @@ impl Display for GameError {
             GameError::General => "general_error",
             GameError::NoPlayerCharacterSet => "no_player_character_set",
             GameError::UnknownPlayerCharacter => "unknown_player_character_specified",
+            GameError::GameNotFound => "game_not_found",
         };
 
         write!(f, "{}", text)

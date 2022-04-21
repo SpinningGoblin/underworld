@@ -21,7 +21,7 @@ pub async fn get_player_character(
 }
 
 pub async fn player_character_ids(connection: &mut Connection, username: &str) -> Vec<String> {
-    let key_start = username_key(&username);
+    let key_start = username_key(username);
     let redis_keys: Result<Vec<String>, RedisError> =
         connection.keys(format!("{}*", &key_start)).await;
 

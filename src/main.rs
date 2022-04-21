@@ -1,15 +1,24 @@
 mod actions;
+mod error;
+mod event;
 mod game;
 mod player_characters;
-mod rooms;
 
 use std::env;
 
-use actions::current_user_actions;
 use actions::PerformAction;
-use game::player_characters::get_current_player_character;
-use game::player_characters::set_current_player_character;
-use game::player_characters::SetPlayerCharacterArgs;
+use error::GameError;
+use game::args::ExitRoomArgs;
+use game::args::RoomLookArgs;
+use game::exit::exit_current_room;
+use game::exit::RoomExited;
+use game::generate::generate_game;
+use game::generate::GenerateGame;
+use game::generate::GeneratedGame;
+use game::get::get_game_state;
+use player_characters::current::get_current_player_character;
+use player_characters::current::set_current_player_character;
+use player_characters::current::SetPlayerCharacterArgs;
 use player_characters::generate::generate_player_character;
 use player_characters::generate::GeneratePlayerCharacter;
 use player_characters::generate::GeneratedPlayerCharacter;
@@ -27,11 +36,8 @@ use poem_openapi::{
     payload::{Json, PlainText},
     ApiResponse, Object, OpenApi, OpenApiService,
 };
-use redis::AsyncCommands;
-use rooms::get::load_room;
 use serde::Deserialize;
 use serde::Serialize;
-use underworld_core::actions::action::Action;
 use underworld_core::components::character::CharacterViewArgs;
 use underworld_core::components::non_player::NonPlayerView;
 use underworld_core::components::player::PlayerCharacterView;
@@ -86,16 +92,10 @@ struct GeneratedRoomDescription {
 #[derive(ApiResponse)]
 enum GetResponse {
     #[oai(status = 200)]
-    RoomIds(Json<Vec<String>>),
-
-    #[oai(status = 200)]
     PlayerCharacterIds(Json<Vec<String>>),
 
     #[oai(status = 200)]
     PlayerCharacter(Json<PlayerCharacterView>),
-
-    #[oai(status = 200)]
-    AllActions(Json<AllActions>),
 
     #[oai(status = 404)]
     NotFound(PlainText<String>),
@@ -113,22 +113,28 @@ enum LookResponse {
 #[derive(ApiResponse)]
 enum GenerateResponse {
     #[oai(status = 201)]
-    RoomGenerated(Json<GeneratedRoom>),
+    GameGenerated(Json<GeneratedGame>),
 
     #[oai(status = 201)]
     RoomDescriptions(Json<GeneratedRoomDescription>),
 
-    #[oai(status = 201)]
+    #[oai(status = 200)]
     CharacterGenerated(Json<GeneratedNpc>),
 
     #[oai(status = 201)]
     PlayerCharacterGenerated(Json<GeneratedPlayerCharacter>),
+
+    #[oai(status = 500)]
+    GameError(Json<GameError>),
 }
 
 #[derive(ApiResponse)]
 enum GamePostResponse {
     #[oai(status = 200)]
     PlayerCharacterSet(PlainText<String>),
+
+    #[oai(status = 200)]
+    RoomExited(Json<RoomExited>),
 
     #[oai(status = 500)]
     BadRequest(Json<Error>),
@@ -186,166 +192,72 @@ async fn main() -> Result<(), std::io::Error> {
     Ok(())
 }
 
-fn get_api_link(original: &str) -> String {
-    format!("/api/{}", original)
-}
-
-fn get_look_at_link(room_id: &str) -> String {
-    get_api_link(&format!("room/{}/look_at", &room_id))
-}
-
-fn get_quick_look_link(room_id: &str) -> String {
-    get_api_link(&format!("room/{}/quick_look", &room_id))
-}
-
 struct UnderworldApi;
 
 #[OpenApi]
 impl UnderworldApi {
-    #[oai(path = "/rooms", method = "get")]
-    async fn get_all_room_ids(&self) -> Result<GetResponse> {
+    #[oai(path = "/game/generate", method = "post")]
+    async fn generate_game(&self, args: Json<GenerateGame>) -> Result<GenerateResponse> {
         let mut connection = get_redis_connection().await;
-        let keys: Vec<String> = connection.keys("room:*").await.unwrap();
-        let ids: Vec<String> = keys.iter().map(|k| k.replace("room:", "")).collect();
-        Ok(GetResponse::RoomIds(Json(ids)))
-    }
+        let generated_result = generate_game(&mut connection, &args).await;
 
-    #[oai(path = "/room/:id/actions", method = "get")]
-    async fn get_all_actions(&self, id: Path<String>) -> Result<GetResponse> {
-        let mut connection = get_redis_connection().await;
-        match load_room(&mut connection, &id.0).await {
-            Some(room) => {
-                let actions: Vec<PerformAction> = room
-                    .current_actions()
-                    .iter()
-                    .filter_map(|action| match action {
-                        Action::LookAtTarget(_) => None,
-                        Action::LookAtRoom(it) => Some(PerformAction {
-                            name: "look_at_room".to_string(),
-                            description: it.description(),
-                            link: get_look_at_link(&id.0),
-                            http_action: "POST".to_string(),
-                            args: None,
-                        }),
-                        Action::QuickLookRoom(it) => Some(PerformAction {
-                            name: "quick_look_room".to_string(),
-                            description: it.description(),
-                            link: get_quick_look_link(&id.0),
-                            http_action: "POST".to_string(),
-                            args: None,
-                        }),
-                        Action::AttackNpc(_) => None,
-                        Action::ExitRoom(_) => None,
-                    })
-                    .collect();
-                let all_actions = AllActions { actions };
-                Ok(GetResponse::AllActions(Json(all_actions)))
-            }
-            None => Ok(GetResponse::NotFound(PlainText(format!(
-                "room `{}` not found",
-                &id.0
-            )))),
+        match generated_result {
+            Ok(generated_game) => Ok(GenerateResponse::GameGenerated(Json(generated_game))),
+            Err(e) => Ok(GenerateResponse::GameError(Json(e))),
         }
     }
 
-    #[oai(path = "/room/:id/look_at", method = "post")]
-    async fn look_at_room(&self, id: Path<String>) -> Result<LookResponse> {
+    #[oai(path = "/game/exit_current_room", method = "post")]
+    async fn exit_current_room(&self, args: Json<ExitRoomArgs>) -> Result<GamePostResponse> {
         let mut connection = get_redis_connection().await;
-        match load_room(&mut connection, &id.0).await {
-            Some(room) => {
+
+        let exit_result = exit_current_room(&mut connection, &args).await;
+        match exit_result {
+            Ok(it) => Ok(GamePostResponse::RoomExited(Json(it))),
+            Err(it) => Ok(GamePostResponse::BadRequest(Json(Error {
+                message: it.to_string(),
+            }))),
+        }
+    }
+
+    #[oai(path = "/game/look_at_current_room", method = "post")]
+    async fn look_at_current_room(&self, args: Json<RoomLookArgs>) -> Result<LookResponse> {
+        let mut connection = get_redis_connection().await;
+        let game_state = get_game_state(&mut connection, &args.username, &args.game_id).await;
+
+        match game_state {
+            Some(it) => {
                 let args = RoomViewArgs {
                     can_see_hidden: false,
                     can_see_packed: false,
                     knows_character_health: false,
                     knows_names: true,
                 };
-                let view = room::look_at(&room, args, false);
+                let view = room::look_at(it.current_room(), args, false);
                 Ok(LookResponse::LookAtRoom(Json(view)))
             }
             None => Ok(LookResponse::NotFound(PlainText(format!(
-                "room `{}` not found",
-                &id.0
+                "game `{}` not found",
+                &args.game_id
             )))),
         }
     }
 
-    #[oai(path = "/room/:id/quick_look", method = "post")]
-    async fn quick_look_at_room(&self, id: Path<String>) -> Result<LookResponse> {
+    #[oai(path = "/game/quick_look_current_room", method = "post")]
+    async fn quick_look_current_room(&self, args: Json<RoomLookArgs>) -> Result<LookResponse> {
         let mut connection = get_redis_connection().await;
-        match load_room(&mut connection, &id.0).await {
-            Some(room) => {
-                let view = room::quick_look(&room);
+        let game_state = get_game_state(&mut connection, &args.username, &args.game_id).await;
+
+        match game_state {
+            Some(it) => {
+                let view = room::quick_look(it.current_room());
                 Ok(LookResponse::LookAtRoom(Json(view)))
             }
             None => Ok(LookResponse::NotFound(PlainText(format!(
-                "room `{}` not found",
-                &id.0
+                "game `{}` not found",
+                &args.game_id
             )))),
         }
-    }
-
-    #[oai(path = "/room/generate", method = "post")]
-    async fn generate_room(&self) -> Result<GenerateResponse> {
-        let room_generator = random_room_generator(None);
-        let room = room_generator.generate();
-        let serialized = serde_json::to_string(&room).unwrap();
-        let mut connection = get_redis_connection().await;
-        let _: () = connection
-            .set(format!("room:{}", &room.identifier.id), serialized)
-            .await
-            .unwrap();
-
-        let room_id = room.identifier.id.to_string();
-
-        let mut actions: Vec<PerformAction> = room
-            .current_actions()
-            .iter()
-            .filter_map(|action| match action {
-                Action::LookAtTarget(_) => None,
-                Action::LookAtRoom(it) => Some(PerformAction {
-                    name: "look_at_room".to_string(),
-                    description: it.description(),
-                    link: get_look_at_link(&room_id),
-                    http_action: "POST".to_string(),
-                    args: None,
-                }),
-                Action::QuickLookRoom(it) => Some(PerformAction {
-                    name: "quick_look_room".to_string(),
-                    description: it.description(),
-                    link: get_quick_look_link(&room_id),
-                    http_action: "POST".to_string(),
-                    args: None,
-                }),
-                Action::AttackNpc(_) => None,
-                Action::ExitRoom(_) => None,
-            })
-            .collect();
-
-        actions.push(PerformAction {
-            name: "get_all_actions".to_string(),
-            description: "Get all actions for the room".to_string(),
-            link: get_api_link(&format!("room/{}/actions", &room_id)),
-            http_action: "GET".to_string(),
-            args: None,
-        });
-
-        let quick_view = room::quick_look(&room);
-        let args = RoomViewArgs {
-            can_see_hidden: false,
-            can_see_packed: false,
-            knows_character_health: false,
-            knows_names: true,
-        };
-        let deeper_look = room::look_at(&room, args, false);
-
-        let generated = GeneratedRoom {
-            room_description: format!("{}", &quick_view),
-            character_descriptions: deeper_look.describe_inhabitants(),
-            room_id: room_id.to_string(),
-            actions,
-        };
-
-        Ok(GenerateResponse::RoomGenerated(Json(generated)))
     }
 
     #[oai(path = "/room/descriptions/generate", method = "post")]
@@ -369,7 +281,7 @@ impl UnderworldApi {
         Ok(GenerateResponse::RoomDescriptions(Json(generated)))
     }
 
-    #[oai(path = "/generate/npc", method = "post")]
+    #[oai(path = "/npc/random", method = "get")]
     async fn generate_character(&self) -> Result<GenerateResponse> {
         let prototype = NonPlayerPrototype {
             name: generate_name(),
@@ -397,7 +309,7 @@ impl UnderworldApi {
         Ok(GenerateResponse::CharacterGenerated(Json(generated)))
     }
 
-    #[oai(path = "/generate/player_character", method = "post")]
+    #[oai(path = "/player_character/generate", method = "post")]
     async fn generate_player_character(
         &self,
         args: Json<GeneratePlayerCharacter>,
@@ -464,12 +376,5 @@ impl UnderworldApi {
                 "No character found".to_string(),
             ))),
         }
-    }
-
-    #[oai(path = "/:username/current_actions", method = "get")]
-    async fn current_user_actions(&self, username: Path<String>) -> Result<GetResponse> {
-        let mut connection = get_redis_connection().await;
-        let actions = current_user_actions(&username, &mut connection).await;
-        Ok(GetResponse::AllActions(Json(AllActions { actions })))
     }
 }

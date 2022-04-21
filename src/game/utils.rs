@@ -1,3 +1,3 @@
-pub fn current_player_character_key(username: &str) -> String {
-    format!("username:{}:current_player_character", username)
+pub fn username_game_key(username: &str, game_id: &str) -> String {
+    format!("username:{}:game:{}", username, game_id)
 }

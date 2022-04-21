@@ -1,10 +1,11 @@
 use poem_openapi::Object;
-use redis::aio::Connection;
 use serde::Serialize;
 use serde_json::Value;
+use underworld_core::{actions::action::Action, components::rooms::room::Room};
 
 use crate::{
-    game::player_characters::SetPlayerCharacterArgs, player_characters::get::player_character_ids,
+    game::args::{ExitRoomArgs, RoomLookArgs},
+    player_characters::current::SetPlayerCharacterArgs,
 };
 
 #[derive(Object, Serialize)]
@@ -14,6 +15,10 @@ pub struct PerformAction {
     pub link: String,
     pub http_action: String,
     pub args: Option<Value>,
+}
+
+pub fn get_api_link(original: &str) -> String {
+    format!("/api/{}", original)
 }
 
 pub fn player_character_actions(username: &str, player_character_id: &str) -> Vec<PerformAction> {
@@ -43,31 +48,45 @@ pub fn player_character_actions(username: &str, player_character_id: &str) -> Ve
     ]
 }
 
-pub async fn current_user_actions(
-    username: &str,
-    mut connection: &mut Connection,
-) -> Vec<PerformAction> {
-    let mut actions: Vec<PerformAction> = vec![
-        PerformAction {
-            name: "current_player_characters".to_string(),
-            description: "Get current player characters.".to_string(),
-            link: format!("{}/player_characters", username),
-            http_action: "GET".to_string(),
-            args: None,
-        },
-        PerformAction {
-            name: "check_current_player_character".to_string(),
-            description: "Check current player character.".to_string(),
-            link: format!("/{}/check_current_player_character", &username),
-            http_action: "GET".to_string(),
-            args: None,
-        },
-    ];
-    player_character_ids(&mut connection, username)
-        .await
+pub fn room_actions(room: &Room, username: &str, game_id: &str) -> Vec<PerformAction> {
+    let look_args = RoomLookArgs {
+        username: username.to_string(),
+        game_id: game_id.to_string(),
+    };
+    room.current_actions()
         .into_iter()
-        .flat_map(|player_character_id| player_character_actions(username, &player_character_id))
-        .for_each(|action| actions.push(action));
+        .filter_map(|action| match action {
+            Action::LookAtTarget(_) => None,
+            Action::LookAtRoom(it) => Some(PerformAction {
+                name: "look_at_room".to_string(),
+                description: it.description(),
+                link: get_api_link("game/look_at_current_room"),
+                http_action: "POST".to_string(),
+                args: Some(serde_json::to_value(&look_args).unwrap()),
+            }),
+            Action::QuickLookRoom(it) => Some(PerformAction {
+                name: "quick_look_room".to_string(),
+                description: it.description(),
+                link: get_api_link("game/quick_look_current_room"),
+                http_action: "POST".to_string(),
+                args: Some(serde_json::to_value(&look_args).unwrap()),
+            }),
+            Action::AttackNpc(_) => None,
+            Action::ExitRoom(it) => {
+                let exit_args = ExitRoomArgs {
+                    username: username.to_string(),
+                    game_id: game_id.to_string(),
+                    exit_id: it.exit_id,
+                };
 
-    actions
+                Some(PerformAction {
+                    name: "exit_room".to_string(),
+                    description: "Exit current room using this exit.".to_string(),
+                    link: get_api_link("game/exit_current_room"),
+                    http_action: "POST".to_string(),
+                    args: Some(serde_json::to_value(&exit_args).unwrap()),
+                })
+            }
+        })
+        .collect()
 }

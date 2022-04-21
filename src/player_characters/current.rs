@@ -3,21 +3,21 @@ use redis::{aio::Connection, AsyncCommands, RedisError};
 use serde::{Deserialize, Serialize};
 use underworld_core::components::player::PlayerCharacter;
 
-use crate::player_characters::get::get_player_character;
+use crate::{error::GameError, player_characters::get::get_player_character};
 
-use super::{error::GameError, utils::current_player_character_key};
+use super::utils::current_player_character_key;
 
 pub async fn get_current_player_character(
     connection: &mut Connection,
     username: &str,
 ) -> Result<PlayerCharacter, GameError> {
-    let key = current_player_character_key(&username);
+    let key = current_player_character_key(username);
     let player_id_result: Result<String, RedisError> = connection.get(&key).await;
 
     match player_id_result {
-        Ok(player_id) => get_player_character(connection, &username, &player_id)
+        Ok(player_id) => get_player_character(connection, username, &player_id)
             .await
-            .map(|player_character| Ok(player_character))
+            .map(Ok)
             .unwrap_or(Err(GameError::General)),
         Err(_) => Err(GameError::NoPlayerCharacterSet),
     }
