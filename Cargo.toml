@@ -7,11 +7,11 @@ edition = "2021"
 
 [dependencies]
 serde = { version = "1.0.136", features = ["derive"] }
-underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "ea12b848760d7dd8e7e6de5d1b6cc6c5a3b7e081", features = ["serialization", "openapi"] }
+underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "7d3c58b8e08bd828da3a77cad7fe058fe76e5852", features = ["serialization", "openapi"] }
 # underworld_core = { path = "../underworld_core", features = ["serialization", "openapi"] }
 serde_json = { version = "1.0.79" }
 rand = "0.8.5"
 redis = { version = "0.21.5", features = ["tokio-comp"] }
-poem = { version = "1.3.25", features = ["static-files"] }
-poem-openapi = { version = "1.3.25", features = ["swagger-ui"]}
+poem = { version = "1.3.29", features = ["static-files"] }
+poem-openapi = { version = "1.3.29", features = ["swagger-ui"]}
 tokio = { version = "1.17.0", features = ["rt-multi-thread"] }
