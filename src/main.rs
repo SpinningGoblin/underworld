@@ -8,49 +8,40 @@ use std::env;
 
 use actions::PerformAction;
 use error::GameError;
-use game::args::ExitRoomArgs;
-use game::args::RoomLookArgs;
-use game::exit::exit_current_room;
-use game::exit::RoomExited;
-use game::generate::generate_game;
-use game::generate::GenerateGame;
-use game::generate::GeneratedGame;
-use game::get::get_game_state;
-use player_characters::current::get_current_player_character;
-use player_characters::current::set_current_player_character;
-use player_characters::current::SetPlayerCharacterArgs;
-use player_characters::generate::generate_player_character;
-use player_characters::generate::GeneratePlayerCharacter;
-use player_characters::generate::GeneratedPlayerCharacter;
-use player_characters::get::get_player_character;
-use player_characters::get::player_character_ids;
-use poem::endpoint::StaticFilesEndpoint;
-use poem::listener::TcpListener;
-use poem::middleware::Cors;
-use poem::EndpointExt;
-use poem::Result;
-use poem::Route;
-use poem::Server;
+use game::{
+    attack::{attack_npc, AttackNpcArgs, NpcAttacked},
+    exit::{exit_current_room, ExitRoomArgs, RoomExited},
+    generate::{generate_game, GenerateGameArgs, GeneratedGame},
+    look::{look_at_room, quick_look_room, RoomLookArgs},
+};
+use player_characters::{
+    current::{get_current_player_character, set_current_player_character, SetPlayerCharacterArgs},
+    generate::{generate_player_character, GeneratePlayerCharacter, GeneratedPlayerCharacter},
+    get::{get_player_character, player_character_ids},
+};
+use poem::{
+    endpoint::StaticFilesEndpoint, listener::TcpListener, middleware::Cors, EndpointExt, Result,
+    Route, Server,
+};
 use poem_openapi::{
     param::Path,
     payload::{Json, PlainText},
     ApiResponse, Object, OpenApi, OpenApiService,
 };
-use serde::Deserialize;
-use serde::Serialize;
-use underworld_core::components::character::CharacterViewArgs;
-use underworld_core::components::non_player::NonPlayerView;
-use underworld_core::components::player::PlayerCharacterView;
-use underworld_core::components::rooms::room_view::RoomView;
-use underworld_core::components::rooms::room_view::RoomViewArgs;
-use underworld_core::generators::rooms::random_room_generator;
-use underworld_core::generators::{
-    characters::CharacterPrototype, generator::Generator, name::generate_name,
-    non_players::NonPlayerPrototype,
+use serde::{Deserialize, Serialize};
+use underworld_core::{
+    components::{
+        character::CharacterViewArgs,
+        non_player::NonPlayerView,
+        player::PlayerCharacterView,
+        rooms::room_view::{RoomView, RoomViewArgs},
+    },
+    generators::{
+        characters::CharacterPrototype, generator::Generator, name::generate_name,
+        non_players::NonPlayerPrototype, rooms::random_room_generator,
+    },
+    systems::view::{non_player, player, room},
 };
-use underworld_core::systems::view::non_player;
-use underworld_core::systems::view::player;
-use underworld_core::systems::view::room;
 
 #[derive(Serialize, Deserialize)]
 struct GenerateCharacter {
@@ -90,15 +81,18 @@ struct GeneratedRoomDescription {
 }
 
 #[derive(ApiResponse)]
-enum GetResponse {
-    #[oai(status = 200)]
-    PlayerCharacterIds(Json<Vec<String>>),
-
+enum PlayerCharacterResponse {
     #[oai(status = 200)]
     PlayerCharacter(Json<PlayerCharacterView>),
 
     #[oai(status = 404)]
     NotFound(PlainText<String>),
+}
+
+#[derive(ApiResponse)]
+enum PlayerCharacterIdsResponse {
+    #[oai(status = 200)]
+    PlayerCharacterIds(Json<Vec<String>>),
 }
 
 #[derive(ApiResponse)]
@@ -111,28 +105,52 @@ enum LookResponse {
 }
 
 #[derive(ApiResponse)]
-enum GenerateResponse {
-    #[oai(status = 201)]
-    GameGenerated(Json<GeneratedGame>),
-
+enum RoomDescriptionResponse {
     #[oai(status = 201)]
     RoomDescriptions(Json<GeneratedRoomDescription>),
+}
 
+#[derive(ApiResponse)]
+enum CharacterGeneratedResponse {
     #[oai(status = 200)]
     CharacterGenerated(Json<GeneratedNpc>),
+}
 
+#[derive(ApiResponse)]
+enum PlayerCharacterGeneratedResponse {
     #[oai(status = 201)]
     PlayerCharacterGenerated(Json<GeneratedPlayerCharacter>),
+}
+
+#[derive(ApiResponse)]
+pub enum GenerateGameResponse {
+    #[oai(status = 201)]
+    GameGenerated(Json<GeneratedGame>),
 
     #[oai(status = 500)]
     GameError(Json<GameError>),
 }
 
 #[derive(ApiResponse)]
-enum GamePostResponse {
+enum SetCurrentPlayerCharacterResponse {
     #[oai(status = 200)]
     PlayerCharacterSet(PlainText<String>),
 
+    #[oai(status = 500)]
+    BadRequest(Json<Error>),
+}
+
+#[derive(ApiResponse)]
+enum AttackNpcResponse {
+    #[oai(status = 200)]
+    NpcAttacked(Json<NpcAttacked>),
+
+    #[oai(status = 500)]
+    BadRequest(Json<Error>),
+}
+
+#[derive(ApiResponse)]
+enum ExitRoomResponse {
     #[oai(status = 200)]
     RoomExited(Json<RoomExited>),
 
@@ -197,25 +215,39 @@ struct UnderworldApi;
 #[OpenApi]
 impl UnderworldApi {
     #[oai(path = "/game/generate", method = "post")]
-    async fn generate_game(&self, args: Json<GenerateGame>) -> Result<GenerateResponse> {
+    async fn generate_game(&self, args: Json<GenerateGameArgs>) -> Result<GenerateGameResponse> {
         let mut connection = get_redis_connection().await;
         let generated_result = generate_game(&mut connection, &args).await;
 
         match generated_result {
-            Ok(generated_game) => Ok(GenerateResponse::GameGenerated(Json(generated_game))),
-            Err(e) => Ok(GenerateResponse::GameError(Json(e))),
+            Ok(generated_game) => Ok(GenerateGameResponse::GameGenerated(Json(generated_game))),
+            Err(e) => Ok(GenerateGameResponse::GameError(Json(e))),
         }
     }
 
     #[oai(path = "/game/exit_current_room", method = "post")]
-    async fn exit_current_room(&self, args: Json<ExitRoomArgs>) -> Result<GamePostResponse> {
+    async fn exit_current_room(&self, args: Json<ExitRoomArgs>) -> Result<ExitRoomResponse> {
         let mut connection = get_redis_connection().await;
 
         let exit_result = exit_current_room(&mut connection, &args).await;
         match exit_result {
-            Ok(it) => Ok(GamePostResponse::RoomExited(Json(it))),
-            Err(it) => Ok(GamePostResponse::BadRequest(Json(Error {
+            Ok(it) => Ok(ExitRoomResponse::RoomExited(Json(it))),
+            Err(it) => Ok(ExitRoomResponse::BadRequest(Json(Error {
                 message: it.to_string(),
+            }))),
+        }
+    }
+
+    #[oai(path = "/game/attack_npc", method = "post")]
+    async fn attack_npc(&self, args: Json<AttackNpcArgs>) -> Result<AttackNpcResponse> {
+        let mut connection = get_redis_connection().await;
+
+        let attack_result = attack_npc(&mut connection, &args).await;
+
+        match attack_result {
+            Ok(it) => Ok(AttackNpcResponse::NpcAttacked(Json(it))),
+            Err(e) => Ok(AttackNpcResponse::BadRequest(Json(Error {
+                message: e.to_string(),
             }))),
         }
     }
@@ -223,45 +255,27 @@ impl UnderworldApi {
     #[oai(path = "/game/look_at_current_room", method = "post")]
     async fn look_at_current_room(&self, args: Json<RoomLookArgs>) -> Result<LookResponse> {
         let mut connection = get_redis_connection().await;
-        let game_state = get_game_state(&mut connection, &args.username, &args.game_id).await;
+        let view_result = look_at_room(&mut connection, &args).await;
 
-        match game_state {
-            Some(it) => {
-                let args = RoomViewArgs {
-                    can_see_hidden: false,
-                    can_see_packed: false,
-                    knows_character_health: false,
-                    knows_names: true,
-                };
-                let view = room::look_at(it.current_room(), args, false);
-                Ok(LookResponse::LookAtRoom(Json(view)))
-            }
-            None => Ok(LookResponse::NotFound(PlainText(format!(
-                "game `{}` not found",
-                &args.game_id
-            )))),
+        match view_result {
+            Ok(it) => Ok(LookResponse::LookAtRoom(Json(it))),
+            Err(e) => Ok(LookResponse::NotFound(PlainText(e.to_string()))),
         }
     }
 
     #[oai(path = "/game/quick_look_current_room", method = "post")]
     async fn quick_look_current_room(&self, args: Json<RoomLookArgs>) -> Result<LookResponse> {
         let mut connection = get_redis_connection().await;
-        let game_state = get_game_state(&mut connection, &args.username, &args.game_id).await;
+        let view_result = quick_look_room(&mut connection, &args).await;
 
-        match game_state {
-            Some(it) => {
-                let view = room::quick_look(it.current_room());
-                Ok(LookResponse::LookAtRoom(Json(view)))
-            }
-            None => Ok(LookResponse::NotFound(PlainText(format!(
-                "game `{}` not found",
-                &args.game_id
-            )))),
+        match view_result {
+            Ok(it) => Ok(LookResponse::LookAtRoom(Json(it))),
+            Err(e) => Ok(LookResponse::NotFound(PlainText(e.to_string()))),
         }
     }
 
     #[oai(path = "/room/descriptions/generate", method = "post")]
-    async fn generate_room_description(&self) -> Result<GenerateResponse> {
+    async fn generate_room_description(&self) -> Result<RoomDescriptionResponse> {
         let room_generator = random_room_generator(None);
         let room = room_generator.generate();
 
@@ -278,11 +292,11 @@ impl UnderworldApi {
             character_descriptions: deeper_look.describe_inhabitants(),
         };
 
-        Ok(GenerateResponse::RoomDescriptions(Json(generated)))
+        Ok(RoomDescriptionResponse::RoomDescriptions(Json(generated)))
     }
 
     #[oai(path = "/npc/random", method = "get")]
-    async fn generate_character(&self) -> Result<GenerateResponse> {
+    async fn generate_character(&self) -> Result<CharacterGeneratedResponse> {
         let prototype = NonPlayerPrototype {
             name: generate_name(),
             character_generator: Box::new(CharacterPrototype::random_species_overloaded()),
@@ -306,26 +320,33 @@ impl UnderworldApi {
             non_player: view,
         };
 
-        Ok(GenerateResponse::CharacterGenerated(Json(generated)))
+        Ok(CharacterGeneratedResponse::CharacterGenerated(Json(
+            generated,
+        )))
     }
 
     #[oai(path = "/player_character/generate", method = "post")]
     async fn generate_player_character(
         &self,
         args: Json<GeneratePlayerCharacter>,
-    ) -> Result<GenerateResponse> {
+    ) -> Result<PlayerCharacterGeneratedResponse> {
         let mut connection = get_redis_connection().await;
         let result = generate_player_character(&mut connection, &args).await;
 
-        Ok(GenerateResponse::PlayerCharacterGenerated(Json(result)))
+        Ok(PlayerCharacterGeneratedResponse::PlayerCharacterGenerated(
+            Json(result),
+        ))
     }
 
     #[oai(path = "/:username/player_characters", method = "get")]
-    async fn list_player_characters(&self, username: Path<String>) -> Result<GetResponse> {
+    async fn list_player_characters(
+        &self,
+        username: Path<String>,
+    ) -> Result<PlayerCharacterIdsResponse> {
         let mut connection = get_redis_connection().await;
         let result = player_character_ids(&mut connection, &username).await;
 
-        Ok(GetResponse::PlayerCharacterIds(Json(result)))
+        Ok(PlayerCharacterIdsResponse::PlayerCharacterIds(Json(result)))
     }
 
     #[oai(path = "/:username/player_character/:id/check", method = "get")]
@@ -333,13 +354,15 @@ impl UnderworldApi {
         &self,
         username: Path<String>,
         id: Path<String>,
-    ) -> Result<GetResponse> {
+    ) -> Result<PlayerCharacterResponse> {
         let mut connection = get_redis_connection().await;
         let result = get_player_character(&mut connection, &username, &id).await;
 
         match result {
-            Some(it) => Ok(GetResponse::PlayerCharacter(Json(player::check(it)))),
-            None => Ok(GetResponse::NotFound(PlainText(format!(
+            Some(it) => Ok(PlayerCharacterResponse::PlayerCharacter(Json(
+                player::check(it),
+            ))),
+            None => Ok(PlayerCharacterResponse::NotFound(PlainText(format!(
                 "No player character found for user {} id {}",
                 &username.0, &id.0
             )))),
@@ -350,29 +373,34 @@ impl UnderworldApi {
     async fn set_current_player_character(
         &self,
         args: Json<SetPlayerCharacterArgs>,
-    ) -> Result<GamePostResponse> {
+    ) -> Result<SetCurrentPlayerCharacterResponse> {
         let mut connection = get_redis_connection().await;
         let result = set_current_player_character(&mut connection, &args.0).await;
 
         match result {
-            Ok(_) => Ok(GamePostResponse::PlayerCharacterSet(PlainText(
-                "Good to go".to_string(),
-            ))),
-            Err(e) => Ok(GamePostResponse::BadRequest(Json(Error {
+            Ok(_) => Ok(SetCurrentPlayerCharacterResponse::PlayerCharacterSet(
+                PlainText("Good to go".to_string()),
+            )),
+            Err(e) => Ok(SetCurrentPlayerCharacterResponse::BadRequest(Json(Error {
                 message: format!("{}", e),
             }))),
         }
     }
 
     #[oai(path = "/:username/check_current_player_character", method = "get")]
-    async fn check_current_player_character(&self, username: Path<String>) -> Result<GetResponse> {
+    async fn check_current_player_character(
+        &self,
+        username: Path<String>,
+    ) -> Result<PlayerCharacterResponse> {
         let mut connection = get_redis_connection().await;
         let player_character_result =
             get_current_player_character(&mut connection, &username).await;
 
         match player_character_result {
-            Ok(it) => Ok(GetResponse::PlayerCharacter(Json(player::check(it)))),
-            Err(_) => Ok(GetResponse::NotFound(PlainText(
+            Ok(it) => Ok(PlayerCharacterResponse::PlayerCharacter(Json(
+                player::check(it),
+            ))),
+            Err(_) => Ok(PlayerCharacterResponse::NotFound(PlainText(
                 "No character found".to_string(),
             ))),
         }

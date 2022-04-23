@@ -2,7 +2,7 @@ use poem_openapi::Object;
 use redis::aio::Connection;
 use serde::{Deserialize, Serialize};
 use underworld_core::{
-    actions::{action::Action, exit_room::ExitRoom},
+    actions::{action::Action, attack_npc::AttackNpc},
     game::Game,
 };
 
@@ -10,28 +10,28 @@ use crate::{
     actions::{room_actions, PerformAction},
     error::GameError,
     event::GameEvent,
-    player_characters::current::get_current_player_character,
+    player_characters::{current::get_current_player_character, set::set_player_character},
 };
 
 use super::{get::get_game_state, set::set_game};
 
 #[derive(Serialize, Object)]
-pub struct RoomExited {
+pub struct NpcAttacked {
     events: Vec<GameEvent>,
     actions: Vec<PerformAction>,
 }
 
 #[derive(Deserialize, Object, Serialize)]
-pub struct ExitRoomArgs {
+pub struct AttackNpcArgs {
     pub username: String,
     pub game_id: String,
-    pub exit_id: String,
+    pub npc_id: String,
 }
 
-pub async fn exit_current_room(
+pub async fn attack_npc(
     connection: &mut Connection,
-    args: &ExitRoomArgs,
-) -> Result<RoomExited, GameError> {
+    args: &AttackNpcArgs,
+) -> Result<NpcAttacked, GameError> {
     let player_character = match get_current_player_character(connection, &args.username).await {
         Ok(it) => it,
         Err(it) => return Err(it),
@@ -47,17 +47,22 @@ pub async fn exit_current_room(
         state,
     };
 
-    let exit_room = ExitRoom {
-        exit_id: args.exit_id.clone(),
+    let attack_npc = AttackNpc {
+        target_id: args.npc_id.clone(),
     };
 
-    let events = game.handle_action(&Action::ExitRoom(exit_room));
+    let events = game.handle_action(&Action::AttackNpc(attack_npc));
     set_game(connection, &game.state, &args.username).await;
+    set_player_character(connection, &game.player, &args.username).await;
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
-    Ok(RoomExited {
+    Ok(NpcAttacked {
         events: game_events,
-        actions: room_actions(game.state.current_room(), &args.username, &args.game_id),
+        actions: room_actions(
+            game.state.current_room(),
+            &args.username,
+            &game.state.current_room_id.to_string(),
+        ),
     })
 }

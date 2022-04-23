@@ -4,7 +4,7 @@ use serde_json::Value;
 use underworld_core::{actions::action::Action, components::rooms::room::Room};
 
 use crate::{
-    game::args::{ExitRoomArgs, RoomLookArgs},
+    game::{attack::AttackNpcArgs, exit::ExitRoomArgs, look::RoomLookArgs},
     player_characters::current::SetPlayerCharacterArgs,
 };
 
@@ -41,7 +41,7 @@ pub fn player_character_actions(username: &str, player_character_id: &str) -> Ve
         PerformAction {
             name: "set_current_player_character".to_string(),
             description: "Set the character as the current one to use for the game.".to_string(),
-            link: "/set_current_player".to_string(),
+            link: get_api_link("set_current_player_character"),
             http_action: "POST".to_string(),
             args: Some(serde_json::to_value(&args).unwrap()),
         },
@@ -71,7 +71,20 @@ pub fn room_actions(room: &Room, username: &str, game_id: &str) -> Vec<PerformAc
                 http_action: "POST".to_string(),
                 args: Some(serde_json::to_value(&look_args).unwrap()),
             }),
-            Action::AttackNpc(_) => None,
+            Action::AttackNpc(it) => {
+                let attack_args = AttackNpcArgs {
+                    username: username.to_string(),
+                    game_id: game_id.to_string(),
+                    npc_id: it.target_id,
+                };
+                Some(PerformAction {
+                    name: "attack_npc".to_string(),
+                    description: "Attack an NPC in the room.".to_string(),
+                    link: get_api_link("game/attack_npc"),
+                    http_action: "POST".to_string(),
+                    args: Some(serde_json::to_value(&attack_args).unwrap()),
+                })
+            }
             Action::ExitRoom(it) => {
                 let exit_args = ExitRoomArgs {
                     username: username.to_string(),
