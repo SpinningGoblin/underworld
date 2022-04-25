@@ -31,16 +31,11 @@ use poem_openapi::{
 use serde::{Deserialize, Serialize};
 use underworld_core::{
     components::{
-        character::CharacterViewArgs,
-        non_player::NonPlayerView,
-        player::PlayerCharacterView,
-        rooms::room_view::{RoomView, RoomViewArgs},
+        character::CharacterViewArgs, non_player::NonPlayerView, player::PlayerCharacterView,
+        rooms::room_view::RoomView,
     },
-    generators::{
-        characters::CharacterPrototype, generator::Generator, name::generate_name,
-        non_players::NonPlayerPrototype, rooms::random_room_generator,
-    },
-    systems::view::{non_player, player, room},
+    generators::{generator::Generator, name::generate_name, non_players::npc_generator},
+    systems::view::{non_player, player},
 };
 
 #[derive(Serialize, Deserialize)]
@@ -102,12 +97,6 @@ enum LookResponse {
 
     #[oai(status = 404)]
     NotFound(PlainText<String>),
-}
-
-#[derive(ApiResponse)]
-enum RoomDescriptionResponse {
-    #[oai(status = 201)]
-    RoomDescriptions(Json<GeneratedRoomDescription>),
 }
 
 #[derive(ApiResponse)]
@@ -214,6 +203,17 @@ struct UnderworldApi;
 
 #[OpenApi]
 impl UnderworldApi {
+    /// Generate and persist new game.
+    ///
+    /// # Example
+    ///
+    /// Call `/game/generate` with
+    /// ```
+    /// {
+    ///   "username": "my_username"
+    /// }
+    /// ```
+    /// to generate and save a new game for my_username
     #[oai(path = "/game/generate", method = "post")]
     async fn generate_game(&self, args: Json<GenerateGameArgs>) -> Result<GenerateGameResponse> {
         let mut connection = get_redis_connection().await;
@@ -225,6 +225,7 @@ impl UnderworldApi {
         }
     }
 
+    /// Exit the current room of the specified game through the specified exit.
     #[oai(path = "/game/exit_current_room", method = "post")]
     async fn exit_current_room(&self, args: Json<ExitRoomArgs>) -> Result<ExitRoomResponse> {
         let mut connection = get_redis_connection().await;
@@ -238,6 +239,7 @@ impl UnderworldApi {
         }
     }
 
+    /// Attack a specific NPC inside the current room of the specified game.
     #[oai(path = "/game/attack_npc", method = "post")]
     async fn attack_npc(&self, args: Json<AttackNpcArgs>) -> Result<AttackNpcResponse> {
         let mut connection = get_redis_connection().await;
@@ -252,6 +254,7 @@ impl UnderworldApi {
         }
     }
 
+    /// Take a closer look at the current room.
     #[oai(path = "/game/look_at_current_room", method = "post")]
     async fn look_at_current_room(&self, args: Json<RoomLookArgs>) -> Result<LookResponse> {
         let mut connection = get_redis_connection().await;
@@ -263,6 +266,7 @@ impl UnderworldApi {
         }
     }
 
+    /// Glance quickly at the current room.
     #[oai(path = "/game/quick_look_current_room", method = "post")]
     async fn quick_look_current_room(&self, args: Json<RoomLookArgs>) -> Result<LookResponse> {
         let mut connection = get_redis_connection().await;
@@ -274,35 +278,15 @@ impl UnderworldApi {
         }
     }
 
-    #[oai(path = "/room/descriptions/generate", method = "post")]
-    async fn generate_room_description(&self) -> Result<RoomDescriptionResponse> {
-        let room_generator = random_room_generator(None);
-        let room = room_generator.generate();
-
-        let quick_view = room::quick_look(&room);
-        let args = RoomViewArgs {
-            can_see_hidden: false,
-            can_see_packed: false,
-            knows_character_health: false,
-            knows_names: true,
-        };
-        let deeper_look = room::look_at(&room, args, false);
-        let generated = GeneratedRoomDescription {
-            room_description: format!("{}", &quick_view),
-            character_descriptions: deeper_look.describe_inhabitants(),
-        };
-
-        Ok(RoomDescriptionResponse::RoomDescriptions(Json(generated)))
-    }
-
+    /// Generate a random NPC.
+    ///
+    /// # Example
+    ///
+    /// Call `/npc/random` to generate a completely random character
     #[oai(path = "/npc/random", method = "get")]
     async fn generate_character(&self) -> Result<CharacterGeneratedResponse> {
-        let prototype = NonPlayerPrototype {
-            name: generate_name(),
-            character_generator: Box::new(CharacterPrototype::random_species_overloaded()),
-        };
-
-        let non_player = prototype.generate();
+        let generator = npc_generator(generate_name());
+        let non_player = generator.generate();
 
         let character_args = CharacterViewArgs {
             knows_health: true,
@@ -325,6 +309,7 @@ impl UnderworldApi {
         )))
     }
 
+    /// Generate and save a new player_character for the user.
     #[oai(path = "/player_character/generate", method = "post")]
     async fn generate_player_character(
         &self,
@@ -338,6 +323,12 @@ impl UnderworldApi {
         ))
     }
 
+    /// Get IDs of all player characters
+    ///
+    /// # Example
+    ///
+    /// Call `/my_username/player_characters` to retrieve all player character
+    /// ids for my_username
     #[oai(path = "/:username/player_characters", method = "get")]
     async fn list_player_characters(
         &self,
@@ -349,6 +340,7 @@ impl UnderworldApi {
         Ok(PlayerCharacterIdsResponse::PlayerCharacterIds(Json(result)))
     }
 
+    /// Check the player character for the user with specified ID.
     #[oai(path = "/:username/player_character/:id/check", method = "get")]
     async fn check_player_character(
         &self,
@@ -369,6 +361,7 @@ impl UnderworldApi {
         }
     }
 
+    /// Set the specified player character as the current one for any actions in a game action.
     #[oai(path = "/set_current_player_character", method = "post")]
     async fn set_current_player_character(
         &self,
@@ -387,6 +380,7 @@ impl UnderworldApi {
         }
     }
 
+    /// Check the status of the current player character.
     #[oai(path = "/:username/check_current_player_character", method = "get")]
     async fn check_current_player_character(
         &self,

@@ -9,11 +9,17 @@ use crate::{
 };
 
 #[derive(Object, Serialize)]
+/// Actions, via a web call, that can be taken.
 pub struct PerformAction {
+    /// Name of the action.
     pub name: String,
+    /// What the action does, in English.
     pub description: String,
+    /// The web link to complete the action, to put onto the base url of the server.
     pub link: String,
+    /// What HTTP action to use.
     pub http_action: String,
+    /// Any required args for the action, as JSON.
     pub args: Option<Value>,
 }
 

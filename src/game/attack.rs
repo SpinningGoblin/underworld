@@ -17,7 +17,9 @@ use super::{get::get_game_state, set::set_game};
 
 #[derive(Serialize, Object)]
 pub struct NpcAttacked {
+    /// Events that happened due to the attack.
     events: Vec<GameEvent>,
+    /// Actions that can now be performed after the attack.
     actions: Vec<PerformAction>,
 }
 
