@@ -7,7 +7,8 @@ use crate::{
     game::{
         attack::AttackNpcArgs,
         exit::ExitRoomArgs,
-        look::{CharacterViewArgs, NpcLookArgs, RoomLookArgs}, loot::LootNpcArgs,
+        look::{CharacterViewArgs, NpcLookArgs, RoomLookArgs},
+        loot::LootNpcArgs,
     },
     player_characters::current::SetPlayerCharacterArgs,
 };
@@ -145,12 +146,15 @@ pub fn room_actions(room: &Room, username: &str, game_id: &str) -> Vec<PerformAc
                 description: "Loot an NPC.".to_string(),
                 link: get_api_link("game/loot_npc"),
                 http_action: "POST".to_string(),
-                args: Some(serde_json::to_value(LootNpcArgs {
-                    username: username.to_string(),
-                    game_id: game_id.to_string(),
-                    npc_id: loot_npc.npc_id,
-                    item_ids: loot_npc.item_ids,
-                }).unwrap()),
+                args: Some(
+                    serde_json::to_value(LootNpcArgs {
+                        username: username.to_string(),
+                        game_id: game_id.to_string(),
+                        npc_id: loot_npc.npc_id,
+                        item_ids: loot_npc.item_ids,
+                    })
+                    .unwrap(),
+                ),
             }),
         })
         .collect()
