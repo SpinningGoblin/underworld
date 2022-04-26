@@ -2,5 +2,15 @@
   "[rust]": {
     "editor.detectIndentation": false,
     "editor.tabSize": 4
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/target": true,
+    "app/dist": true
   }
 }
