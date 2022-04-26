@@ -84,10 +84,7 @@ pub async fn look_at_room(
     connection: &mut Connection,
     args: &RoomLookArgs,
 ) -> Result<RoomView, GameError> {
-    let game_state = match get_game_state(connection, &args.username, &args.game_id).await {
-        Some(it) => it,
-        None => return Err(GameError::GameNotFound),
-    };
+    let game_state = get_game_state(connection, &args.username, &args.game_id).await?;
 
     let args = RoomViewArgs {
         can_see_hidden: false,
@@ -102,10 +99,7 @@ pub async fn quick_look_room(
     connection: &mut Connection,
     args: &RoomLookArgs,
 ) -> Result<RoomView, GameError> {
-    let game_state = match get_game_state(connection, &args.username, &args.game_id).await {
-        Some(it) => it,
-        None => return Err(GameError::GameNotFound),
-    };
+    let game_state = get_game_state(connection, &args.username, &args.game_id).await?;
 
     Ok(room::quick_look(game_state.current_room()))
 }
@@ -114,10 +108,7 @@ pub async fn look_at_npc(
     connection: &mut Connection,
     args: &NpcLookArgs,
 ) -> Result<NonPlayerView, GameError> {
-    let state = match get_game_state(connection, &args.username, &args.game_id).await {
-        Some(it) => it,
-        None => return Err(GameError::GameNotFound),
-    };
+    let state = get_game_state(connection, &args.username, &args.game_id).await?;
     let player = get_current_player_character(connection, &args.username).await?;
     let mut game = Game { state, player };
     let look_args: LookAtNpc = LookAtNpc::from(args);

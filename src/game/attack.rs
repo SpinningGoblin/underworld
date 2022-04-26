@@ -39,10 +39,7 @@ pub async fn attack_npc(
         Err(it) => return Err(it),
     };
 
-    let state = match get_game_state(connection, &args.username, &args.game_id).await {
-        Some(it) => it,
-        None => return Err(GameError::GameNotFound),
-    };
+    let state = get_game_state(connection, &args.username, &args.game_id).await?;
 
     let mut game = Game {
         player: player_character,
@@ -64,7 +61,7 @@ pub async fn attack_npc(
         actions: room_actions(
             game.state.current_room(),
             &args.username,
-            &game.state.current_room_id.to_string(),
+            &game.state.identifier.id.to_string(),
         ),
     })
 }

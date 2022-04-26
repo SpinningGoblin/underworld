@@ -37,10 +37,7 @@ pub async fn exit_current_room(
         Err(it) => return Err(it),
     };
 
-    let state = match get_game_state(connection, &args.username, &args.game_id).await {
-        Some(it) => it,
-        None => return Err(GameError::GameNotFound),
-    };
+    let state = get_game_state(connection, &args.username, &args.game_id).await?;
 
     let mut game = Game {
         player: player_character,
