@@ -2,6 +2,7 @@ use std::fmt::Display;
 
 use poem_openapi::Enum;
 use serde::Serialize;
+use underworld_core::errors::Errors;
 
 #[derive(Enum, Serialize)]
 pub enum GameError {
@@ -9,6 +10,12 @@ pub enum GameError {
     NoPlayerCharacterSet,
     UnknownPlayerCharacter,
     GameNotFound,
+}
+
+impl From<Errors> for GameError {
+    fn from(_: Errors) -> Self {
+        GameError::General
+    }
 }
 
 impl Display for GameError {

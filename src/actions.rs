@@ -1,18 +1,34 @@
-use poem_openapi::Object;
+use poem_openapi::{Enum, Object};
 use serde::Serialize;
 use serde_json::Value;
 use underworld_core::{actions::action::Action, components::rooms::room::Room};
 
 use crate::{
-    game::{attack::AttackNpcArgs, exit::ExitRoomArgs, look::RoomLookArgs},
+    game::{
+        attack::AttackNpcArgs,
+        exit::ExitRoomArgs,
+        look::{CharacterViewArgs, NpcLookArgs, RoomLookArgs},
+    },
     player_characters::current::SetPlayerCharacterArgs,
 };
+
+#[derive(Enum, Serialize)]
+#[oai(rename_all = "snake_case")]
+pub enum ActionName {
+    AttackNpc,
+    CheckPlayerCharacter,
+    ExitRoom,
+    LookAtNpc,
+    LookAtRoom,
+    QuickLookRoom,
+    SetCurrentPlayerCharacter,
+}
 
 #[derive(Object, Serialize)]
 /// Actions, via a web call, that can be taken.
 pub struct PerformAction {
     /// Name of the action.
-    pub name: String,
+    pub name: ActionName,
     /// What the action does, in English.
     pub description: String,
     /// The web link to complete the action, to put onto the base url of the server.
@@ -35,7 +51,7 @@ pub fn player_character_actions(username: &str, player_character_id: &str) -> Ve
 
     vec![
         PerformAction {
-            name: "check_player_character".to_string(),
+            name: ActionName::CheckPlayerCharacter,
             description: "Check status of player character.".to_string(),
             link: format!(
                 "/{}/player_character/{}/check",
@@ -45,7 +61,7 @@ pub fn player_character_actions(username: &str, player_character_id: &str) -> Ve
             args: None,
         },
         PerformAction {
-            name: "set_current_player_character".to_string(),
+            name: ActionName::SetCurrentPlayerCharacter,
             description: "Set the character as the current one to use for the game.".to_string(),
             link: get_api_link("set_current_player_character"),
             http_action: "POST".to_string(),
@@ -64,14 +80,14 @@ pub fn room_actions(room: &Room, username: &str, game_id: &str) -> Vec<PerformAc
         .filter_map(|action| match action {
             Action::LookAtTarget(_) => None,
             Action::LookAtRoom(it) => Some(PerformAction {
-                name: "look_at_room".to_string(),
+                name: ActionName::LookAtRoom,
                 description: it.description(),
                 link: get_api_link("game/look_at_current_room"),
                 http_action: "POST".to_string(),
                 args: Some(serde_json::to_value(&look_args).unwrap()),
             }),
             Action::QuickLookRoom(it) => Some(PerformAction {
-                name: "quick_look_room".to_string(),
+                name: ActionName::QuickLookRoom,
                 description: it.description(),
                 link: get_api_link("game/quick_look_current_room"),
                 http_action: "POST".to_string(),
@@ -81,10 +97,10 @@ pub fn room_actions(room: &Room, username: &str, game_id: &str) -> Vec<PerformAc
                 let attack_args = AttackNpcArgs {
                     username: username.to_string(),
                     game_id: game_id.to_string(),
-                    npc_id: it.target_id,
+                    npc_id: it.npc_id,
                 };
                 Some(PerformAction {
-                    name: "attack_npc".to_string(),
+                    name: ActionName::AttackNpc,
                     description: "Attack an NPC in the room.".to_string(),
                     link: get_api_link("game/attack_npc"),
                     http_action: "POST".to_string(),
@@ -99,13 +115,31 @@ pub fn room_actions(room: &Room, username: &str, game_id: &str) -> Vec<PerformAc
                 };
 
                 Some(PerformAction {
-                    name: "exit_room".to_string(),
+                    name: ActionName::ExitRoom,
                     description: "Exit current room using this exit.".to_string(),
                     link: get_api_link("game/exit_current_room"),
                     http_action: "POST".to_string(),
                     args: Some(serde_json::to_value(&exit_args).unwrap()),
                 })
             }
+            Action::LookAtNpc(it) => Some(PerformAction {
+                name: ActionName::LookAtNpc,
+                description: "Look at an NPC".to_string(),
+                link: get_api_link("game/look_at_npc"),
+                http_action: "POST".to_string(),
+                args: Some(
+                    serde_json::to_value(NpcLookArgs {
+                        username: username.to_string(),
+                        game_id: game_id.to_string(),
+                        npc_id: it.npc_id,
+                        knows_all: it.knows_all,
+                        knows_name: it.knows_name,
+                        view_args: CharacterViewArgs::from(&it.args),
+                    })
+                    .unwrap(),
+                ),
+            }),
+            Action::LootNpc(_) => None,
         })
         .collect()
 }

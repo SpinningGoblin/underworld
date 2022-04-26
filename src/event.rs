@@ -13,9 +13,11 @@ pub struct GameEvent {
 #[derive(Serialize, Enum)]
 #[oai(rename_all = "snake_case")]
 pub enum EventName {
+    ItemTakenFromNpc,
     NpcHit,
     NpcKilled,
     NpcMissed,
+    NpcViewed,
     PlayerHit,
     PlayerKilled,
     PlayerMissed,
@@ -56,6 +58,14 @@ impl From<Event> for GameEvent {
             },
             Event::RoomGenerated(it) => GameEvent {
                 name: EventName::RoomGenerated,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::ItemTakenFromNpc(it) => GameEvent {
+                name: EventName::ItemTakenFromNpc,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::NpcViewed(it) => GameEvent {
+                name: EventName::NpcViewed,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
         }

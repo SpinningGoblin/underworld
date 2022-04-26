@@ -51,7 +51,7 @@ pub async fn exit_current_room(
         exit_id: args.exit_id.clone(),
     };
 
-    let events = game.handle_action(&Action::ExitRoom(exit_room));
+    let events = game.handle_action(&Action::ExitRoom(exit_room)).unwrap();
     set_game(connection, &game.state, &args.username).await;
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();

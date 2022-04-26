@@ -50,10 +50,10 @@ pub async fn attack_npc(
     };
 
     let attack_npc = AttackNpc {
-        target_id: args.npc_id.clone(),
+        npc_id: args.npc_id.clone(),
     };
 
-    let events = game.handle_action(&Action::AttackNpc(attack_npc));
+    let events = game.handle_action(&Action::AttackNpc(attack_npc)).unwrap();
     set_game(connection, &game.state, &args.username).await;
     set_player_character(connection, &game.player, &args.username).await;
 

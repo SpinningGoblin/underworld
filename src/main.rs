@@ -12,7 +12,7 @@ use game::{
     attack::{attack_npc, AttackNpcArgs, NpcAttacked},
     exit::{exit_current_room, ExitRoomArgs, RoomExited},
     generate::{generate_game, GenerateGameArgs, GeneratedGame},
-    look::{look_at_room, quick_look_room, RoomLookArgs},
+    look::{look_at_npc, look_at_room, quick_look_room, NpcLookArgs, RoomLookArgs},
 };
 use player_characters::{
     current::{get_current_player_character, set_current_player_character, SetPlayerCharacterArgs},
@@ -97,6 +97,18 @@ enum LookResponse {
 
     #[oai(status = 404)]
     NotFound(PlainText<String>),
+}
+
+#[derive(ApiResponse)]
+enum LookNpcResponse {
+    #[oai(status = 200)]
+    NpcViewed(Json<NonPlayerView>),
+
+    #[oai(status = 404)]
+    NotFound(PlainText<String>),
+
+    #[oai(status = 500)]
+    GameError(Json<GameError>),
 }
 
 #[derive(ApiResponse)]
@@ -203,7 +215,7 @@ struct UnderworldApi;
 
 #[OpenApi]
 impl UnderworldApi {
-    /// Generate and persist new game.
+    /// Generate and persist a new game.
     ///
     /// # Example
     ///
@@ -275,6 +287,19 @@ impl UnderworldApi {
         match view_result {
             Ok(it) => Ok(LookResponse::LookAtRoom(Json(it))),
             Err(e) => Ok(LookResponse::NotFound(PlainText(e.to_string()))),
+        }
+    }
+
+    /// Look at a specific NPC in the current room.
+    #[oai(path = "/game/look_at_npc", method = "post")]
+    async fn look_at_npc(&self, args: Json<NpcLookArgs>) -> Result<LookNpcResponse> {
+        let mut connection = get_redis_connection().await;
+        match look_at_npc(&mut connection, &args).await {
+            Ok(it) => Ok(LookNpcResponse::NpcViewed(Json(it))),
+            Err(GameError::GameNotFound) => Ok(LookNpcResponse::NotFound(PlainText(
+                "game_not_found".to_string(),
+            ))),
+            Err(it) => Ok(LookNpcResponse::GameError(Json(it))),
         }
     }
 
