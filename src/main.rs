@@ -13,6 +13,7 @@ use game::{
     exit::{exit_current_room, ExitRoomArgs, RoomExited},
     generate::{generate_game, GenerateGameArgs, GeneratedGame},
     look::{look_at_npc, look_at_room, quick_look_room, NpcLookArgs, RoomLookArgs},
+    loot::{loot_npc, LootNpcArgs, NpcLooted},
 };
 use player_characters::{
     current::{get_current_player_character, set_current_player_character, SetPlayerCharacterArgs},
@@ -103,6 +104,18 @@ enum LookResponse {
 enum LookNpcResponse {
     #[oai(status = 200)]
     NpcViewed(Json<NonPlayerView>),
+
+    #[oai(status = 404)]
+    NotFound(PlainText<String>),
+
+    #[oai(status = 500)]
+    GameError(Json<GameError>),
+}
+
+#[derive(ApiResponse)]
+enum LootNpcResponse {
+    #[oai(status = 200)]
+    NpcLooted(Json<NpcLooted>),
 
     #[oai(status = 404)]
     NotFound(PlainText<String>),
@@ -263,6 +276,22 @@ impl UnderworldApi {
             Err(e) => Ok(AttackNpcResponse::BadRequest(Json(Error {
                 message: e.to_string(),
             }))),
+        }
+    }
+
+    /// Loot some items from an NPC.
+    #[oai(path = "/game/loot_npc", method = "post")]
+    async fn loot_npc(&self, args: Json<LootNpcArgs>) -> Result<LootNpcResponse> {
+        let mut connection = get_redis_connection().await;
+        let loot_result = loot_npc(&mut connection, &args).await;
+
+        match loot_result {
+            Ok(it) => Ok(LootNpcResponse::NpcLooted(Json(it))),
+            Err(GameError::GameNotFound) => Ok(LootNpcResponse::NotFound(PlainText(format!(
+                "{}",
+                GameError::GameNotFound
+            )))),
+            Err(e) => Ok(LootNpcResponse::GameError(Json(e))),
         }
     }
 
