@@ -7,7 +7,7 @@ use underworld_core::{
 };
 
 use crate::{
-    actions::{room_actions, PerformAction},
+    actions::{game_actions, PerformAction},
     error::GameError,
     event::GameEvent,
     player_characters::{current::get_current_player_character, set::set_player_character},
@@ -58,10 +58,6 @@ pub async fn attack_npc(
 
     Ok(NpcAttacked {
         events: game_events,
-        actions: room_actions(
-            game.state.current_room(),
-            &args.username,
-            &game.state.identifier.id.to_string(),
-        ),
+        actions: game_actions(&game, &args.username),
     })
 }

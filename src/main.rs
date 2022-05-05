@@ -12,7 +12,10 @@ use game::{
     attack::{attack_npc, AttackNpcArgs, NpcAttacked},
     exit::{exit_current_room, ExitRoomArgs, RoomExited},
     generate::{generate_game, GenerateGameArgs, GeneratedGame},
-    look::{look_at_npc, look_at_room, quick_look_room, NpcLookArgs, RoomLookArgs},
+    look::{
+        inspect_npc, look_at_npc, look_at_room, quick_look_room, InspectNpcArgs, NpcInspected,
+        NpcLookArgs, RoomLookArgs,
+    },
     loot::{loot_npc, LootNpcArgs, NpcLooted},
 };
 use player_characters::{
@@ -104,6 +107,18 @@ enum LookResponse {
 enum LookNpcResponse {
     #[oai(status = 200)]
     NpcViewed(Json<NonPlayerView>),
+
+    #[oai(status = 404)]
+    NotFound(PlainText<String>),
+
+    #[oai(status = 500)]
+    GameError(Json<GameError>),
+}
+
+#[derive(ApiResponse)]
+enum InspectNpcResponse {
+    #[oai(status = 200)]
+    NpcInspected(Json<NpcInspected>),
 
     #[oai(status = 404)]
     NotFound(PlainText<String>),
@@ -329,6 +344,20 @@ impl UnderworldApi {
                 "game_not_found".to_string(),
             ))),
             Err(it) => Ok(LookNpcResponse::GameError(Json(it))),
+        }
+    }
+
+    /// Inspect an NPC to find out more information about them when looking at them next.
+    /// After completing an inspect, look at the NPC to see new information.
+    #[oai(path = "/game/inspect_npc", method = "post")]
+    async fn inspect_npc(&self, args: Json<InspectNpcArgs>) -> Result<InspectNpcResponse> {
+        let mut connection = get_redis_connection().await;
+        match inspect_npc(&mut connection, &args).await {
+            Ok(it) => Ok(InspectNpcResponse::NpcInspected(Json(it))),
+            Err(GameError::GameNotFound) => Ok(InspectNpcResponse::NotFound(PlainText(
+                "game_not_found".to_string(),
+            ))),
+            Err(it) => Ok(InspectNpcResponse::GameError(Json(it))),
         }
     }
 

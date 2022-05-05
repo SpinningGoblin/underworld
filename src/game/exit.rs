@@ -7,7 +7,7 @@ use underworld_core::{
 };
 
 use crate::{
-    actions::{room_actions, PerformAction},
+    actions::{game_actions, PerformAction},
     error::GameError,
     event::GameEvent,
     player_characters::current::get_current_player_character,
@@ -55,6 +55,6 @@ pub async fn exit_current_room(
 
     Ok(RoomExited {
         events: game_events,
-        actions: room_actions(game.state.current_room(), &args.username, &args.game_id),
+        actions: game_actions(&game, &args.username),
     })
 }

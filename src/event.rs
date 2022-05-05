@@ -15,11 +15,17 @@ pub struct GameEvent {
 pub enum EventName {
     DeadNpcBeaten,
     ItemTakenFromNpc,
+    NpcHealthDiscovered,
+    NpcHiddenDiscovered,
     NpcHit,
     NpcKilled,
     NpcMissed,
+    NpcNameDiscovered,
+    NpcPackedDiscovered,
     NpcViewed,
+    NpcWeaponReadied,
     PlayerHit,
+    PlayerItemMoved,
     PlayerKilled,
     PlayerMissed,
     RoomExited,
@@ -71,6 +77,30 @@ impl From<Event> for GameEvent {
             },
             Event::DeadNpcBeaten(it) => GameEvent {
                 name: EventName::DeadNpcBeaten,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::NpcWeaponReadied(it) => GameEvent {
+                name: EventName::NpcWeaponReadied,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerItemMoved(it) => GameEvent {
+                name: EventName::PlayerItemMoved,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::NpcHealthDiscovered(it) => GameEvent {
+                name: EventName::NpcHealthDiscovered,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::NpcHiddenDiscovered(it) => GameEvent {
+                name: EventName::NpcHiddenDiscovered,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::NpcNameDiscovered(it) => GameEvent {
+                name: EventName::NpcNameDiscovered,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::NpcPackedDiscovered(it) => GameEvent {
+                name: EventName::NpcPackedDiscovered,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
         }

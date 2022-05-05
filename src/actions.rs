@@ -1,13 +1,13 @@
 use poem_openapi::{Enum, Object};
 use serde::Serialize;
 use serde_json::Value;
-use underworld_core::{actions::action::Action, components::rooms::room::Room};
+use underworld_core::{actions::action::Action, game::Game};
 
 use crate::{
     game::{
         attack::AttackNpcArgs,
         exit::ExitRoomArgs,
-        look::{CharacterViewArgs, NpcLookArgs, RoomLookArgs},
+        look::{InspectNpcArgs, NpcLookArgs, RoomLookArgs},
         loot::LootNpcArgs,
     },
     player_characters::current::SetPlayerCharacterArgs,
@@ -19,6 +19,7 @@ pub enum ActionName {
     AttackNpc,
     CheckPlayerCharacter,
     ExitRoom,
+    InspectNpc,
     LookAtNpc,
     LookAtRoom,
     LootNpc,
@@ -72,33 +73,26 @@ pub fn player_character_actions(username: &str, player_character_id: &str) -> Ve
     ]
 }
 
-pub fn room_actions(room: &Room, username: &str, game_id: &str) -> Vec<PerformAction> {
+pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
+    let game_id = game.state.identifier.id.to_string();
     let look_args = RoomLookArgs {
         username: username.to_string(),
-        game_id: game_id.to_string(),
+        game_id: game_id.clone(),
     };
-    room.current_actions()
+    game.current_actions()
         .into_iter()
         .filter_map(|action| match action {
-            Action::LookAtTarget(_) => None,
-            Action::LookAtRoom(it) => Some(PerformAction {
+            Action::LookAtCurrentRoom(_) => Some(PerformAction {
                 name: ActionName::LookAtRoom,
-                description: it.description(),
+                description: "Look at current room".to_string(),
                 link: get_api_link("game/look_at_current_room"),
-                http_action: "POST".to_string(),
-                args: Some(serde_json::to_value(&look_args).unwrap()),
-            }),
-            Action::QuickLookRoom(it) => Some(PerformAction {
-                name: ActionName::QuickLookRoom,
-                description: it.description(),
-                link: get_api_link("game/quick_look_current_room"),
                 http_action: "POST".to_string(),
                 args: Some(serde_json::to_value(&look_args).unwrap()),
             }),
             Action::AttackNpc(it) => {
                 let attack_args = AttackNpcArgs {
                     username: username.to_string(),
-                    game_id: game_id.to_string(),
+                    game_id: game_id.clone(),
                     npc_id: it.npc_id,
                 };
                 Some(PerformAction {
@@ -112,7 +106,7 @@ pub fn room_actions(room: &Room, username: &str, game_id: &str) -> Vec<PerformAc
             Action::ExitRoom(it) => {
                 let exit_args = ExitRoomArgs {
                     username: username.to_string(),
-                    game_id: game_id.to_string(),
+                    game_id: game_id.clone(),
                     exit_id: it.exit_id,
                 };
 
@@ -132,11 +126,8 @@ pub fn room_actions(room: &Room, username: &str, game_id: &str) -> Vec<PerformAc
                 args: Some(
                     serde_json::to_value(NpcLookArgs {
                         username: username.to_string(),
-                        game_id: game_id.to_string(),
+                        game_id: game_id.clone(),
                         npc_id: it.npc_id,
-                        knows_all: it.knows_all,
-                        knows_name: it.knows_name,
-                        view_args: CharacterViewArgs::from(&it.args),
                     })
                     .unwrap(),
                 ),
@@ -149,9 +140,28 @@ pub fn room_actions(room: &Room, username: &str, game_id: &str) -> Vec<PerformAc
                 args: Some(
                     serde_json::to_value(LootNpcArgs {
                         username: username.to_string(),
-                        game_id: game_id.to_string(),
+                        game_id: game_id.clone(),
                         npc_id: loot_npc.npc_id,
                         item_ids: loot_npc.item_ids,
+                    })
+                    .unwrap(),
+                ),
+            }),
+            Action::MovePlayerItem(_) => None,
+            Action::InspectNpc(inspect) => Some(PerformAction {
+                name: ActionName::InspectNpc,
+                description: "Inspect an NPC to reveal more information.".to_string(),
+                link: get_api_link("game/inspect_npc"),
+                http_action: "POST".to_string(),
+                args: Some(
+                    serde_json::to_value(InspectNpcArgs {
+                        username: username.to_string(),
+                        game_id: game_id.clone(),
+                        npc_id: inspect.npc_id,
+                        discover_health: inspect.discover_health,
+                        discover_name: inspect.discover_name,
+                        discover_packed_items: inspect.discover_packed_items,
+                        discover_hidden_items: inspect.discover_hidden_items,
                     })
                     .unwrap(),
                 ),
