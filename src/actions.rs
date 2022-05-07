@@ -166,6 +166,8 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
                     .unwrap(),
                 ),
             }),
+            Action::InspectFixture(_) => None,
+            Action::LookAtFixture(_) => None,
         })
         .collect()
 }

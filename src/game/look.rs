@@ -3,8 +3,8 @@ use redis::aio::Connection;
 use serde::{Deserialize, Serialize};
 use underworld_core::{
     actions::{
-        action::Action,
-        look_at::{InspectNpc, LookAtNpc},
+        action::Action, inspect_npc::InspectNpc, look_at_current_room::LookAtCurrentRoom,
+        look_at_npc::LookAtNpc,
     },
     components::{
         non_player::NonPlayerView,
@@ -48,15 +48,21 @@ pub async fn look_at_room(
     connection: &mut Connection,
     args: &RoomLookArgs,
 ) -> Result<RoomView, GameError> {
-    let game_state = get_game_state(connection, &args.username, &args.game_id).await?;
-
-    let args = RoomViewArgs {
-        can_see_hidden: false,
-        can_see_packed: false,
-        knows_character_health: false,
-        knows_names: true,
+    let mut game = Game {
+        state: get_game_state(connection, &args.username, &args.game_id).await?,
+        player: get_current_player_character(connection, &args.username).await?,
     };
-    Ok(room::look_at(game_state.current_room(), args, false))
+
+    let action = Action::LookAtCurrentRoom(LookAtCurrentRoom);
+    let events = game.handle_action(&action)?;
+
+    match events.iter().find_map(|event| match event {
+        Event::RoomViewed(it) => Some(it),
+        _ => None,
+    }) {
+        Some(room_viewed) => Ok(room_viewed.view.clone()),
+        None => Err(GameError::General),
+    }
 }
 
 pub async fn quick_look_room(
@@ -65,7 +71,11 @@ pub async fn quick_look_room(
 ) -> Result<RoomView, GameError> {
     let game_state = get_game_state(connection, &args.username, &args.game_id).await?;
 
-    Ok(room::quick_look(game_state.current_room()))
+    Ok(room::look_at(
+        game_state.current_room(),
+        RoomViewArgs::default(),
+        false,
+    ))
 }
 
 pub async fn look_at_npc(

@@ -14,6 +14,11 @@ pub struct GameEvent {
 #[oai(rename_all = "snake_case")]
 pub enum EventName {
     DeadNpcBeaten,
+    FixtureCanBeOpenedDiscovered,
+    FixtureContainedDiscovered,
+    FixtureHasHiddenDiscovered,
+    FixtureHiddenItemsDiscovered,
+    FixtureViewed,
     ItemTakenFromNpc,
     NpcHealthDiscovered,
     NpcHiddenDiscovered,
@@ -30,6 +35,7 @@ pub enum EventName {
     PlayerMissed,
     RoomExited,
     RoomGenerated,
+    RoomViewed,
 }
 
 impl From<Event> for GameEvent {
@@ -101,6 +107,30 @@ impl From<Event> for GameEvent {
             },
             Event::NpcPackedDiscovered(it) => GameEvent {
                 name: EventName::NpcPackedDiscovered,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::FixtureCanBeOpenedDiscovered(it) => GameEvent {
+                name: EventName::FixtureCanBeOpenedDiscovered,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::FixtureContainedDiscovered(it) => GameEvent {
+                name: EventName::FixtureContainedDiscovered,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::FixtureHasHiddenDiscovered(it) => GameEvent {
+                name: EventName::FixtureHasHiddenDiscovered,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::FixtureHiddenItemsDiscovered(it) => GameEvent {
+                name: EventName::FixtureHiddenItemsDiscovered,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::FixtureViewed(it) => GameEvent {
+                name: EventName::FixtureViewed,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::RoomViewed(it) => GameEvent {
+                name: EventName::RoomViewed,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
         }
