@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use underworld_core::{
     components::rooms::room_view::RoomViewArgs,
     generators::{generator::Generator, rooms::random_room_generator},
@@ -31,14 +33,8 @@ impl Component for RoomDescriptions {
             RoomMsg::GenerateRoom => {
                 let room_prototype = random_room_generator(None);
                 let room = room_prototype.generate();
-                let quick_view = room::quick_look(&room);
-                let args = RoomViewArgs {
-                    can_see_hidden: false,
-                    can_see_packed: false,
-                    knows_character_health: false,
-                    knows_names: true,
-                };
-                let deeper_look = room::look_at(&room, args, false);
+                let quick_view = room::look_at(&room, RoomViewArgs::default(), false);
+                let deeper_look = room::view(&room, HashMap::new(), HashMap::new(), false);
                 self.room_description = format!("{}", &quick_view);
                 self.inhabitants_description = deeper_look.describe_inhabitants();
                 // the value has changed so we need to
