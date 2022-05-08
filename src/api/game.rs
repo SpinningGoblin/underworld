@@ -1,5 +1,6 @@
 use poem::Result;
 use poem_openapi::{
+    param::Path,
     payload::{Json, PlainText},
     ApiResponse, OpenApi,
 };
@@ -11,6 +12,7 @@ use crate::{
         attack::{attack_npc, AttackNpcArgs, NpcAttacked},
         exit::{exit_current_room, ExitRoomArgs, RoomExited},
         generate::{generate_game, GenerateGameArgs, GeneratedGame},
+        get::game_ids,
         look::{
             inspect_npc, look_at_npc, look_at_room, quick_look_room, InspectNpcArgs, NpcInspected,
             NpcLookArgs, RoomLookArgs,
@@ -92,6 +94,12 @@ enum ExitRoomResponse {
     BadRequest(Json<Error>),
 }
 
+#[derive(ApiResponse)]
+enum GameIdResponse {
+    #[oai(status = 200)]
+    GameIds(Json<Vec<String>>),
+}
+
 pub struct UnderworldGameApi;
 
 #[OpenApi]
@@ -116,6 +124,19 @@ impl UnderworldGameApi {
             Ok(generated_game) => Ok(GenerateGameResponse::GameGenerated(Json(generated_game))),
             Err(e) => Ok(GenerateGameResponse::GameError(Json(e))),
         }
+    }
+
+    /// Get IDs of all current games
+    ///
+    /// # Example
+    ///
+    /// Call `/my_username/games` to retrieve all game ids for my_username
+    #[oai(path = "/:username/games", method = "get")]
+    async fn list_games(&self, username: Path<String>) -> Result<GameIdResponse> {
+        let mut connection = get_redis_connection().await;
+        let result = game_ids(&mut connection, &username).await;
+
+        Ok(GameIdResponse::GameIds(Json(result)))
     }
 
     /// Exit the current room of the specified game through the specified exit.
