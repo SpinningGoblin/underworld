@@ -1,8 +1,13 @@
 use std::fmt::Display;
 
-use poem_openapi::Enum;
+use poem_openapi::{Enum, Object};
 use serde::Serialize;
 use underworld_core::errors::Errors;
+
+#[derive(Object, Serialize)]
+pub struct Error {
+    pub message: String,
+}
 
 #[derive(Enum, Serialize)]
 pub enum GameError {
