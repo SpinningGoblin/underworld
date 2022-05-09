@@ -1,9 +1,10 @@
-use poem::Result;
+use poem::{web::Data, Result};
 use poem_openapi::{
     param::Path,
     payload::{Json, PlainText},
     ApiResponse, OpenApi,
 };
+use sqlx::PgPool;
 use underworld_core::components::{non_player::NonPlayerView, rooms::room_view::RoomView};
 
 use crate::{
@@ -19,7 +20,6 @@ use crate::{
         },
         loot::{loot_npc, LootNpcArgs, NpcLooted},
     },
-    redis::get_redis_connection,
 };
 
 #[derive(ApiResponse)]
@@ -116,9 +116,14 @@ impl UnderworldGameApi {
     /// ```
     /// to generate and save a new game for my_username
     #[oai(path = "/game/generate", method = "post")]
-    async fn generate_game(&self, args: Json<GenerateGameArgs>) -> Result<GenerateGameResponse> {
-        let mut connection = get_redis_connection().await;
-        let generated_result = generate_game(&mut connection, &args).await;
+    async fn generate_game(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<GenerateGameArgs>,
+    ) -> Result<GenerateGameResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let generated_result = generate_game(&mut transaction, &args).await;
+        transaction.commit().await.unwrap();
 
         match generated_result {
             Ok(generated_game) => Ok(GenerateGameResponse::GameGenerated(Json(generated_game))),
@@ -132,19 +137,27 @@ impl UnderworldGameApi {
     ///
     /// Call `/my_username/games` to retrieve all game ids for my_username
     #[oai(path = "/:username/games", method = "get")]
-    async fn list_games(&self, username: Path<String>) -> Result<GameIdResponse> {
-        let mut connection = get_redis_connection().await;
-        let result = game_ids(&mut connection, &username).await;
-
+    async fn list_games(
+        &self,
+        pool: Data<&PgPool>,
+        username: Path<String>,
+    ) -> Result<GameIdResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let result = game_ids(&mut transaction, &username).await;
+        transaction.commit().await.unwrap();
         Ok(GameIdResponse::GameIds(Json(result)))
     }
 
     /// Exit the current room of the specified game through the specified exit.
     #[oai(path = "/game/exit_current_room", method = "post")]
-    async fn exit_current_room(&self, args: Json<ExitRoomArgs>) -> Result<ExitRoomResponse> {
-        let mut connection = get_redis_connection().await;
-
-        let exit_result = exit_current_room(&mut connection, &args).await;
+    async fn exit_current_room(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<ExitRoomArgs>,
+    ) -> Result<ExitRoomResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let exit_result = exit_current_room(&mut transaction, &args).await;
+        transaction.commit().await.unwrap();
         match exit_result {
             Ok(it) => Ok(ExitRoomResponse::RoomExited(Json(it))),
             Err(it) => Ok(ExitRoomResponse::BadRequest(Json(Error {
@@ -155,10 +168,14 @@ impl UnderworldGameApi {
 
     /// Attack a specific NPC inside the current room of the specified game.
     #[oai(path = "/game/attack_npc", method = "post")]
-    async fn attack_npc(&self, args: Json<AttackNpcArgs>) -> Result<AttackNpcResponse> {
-        let mut connection = get_redis_connection().await;
-
-        let attack_result = attack_npc(&mut connection, &args).await;
+    async fn attack_npc(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<AttackNpcArgs>,
+    ) -> Result<AttackNpcResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let attack_result = attack_npc(&mut transaction, &args).await;
+        transaction.commit().await.unwrap();
 
         match attack_result {
             Ok(it) => Ok(AttackNpcResponse::NpcAttacked(Json(it))),
@@ -170,9 +187,14 @@ impl UnderworldGameApi {
 
     /// Loot some items from an NPC.
     #[oai(path = "/game/loot_npc", method = "post")]
-    async fn loot_npc(&self, args: Json<LootNpcArgs>) -> Result<LootNpcResponse> {
-        let mut connection = get_redis_connection().await;
-        let loot_result = loot_npc(&mut connection, &args).await;
+    async fn loot_npc(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<LootNpcArgs>,
+    ) -> Result<LootNpcResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let loot_result = loot_npc(&mut transaction, &args).await;
+        transaction.commit().await.unwrap();
 
         match loot_result {
             Ok(it) => Ok(LootNpcResponse::NpcLooted(Json(it))),
@@ -186,9 +208,14 @@ impl UnderworldGameApi {
 
     /// Take a closer look at the current room.
     #[oai(path = "/game/look_at_current_room", method = "post")]
-    async fn look_at_current_room(&self, args: Json<RoomLookArgs>) -> Result<LookResponse> {
-        let mut connection = get_redis_connection().await;
-        let view_result = look_at_room(&mut connection, &args).await;
+    async fn look_at_current_room(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<RoomLookArgs>,
+    ) -> Result<LookResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let view_result = look_at_room(&mut transaction, &args).await;
+        transaction.commit().await.unwrap();
 
         match view_result {
             Ok(it) => Ok(LookResponse::LookAtRoom(Json(it))),
@@ -198,10 +225,14 @@ impl UnderworldGameApi {
 
     /// Glance quickly at the current room.
     #[oai(path = "/game/quick_look_current_room", method = "post")]
-    async fn quick_look_current_room(&self, args: Json<RoomLookArgs>) -> Result<LookResponse> {
-        let mut connection = get_redis_connection().await;
-        let view_result = quick_look_room(&mut connection, &args).await;
-
+    async fn quick_look_current_room(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<RoomLookArgs>,
+    ) -> Result<LookResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let view_result = quick_look_room(&mut transaction, &args).await;
+        transaction.commit().await.unwrap();
         match view_result {
             Ok(it) => Ok(LookResponse::LookAtRoom(Json(it))),
             Err(e) => Ok(LookResponse::NotFound(PlainText(e.to_string()))),
@@ -210,10 +241,17 @@ impl UnderworldGameApi {
 
     /// Look at a specific NPC in the current room.
     #[oai(path = "/game/look_at_npc", method = "post")]
-    async fn look_at_npc(&self, args: Json<NpcLookArgs>) -> Result<LookNpcResponse> {
-        let mut connection = get_redis_connection().await;
-        match look_at_npc(&mut connection, &args).await {
-            Ok(it) => Ok(LookNpcResponse::NpcViewed(Json(it))),
+    async fn look_at_npc(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<NpcLookArgs>,
+    ) -> Result<LookNpcResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        match look_at_npc(&mut transaction, &args).await {
+            Ok(it) => {
+                transaction.commit().await.unwrap();
+                Ok(LookNpcResponse::NpcViewed(Json(it)))
+            }
             Err(GameError::GameNotFound) => Ok(LookNpcResponse::NotFound(PlainText(
                 "game_not_found".to_string(),
             ))),
@@ -224,10 +262,17 @@ impl UnderworldGameApi {
     /// Inspect an NPC to find out more information about them when looking at them next.
     /// After completing an inspect, look at the NPC to see new information.
     #[oai(path = "/game/inspect_npc", method = "post")]
-    async fn inspect_npc(&self, args: Json<InspectNpcArgs>) -> Result<InspectNpcResponse> {
-        let mut connection = get_redis_connection().await;
-        match inspect_npc(&mut connection, &args).await {
-            Ok(it) => Ok(InspectNpcResponse::NpcInspected(Json(it))),
+    async fn inspect_npc(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<InspectNpcArgs>,
+    ) -> Result<InspectNpcResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        match inspect_npc(&mut transaction, &args).await {
+            Ok(it) => {
+                transaction.commit().await.unwrap();
+                Ok(InspectNpcResponse::NpcInspected(Json(it)))
+            }
             Err(GameError::GameNotFound) => Ok(InspectNpcResponse::NotFound(PlainText(
                 "game_not_found".to_string(),
             ))),

@@ -1,25 +1,21 @@
 use poem_openapi::Object;
-use redis::{aio::Connection, AsyncCommands, RedisError};
 use serde::{Deserialize, Serialize};
+use sqlx::{Postgres, Transaction};
 use underworld_core::components::player::PlayerCharacter;
 
-use crate::{error::GameError, player_characters::get::get_player_character};
-
-use super::utils::current_player_character_key;
+use crate::error::GameError;
 
 pub async fn get_current_player_character(
-    connection: &mut Connection,
+    transaction: &mut Transaction<'_, Postgres>,
     username: &str,
 ) -> Result<PlayerCharacter, GameError> {
-    let key = current_player_character_key(username);
-    let player_id_result: Result<String, RedisError> = connection.get(&key).await;
+    let player_character = super::repository::current(transaction, username)
+        .await
+        .unwrap();
 
-    match player_id_result {
-        Ok(player_id) => get_player_character(connection, username, &player_id)
-            .await
-            .map(Ok)
-            .unwrap_or(Err(GameError::General)),
-        Err(_) => Err(GameError::NoPlayerCharacterSet),
+    match player_character {
+        Some(it) => Ok(it),
+        None => Err(GameError::NoPlayerCharacterSet),
     }
 }
 
@@ -30,17 +26,17 @@ pub struct SetPlayerCharacterArgs {
 }
 
 pub async fn set_current_player_character(
-    connection: &mut Connection,
+    transaction: &mut Transaction<'_, Postgres>,
     args: &SetPlayerCharacterArgs,
 ) -> Result<(), GameError> {
     let player_result =
-        get_player_character(connection, &args.username, &args.player_character_id).await;
+        super::repository::by_id(transaction, &args.username, &args.player_character_id)
+            .await
+            .unwrap();
 
     match player_result {
-        Some(_) => {
-            let key = current_player_character_key(&args.username);
-            let _: () = connection
-                .set(&key, &args.player_character_id)
+        Some(it) => {
+            super::repository::set_current(transaction, &args.username, &it)
                 .await
                 .unwrap();
             Ok(())

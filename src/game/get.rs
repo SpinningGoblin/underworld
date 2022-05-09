@@ -1,37 +1,10 @@
-use redis::{aio::Connection, AsyncCommands, RedisError};
-use underworld_core::components::games::game_state::GameState;
+use sqlx::{Postgres, Transaction};
 
-use crate::error::GameError;
-
-use super::utils::{username_game_key, username_key};
-
-pub async fn get_game_state(
-    connection: &mut Connection,
+pub async fn game_ids(
+    transaction: &mut Transaction<'_, Postgres>,
     username: &str,
-    id: &str,
-) -> Result<GameState, GameError> {
-    let key = username_game_key(username, id);
-    let serialized: Result<String, RedisError> = connection.get(&key).await;
-
-    match serialized {
-        Ok(it) => Ok(serde_json::from_str(&it).unwrap()),
-        Err(_) => Err(GameError::GameNotFound),
-    }
-}
-
-pub async fn game_ids(connection: &mut Connection, username: &str) -> Vec<String> {
-    let key_start = username_key(username);
-    let redis_keys: Result<Vec<String>, RedisError> =
-        connection.keys(format!("{}*", &key_start)).await;
-
-    match redis_keys {
-        Ok(keys) => keys
-            .iter()
-            .map(|key| key.replace(&format!("{}:", &key_start), ""))
-            .collect(),
-        Err(it) => {
-            println!("{:?}", &it);
-            Vec::new()
-        }
-    }
+) -> Vec<String> {
+    super::repository::ids(transaction, username)
+        .await
+        .unwrap()
 }

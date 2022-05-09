@@ -4,7 +4,7 @@ use poem_openapi::{Enum, Object};
 use serde::Serialize;
 use underworld_core::errors::Errors;
 
-#[derive(Object, Serialize)]
+#[derive(Object, Serialize, Debug)]
 pub struct Error {
     pub message: String,
 }

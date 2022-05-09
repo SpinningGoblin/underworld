@@ -1,6 +1,6 @@
 use poem_openapi::Object;
-use redis::aio::Connection;
 use serde::{Deserialize, Serialize};
+use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{
         action::Action, inspect_npc::InspectNpc, look_at_current_room::LookAtCurrentRoom,
@@ -18,10 +18,7 @@ use underworld_core::{
 use crate::{
     actions::{game_actions, PerformAction},
     error::GameError,
-    player_characters::current::get_current_player_character,
 };
-
-use super::get::get_game_state;
 
 #[derive(Deserialize, Object, Serialize)]
 pub struct RoomLookArgs {
@@ -45,13 +42,27 @@ impl From<&NpcLookArgs> for LookAtNpc {
 }
 
 pub async fn look_at_room(
-    connection: &mut Connection,
+    transaction: &mut Transaction<'_, Postgres>,
     args: &RoomLookArgs,
 ) -> Result<RoomView, GameError> {
-    let mut game = Game {
-        state: get_game_state(connection, &args.username, &args.game_id).await?,
-        player: get_current_player_character(connection, &args.username).await?,
+    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
+        .await
+        .unwrap()
+    {
+        Some(it) => it,
+        None => return Err(GameError::GameNotFound),
     };
+
+    let player =
+        match crate::player_characters::repository::current(transaction, &args.username)
+            .await
+            .unwrap()
+        {
+            Some(it) => it,
+            None => return Err(GameError::NoPlayerCharacterSet),
+        };
+
+    let mut game = Game { state, player };
 
     let action = Action::LookAtCurrentRoom(LookAtCurrentRoom);
     let events = game.handle_action(&action)?;
@@ -66,24 +77,45 @@ pub async fn look_at_room(
 }
 
 pub async fn quick_look_room(
-    connection: &mut Connection,
+    transaction: &mut Transaction<'_, Postgres>,
     args: &RoomLookArgs,
 ) -> Result<RoomView, GameError> {
-    let game_state = get_game_state(connection, &args.username, &args.game_id).await?;
+    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
+        .await
+        .unwrap()
+    {
+        Some(it) => it,
+        None => return Err(GameError::GameNotFound),
+    };
 
     Ok(room::look_at(
-        game_state.current_room(),
+        state.current_room(),
         RoomViewArgs::default(),
         false,
     ))
 }
 
 pub async fn look_at_npc(
-    connection: &mut Connection,
+    transaction: &mut Transaction<'_, Postgres>,
     args: &NpcLookArgs,
 ) -> Result<NonPlayerView, GameError> {
-    let state = get_game_state(connection, &args.username, &args.game_id).await?;
-    let player = get_current_player_character(connection, &args.username).await?;
+    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
+        .await
+        .unwrap()
+    {
+        Some(it) => it,
+        None => return Err(GameError::GameNotFound),
+    };
+
+    let player =
+        match crate::player_characters::repository::current(transaction, &args.username)
+            .await
+            .unwrap()
+        {
+            Some(it) => it,
+            None => return Err(GameError::NoPlayerCharacterSet),
+        };
+
     let mut game = Game { state, player };
     let look_args: LookAtNpc = LookAtNpc::from(args);
     let action = Action::LookAtNpc(look_args);
@@ -126,11 +158,24 @@ pub struct NpcInspected {
 }
 
 pub async fn inspect_npc(
-    connection: &mut Connection,
+    transaction: &mut Transaction<'_, Postgres>,
     args: &InspectNpcArgs,
 ) -> Result<NpcInspected, GameError> {
-    let state = get_game_state(connection, &args.username, &args.game_id).await?;
-    let player = get_current_player_character(connection, &args.username).await?;
+    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
+        .await
+        .unwrap()
+    {
+        Some(it) => it,
+        None => return Err(GameError::GameNotFound),
+    };
+    let player =
+        match crate::player_characters::repository::current(transaction, &args.username)
+            .await
+            .unwrap()
+        {
+            Some(it) => it,
+            None => return Err(GameError::NoPlayerCharacterSet),
+        };
     let mut game = Game { state, player };
 
     let inspect_args = InspectNpc {
@@ -142,6 +187,13 @@ pub async fn inspect_npc(
     };
     let action = Action::InspectNpc(inspect_args);
     let events = game.handle_action(&action)?;
+
+    super::repository::save(transaction, &args.username, &game.state)
+        .await
+        .unwrap();
+    crate::player_characters::repository::save(transaction, &args.username, &game.player)
+        .await
+        .unwrap();
 
     let mut npc_inspected = NpcInspected {
         health_discovered: false,

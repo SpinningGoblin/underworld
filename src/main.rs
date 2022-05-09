@@ -4,7 +4,7 @@ mod error;
 mod event;
 mod game;
 mod player_characters;
-mod redis;
+mod psql;
 
 use std::env;
 
@@ -14,6 +14,7 @@ use poem::{
     Route, Server,
 };
 use poem_openapi::OpenApiService;
+use psql::get_psql_url;
 
 fn get_port() -> u16 {
     env::var("PORT")
@@ -31,6 +32,8 @@ fn get_server_url() -> String {
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
+    let pool = sqlx::PgPool::connect(&get_psql_url()).await.unwrap();
+
     let api_service = OpenApiService::new(
         (UnderworldNpcApi, UnderworldPlayerApi, UnderworldGameApi),
         "Underworld",
@@ -48,7 +51,8 @@ async fn main() -> Result<(), std::io::Error> {
         .nest("/api", api_service)
         .nest("/swagger_ui", ui)
         .at("/spec", poem::endpoint::make_sync(move |_| spec.clone()))
-        .with(Cors::new());
+        .with(Cors::new())
+        .data(pool);
 
     let listen_url = format!("0.0.0.0:{}", get_port());
     Server::new(TcpListener::bind(listen_url))

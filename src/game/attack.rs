@@ -1,6 +1,6 @@
 use poem_openapi::Object;
-use redis::aio::Connection;
 use serde::{Deserialize, Serialize};
+use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{action::Action, attack_npc::AttackNpc},
     game::Game,
@@ -10,10 +10,7 @@ use crate::{
     actions::{game_actions, PerformAction},
     error::GameError,
     event::GameEvent,
-    player_characters::{current::get_current_player_character, set::set_player_character},
 };
-
-use super::{get::get_game_state, set::set_game};
 
 #[derive(Serialize, Object)]
 pub struct NpcAttacked {
@@ -31,15 +28,25 @@ pub struct AttackNpcArgs {
 }
 
 pub async fn attack_npc(
-    connection: &mut Connection,
+    transaction: &mut Transaction<'_, Postgres>,
     args: &AttackNpcArgs,
 ) -> Result<NpcAttacked, GameError> {
-    let player_character = match get_current_player_character(connection, &args.username).await {
-        Ok(it) => it,
-        Err(it) => return Err(it),
-    };
+    let player_character =
+        match crate::player_characters::repository::current(transaction, &args.username)
+            .await
+            .unwrap()
+        {
+            Some(it) => it,
+            None => return Err(GameError::NoPlayerCharacterSet),
+        };
 
-    let state = get_game_state(connection, &args.username, &args.game_id).await?;
+    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
+        .await
+        .unwrap()
+    {
+        Some(it) => it,
+        None => return Err(GameError::GameNotFound),
+    };
 
     let mut game = Game {
         player: player_character,
@@ -51,8 +58,12 @@ pub async fn attack_npc(
     };
 
     let events = game.handle_action(&Action::AttackNpc(attack_npc)).unwrap();
-    set_game(connection, &game.state, &args.username).await;
-    set_player_character(connection, &game.player, &args.username).await;
+    super::repository::save(transaction, &args.username, &game.state)
+        .await
+        .unwrap();
+    crate::player_characters::repository::save(transaction, &args.username, &game.player)
+        .await
+        .unwrap();
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
