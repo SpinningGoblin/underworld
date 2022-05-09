@@ -53,14 +53,13 @@ pub async fn look_at_room(
         None => return Err(GameError::GameNotFound),
     };
 
-    let player =
-        match crate::player_characters::repository::current(transaction, &args.username)
-            .await
-            .unwrap()
-        {
-            Some(it) => it,
-            None => return Err(GameError::NoPlayerCharacterSet),
-        };
+    let player = match crate::player_characters::repository::current(transaction, &args.username)
+        .await
+        .unwrap()
+    {
+        Some(it) => it,
+        None => return Err(GameError::NoPlayerCharacterSet),
+    };
 
     let mut game = Game { state, player };
 
@@ -107,14 +106,13 @@ pub async fn look_at_npc(
         None => return Err(GameError::GameNotFound),
     };
 
-    let player =
-        match crate::player_characters::repository::current(transaction, &args.username)
-            .await
-            .unwrap()
-        {
-            Some(it) => it,
-            None => return Err(GameError::NoPlayerCharacterSet),
-        };
+    let player = match crate::player_characters::repository::current(transaction, &args.username)
+        .await
+        .unwrap()
+    {
+        Some(it) => it,
+        None => return Err(GameError::NoPlayerCharacterSet),
+    };
 
     let mut game = Game { state, player };
     let look_args: LookAtNpc = LookAtNpc::from(args);
@@ -168,14 +166,13 @@ pub async fn inspect_npc(
         Some(it) => it,
         None => return Err(GameError::GameNotFound),
     };
-    let player =
-        match crate::player_characters::repository::current(transaction, &args.username)
-            .await
-            .unwrap()
-        {
-            Some(it) => it,
-            None => return Err(GameError::NoPlayerCharacterSet),
-        };
+    let player = match crate::player_characters::repository::current(transaction, &args.username)
+        .await
+        .unwrap()
+    {
+        Some(it) => it,
+        None => return Err(GameError::NoPlayerCharacterSet),
+    };
     let mut game = Game { state, player };
 
     let inspect_args = InspectNpc {

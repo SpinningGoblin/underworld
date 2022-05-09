@@ -15,7 +15,5 @@ pub async fn player_character_ids(
     transaction: &mut Transaction<'_, Postgres>,
     username: &str,
 ) -> Vec<String> {
-    super::repository::ids(transaction, username)
-        .await
-        .unwrap()
+    super::repository::ids(transaction, username).await.unwrap()
 }

@@ -30,14 +30,13 @@ pub async fn loot_npc(
     transaction: &mut Transaction<'_, Postgres>,
     args: &LootNpcArgs,
 ) -> Result<NpcLooted, GameError> {
-    let player =
-        match crate::player_characters::repository::current(transaction, &args.username)
-            .await
-            .unwrap()
-        {
-            Some(it) => it,
-            None => return Err(GameError::NoPlayerCharacterSet),
-        };
+    let player = match crate::player_characters::repository::current(transaction, &args.username)
+        .await
+        .unwrap()
+    {
+        Some(it) => it,
+        None => return Err(GameError::NoPlayerCharacterSet),
+    };
 
     let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
         .await

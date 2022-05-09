@@ -34,8 +34,7 @@ pub async fn generate_game(
         .unwrap();
 
     let player =
-        match crate::player_characters::repository::current(transaction, &args.username).await
-        {
+        match crate::player_characters::repository::current(transaction, &args.username).await {
             Ok(Some(it)) => it,
             Ok(None) => return Err(GameError::NoPlayerCharacterSet),
             Err(_) => return Err(GameError::General),
