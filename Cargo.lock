@@ -1767,7 +1767,7 @@ checksum = "dcf81ac59edc17cc8697ff311e8f5ef2d99fcbd9817b34cec66f90b6c3dfd987"
 [[package]]
 name = "underworld_core"
 version = "0.5.0"
-source = "git+https://github.com/derrickp/underworld_core?rev=36758d176b1b40ff5fe2bd6bd9f7e2df00df5564#36758d176b1b40ff5fe2bd6bd9f7e2df00df5564"
+source = "git+https://github.com/derrickp/underworld_core?rev=a381ae145802a714b8bc4349dc11b7b658c909d8#a381ae145802a714b8bc4349dc11b7b658c909d8"
 dependencies = [
  "enum-iterator",
  "poem-openapi",
