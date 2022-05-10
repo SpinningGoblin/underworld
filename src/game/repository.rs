@@ -67,7 +67,7 @@ pub async fn ids(
     let rows: Vec<String> =
         sqlx::query("select game_state_id from game_states where username = $1")
             .bind(&username)
-            .map(|row: PgRow| row.try_get("pc_id").unwrap())
+            .map(|row: PgRow| row.try_get("game_state_id").unwrap())
             .fetch_all(transaction)
             .await
             .map_err(|e| Error {
