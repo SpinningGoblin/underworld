@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{
-        action::Action, inspect_npc::InspectNpc, look_at_current_room::LookAtCurrentRoom,
-        look_at_npc::LookAtNpc,
+        action::Action, inspect_fixture::InspectFixture, inspect_npc::InspectNpc,
+        look_at_current_room::LookAtCurrentRoom, look_at_npc::LookAtNpc,
     },
     components::{
         non_player::NonPlayerView,
@@ -219,4 +219,97 @@ pub async fn inspect_npc(
     }
 
     Ok(npc_inspected)
+}
+
+#[derive(Deserialize, Object, Serialize)]
+pub struct InspectFixtureArgs {
+    /// Username to use.
+    pub username: String,
+    /// Game to perform action.
+    pub game_id: String,
+    /// NPC to inspect.
+    pub fixture_id: String,
+    /// Attempt to discover any hidden compartments and its contents.
+    pub discover_has_hidden: bool,
+    /// Attempt to discover any items in any hidden compartments.
+    pub discover_hidden_items: bool,
+    /// Attempt to discover the items inside of the container, without opening.
+    pub discover_contained: bool,
+    /// Attempt to discover if the fixture can be opened.
+    pub discover_can_be_opened: bool,
+}
+
+#[derive(Object, Serialize)]
+pub struct FixtureInspected {
+    pub can_be_opened_discovered: bool,
+    pub has_hidden_discovered: bool,
+    pub hidden_items_discovered: bool,
+    pub contained_items_discovered: bool,
+    pub actions: Vec<PerformAction>,
+}
+
+pub async fn inspect_fixture(
+    transaction: &mut Transaction<'_, Postgres>,
+    args: &InspectFixtureArgs,
+) -> Result<FixtureInspected, GameError> {
+    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
+        .await
+        .unwrap()
+    {
+        Some(it) => it,
+        None => return Err(GameError::GameNotFound),
+    };
+    let player = match crate::player_characters::repository::current(transaction, &args.username)
+        .await
+        .unwrap()
+    {
+        Some(it) => it,
+        None => return Err(GameError::NoPlayerCharacterSet),
+    };
+    let mut game = Game { state, player };
+
+    let inspect_args = InspectFixture {
+        fixture_id: args.fixture_id.clone(),
+        discover_can_be_opened: args.discover_can_be_opened,
+        discover_contained: args.discover_contained,
+        discover_hidden: args.discover_has_hidden,
+        discover_hidden_items: args.discover_hidden_items,
+    };
+    let action = Action::InspectFixture(inspect_args);
+    let events = game.handle_action(&action)?;
+
+    super::repository::save(transaction, &args.username, &game.state)
+        .await
+        .unwrap();
+    crate::player_characters::repository::save(transaction, &args.username, &game.player)
+        .await
+        .unwrap();
+
+    let mut fixture_inspected = FixtureInspected {
+        actions: game_actions(&game, &args.username),
+        can_be_opened_discovered: false,
+        has_hidden_discovered: false,
+        hidden_items_discovered: false,
+        contained_items_discovered: false,
+    };
+
+    for event in events {
+        match event {
+            Event::FixtureCanBeOpenedDiscovered(_) => {
+                fixture_inspected.can_be_opened_discovered = true;
+            }
+            Event::FixtureContainedDiscovered(_) => {
+                fixture_inspected.contained_items_discovered = true;
+            }
+            Event::FixtureHasHiddenDiscovered(_) => {
+                fixture_inspected.has_hidden_discovered = true;
+            }
+            Event::FixtureHiddenItemsDiscovered(_) => {
+                fixture_inspected.hidden_items_discovered = true;
+            }
+            _ => {}
+        }
+    }
+
+    Ok(fixture_inspected)
 }
