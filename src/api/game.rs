@@ -17,8 +17,9 @@ use crate::{
         generate::{generate_game, GenerateGameArgs, GeneratedGame},
         get::{game_actions, game_ids, GameActionsArgs},
         look::{
-            inspect_npc, look_at_npc, look_at_room, quick_look_room, InspectNpcArgs, NpcInspected,
-            NpcLookArgs, RoomLookArgs,
+            inspect_fixture, inspect_npc, look_at_npc, look_at_room, quick_look_room,
+            FixtureInspected, InspectFixtureArgs, InspectNpcArgs, NpcInspected, NpcLookArgs,
+            RoomLookArgs,
         },
         loot::{loot_npc, LootNpcArgs, NpcLooted},
     },
@@ -49,6 +50,18 @@ enum LookNpcResponse {
 enum InspectNpcResponse {
     #[oai(status = 200)]
     NpcInspected(Json<NpcInspected>),
+
+    #[oai(status = 404)]
+    NotFound(PlainText<String>),
+
+    #[oai(status = 500)]
+    GameError(Json<GameError>),
+}
+
+#[derive(ApiResponse)]
+enum InspectFixtureResponse {
+    #[oai(status = 200)]
+    FixtureInspected(Json<FixtureInspected>),
 
     #[oai(status = 404)]
     NotFound(PlainText<String>),
@@ -299,6 +312,31 @@ impl UnderworldGameApi {
                 "game_not_found".to_string(),
             ))),
             Err(it) => Ok(LookNpcResponse::GameError(Json(it))),
+        }
+    }
+
+    /// Inspect a fixture to find out more information about them when looking at them next.
+    /// After completing an inspect, look at the fixture to see new information.
+    #[oai(
+        path = "/game/inspect_fixture",
+        method = "post",
+        tag = "UnderworldApiTags::Game"
+    )]
+    async fn inspect_fixture(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<InspectFixtureArgs>,
+    ) -> Result<InspectFixtureResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        match inspect_fixture(&mut transaction, &args).await {
+            Ok(it) => {
+                transaction.commit().await.unwrap();
+                Ok(InspectFixtureResponse::FixtureInspected(Json(it)))
+            }
+            Err(GameError::GameNotFound) => Ok(InspectFixtureResponse::NotFound(PlainText(
+                "game_not_found".to_string(),
+            ))),
+            Err(it) => Ok(InspectFixtureResponse::GameError(Json(it))),
         }
     }
 
