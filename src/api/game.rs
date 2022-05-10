@@ -8,12 +8,13 @@ use sqlx::PgPool;
 use underworld_core::components::{non_player::NonPlayerView, rooms::room_view::RoomView};
 
 use crate::{
+    actions::PerformAction,
     error::{Error, GameError},
     game::{
         attack::{attack_npc, AttackNpcArgs, NpcAttacked},
         exit::{exit_current_room, ExitRoomArgs, RoomExited},
         generate::{generate_game, GenerateGameArgs, GeneratedGame},
-        get::game_ids,
+        get::{game_actions, game_ids, GameActionsArgs},
         look::{
             inspect_npc, look_at_npc, look_at_room, quick_look_room, InspectNpcArgs, NpcInspected,
             NpcLookArgs, RoomLookArgs,
@@ -98,6 +99,15 @@ enum ExitRoomResponse {
 enum GameIdResponse {
     #[oai(status = 200)]
     GameIds(Json<Vec<String>>),
+}
+
+#[derive(ApiResponse)]
+enum GameActionsResponse {
+    #[oai(status = 200)]
+    GameActions(Json<Vec<PerformAction>>),
+
+    #[oai(status = 500)]
+    BadRequest(Json<GameError>),
 }
 
 pub struct UnderworldGameApi;
@@ -277,6 +287,21 @@ impl UnderworldGameApi {
                 "game_not_found".to_string(),
             ))),
             Err(it) => Ok(InspectNpcResponse::GameError(Json(it))),
+        }
+    }
+
+    /// Get the current actions available for the game.
+    #[oai(path = "/game/current_actions", method = "post")]
+    async fn current_actions(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<GameActionsArgs>,
+    ) -> Result<GameActionsResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+
+        match game_actions(&mut transaction, &args).await {
+            Ok(actions) => Ok(GameActionsResponse::GameActions(Json(actions))),
+            Err(e) => Ok(GameActionsResponse::BadRequest(Json(e))),
         }
     }
 }
