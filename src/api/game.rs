@@ -7,6 +7,7 @@ use poem_openapi::{
 use sqlx::PgPool;
 use underworld_core::components::{non_player::NonPlayerView, rooms::room_view::RoomView};
 
+use crate::tags::UnderworldApiTags;
 use crate::{
     actions::PerformAction,
     error::{Error, GameError},
@@ -125,7 +126,11 @@ impl UnderworldGameApi {
     /// }
     /// ```
     /// to generate and save a new game for my_username
-    #[oai(path = "/game/generate", method = "post")]
+    #[oai(
+        path = "/game/generate",
+        method = "post",
+        tag = "UnderworldApiTags::Game"
+    )]
     async fn generate_game(
         &self,
         pool: Data<&PgPool>,
@@ -146,7 +151,11 @@ impl UnderworldGameApi {
     /// # Example
     ///
     /// Call `/my_username/games` to retrieve all game ids for my_username
-    #[oai(path = "/:username/games", method = "get")]
+    #[oai(
+        path = "/:username/games",
+        method = "get",
+        tag = "UnderworldApiTags::Game"
+    )]
     async fn list_games(
         &self,
         pool: Data<&PgPool>,
@@ -159,7 +168,11 @@ impl UnderworldGameApi {
     }
 
     /// Exit the current room of the specified game through the specified exit.
-    #[oai(path = "/game/exit_current_room", method = "post")]
+    #[oai(
+        path = "/game/exit_current_room",
+        method = "post",
+        tag = "UnderworldApiTags::Game"
+    )]
     async fn exit_current_room(
         &self,
         pool: Data<&PgPool>,
@@ -177,7 +190,11 @@ impl UnderworldGameApi {
     }
 
     /// Attack a specific NPC inside the current room of the specified game.
-    #[oai(path = "/game/attack_npc", method = "post")]
+    #[oai(
+        path = "/game/attack_npc",
+        method = "post",
+        tag = "UnderworldApiTags::Game"
+    )]
     async fn attack_npc(
         &self,
         pool: Data<&PgPool>,
@@ -196,7 +213,11 @@ impl UnderworldGameApi {
     }
 
     /// Loot some items from an NPC.
-    #[oai(path = "/game/loot_npc", method = "post")]
+    #[oai(
+        path = "/game/loot_npc",
+        method = "post",
+        tag = "UnderworldApiTags::Game"
+    )]
     async fn loot_npc(
         &self,
         pool: Data<&PgPool>,
@@ -217,7 +238,11 @@ impl UnderworldGameApi {
     }
 
     /// Take a closer look at the current room.
-    #[oai(path = "/game/look_at_current_room", method = "post")]
+    #[oai(
+        path = "/game/look_at_current_room",
+        method = "post",
+        tag = "UnderworldApiTags::Game"
+    )]
     async fn look_at_current_room(
         &self,
         pool: Data<&PgPool>,
@@ -234,7 +259,11 @@ impl UnderworldGameApi {
     }
 
     /// Glance quickly at the current room.
-    #[oai(path = "/game/quick_look_current_room", method = "post")]
+    #[oai(
+        path = "/game/quick_look_current_room",
+        method = "post",
+        tag = "UnderworldApiTags::Game"
+    )]
     async fn quick_look_current_room(
         &self,
         pool: Data<&PgPool>,
@@ -250,7 +279,11 @@ impl UnderworldGameApi {
     }
 
     /// Look at a specific NPC in the current room.
-    #[oai(path = "/game/look_at_npc", method = "post")]
+    #[oai(
+        path = "/game/look_at_npc",
+        method = "post",
+        tag = "UnderworldApiTags::Game"
+    )]
     async fn look_at_npc(
         &self,
         pool: Data<&PgPool>,
@@ -271,7 +304,11 @@ impl UnderworldGameApi {
 
     /// Inspect an NPC to find out more information about them when looking at them next.
     /// After completing an inspect, look at the NPC to see new information.
-    #[oai(path = "/game/inspect_npc", method = "post")]
+    #[oai(
+        path = "/game/inspect_npc",
+        method = "post",
+        tag = "UnderworldApiTags::Game"
+    )]
     async fn inspect_npc(
         &self,
         pool: Data<&PgPool>,
@@ -291,7 +328,11 @@ impl UnderworldGameApi {
     }
 
     /// Get the current actions available for the game.
-    #[oai(path = "/game/current_actions", method = "post")]
+    #[oai(
+        path = "/game/current_actions",
+        method = "post",
+        tag = "UnderworldApiTags::Game"
+    )]
     async fn current_actions(
         &self,
         pool: Data<&PgPool>,

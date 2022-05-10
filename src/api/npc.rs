@@ -1,3 +1,4 @@
+use crate::tags::UnderworldApiTags;
 use poem::Result;
 use poem_openapi::{payload::Json, ApiResponse, Object, OpenApi};
 use serde::{Deserialize, Serialize};
@@ -34,7 +35,7 @@ impl UnderworldNpcApi {
     /// # Example
     ///
     /// Call `/npc/random` to generate a completely random character
-    #[oai(path = "/npc/random", method = "get")]
+    #[oai(path = "/npc/random", method = "get", tag = "UnderworldApiTags::Npc")]
     async fn generate_character(&self) -> Result<CharacterGeneratedResponse> {
         let generator = npc_generator(generate_name());
         let non_player = generator.generate();

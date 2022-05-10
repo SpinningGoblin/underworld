@@ -7,6 +7,7 @@ use poem_openapi::{
 use sqlx::PgPool;
 use underworld_core::{components::player::PlayerCharacterView, systems::view::player};
 
+use crate::tags::UnderworldApiTags;
 use crate::{
     error::Error,
     player_characters::{
@@ -53,7 +54,12 @@ pub struct UnderworldPlayerApi;
 #[OpenApi]
 impl UnderworldPlayerApi {
     /// Generate and save a new player_character for the user.
-    #[oai(path = "/player_character/generate", method = "post")]
+    /// If user has no player set as current, this one gets set as the current.
+    #[oai(
+        path = "/player_character/generate",
+        method = "post",
+        tag = "UnderworldApiTags::PlayerCharacter"
+    )]
     async fn generate_player_character(
         &self,
         pool: Data<&PgPool>,
@@ -73,7 +79,11 @@ impl UnderworldPlayerApi {
     ///
     /// Call `/my_username/player_characters` to retrieve all player character
     /// ids for my_username
-    #[oai(path = "/:username/player_characters", method = "get")]
+    #[oai(
+        path = "/:username/player_characters",
+        method = "get",
+        tag = "UnderworldApiTags::PlayerCharacter"
+    )]
     async fn list_player_characters(
         &self,
         pool: Data<&PgPool>,
@@ -86,7 +96,11 @@ impl UnderworldPlayerApi {
     }
 
     /// Check the player character for the user with specified ID.
-    #[oai(path = "/:username/player_character/:id/check", method = "get")]
+    #[oai(
+        path = "/:username/player_character/:id/check",
+        method = "get",
+        tag = "UnderworldApiTags::PlayerCharacter"
+    )]
     async fn check_player_character(
         &self,
         pool: Data<&PgPool>,
@@ -109,7 +123,11 @@ impl UnderworldPlayerApi {
     }
 
     /// Check the status of the current player character.
-    #[oai(path = "/:username/check_current_player_character", method = "get")]
+    #[oai(
+        path = "/:username/check_current_player_character",
+        method = "get",
+        tag = "UnderworldApiTags::PlayerCharacter"
+    )]
     async fn check_current_player_character(
         &self,
         pool: Data<&PgPool>,
@@ -129,8 +147,12 @@ impl UnderworldPlayerApi {
         }
     }
 
-    /// Set the specified player character as the current one for any actions in a game action.
-    #[oai(path = "/set_current_player_character", method = "post")]
+    /// Set the specified player character as the current one for any actions in a game.
+    #[oai(
+        path = "/set_current_player_character",
+        method = "post",
+        tag = "UnderworldApiTags::PlayerCharacter"
+    )]
     async fn set_current_player_character(
         &self,
         pool: Data<&PgPool>,

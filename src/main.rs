@@ -5,6 +5,7 @@ mod event;
 mod game;
 mod player_characters;
 mod psql;
+pub mod tags;
 
 use std::env;
 
