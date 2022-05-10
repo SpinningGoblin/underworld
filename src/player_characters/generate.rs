@@ -38,6 +38,16 @@ pub async fn generate_player_character(
         .await
         .unwrap();
 
+    match super::repository::current(transaction, &args.username)
+        .await
+        .unwrap()
+    {
+        Some(_) => {}
+        None => super::repository::set_current(transaction, &args.username, &player_character)
+            .await
+            .unwrap(),
+    };
+
     GeneratedPlayerCharacter {
         actions: player_character_actions(
             &args.username,
