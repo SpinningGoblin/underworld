@@ -25,7 +25,7 @@ pub struct ExitRoomArgs {
     pub exit_id: String,
 }
 
-pub async fn exit_current_room(
+pub async fn exit_room(
     transaction: &mut Transaction<'_, Postgres>,
     args: &ExitRoomArgs,
 ) -> Result<RoomExited, GameError> {

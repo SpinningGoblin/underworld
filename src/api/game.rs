@@ -12,7 +12,7 @@ use crate::{
     error::{Error, GameError},
     game::{
         attack::{attack_npc, AttackNpcArgs, NpcAttacked},
-        exit::{exit_current_room, ExitRoomArgs, RoomExited},
+        exit::{exit_room, ExitRoomArgs, RoomExited},
         generate::{generate_game, GenerateGameArgs, GeneratedGame},
         get::{game_actions, game_ids, GameActionsArgs},
         look::{look_at_npc, look_at_room, NpcLookArgs, RoomLookArgs},
@@ -184,17 +184,17 @@ impl UnderworldGameApi {
 
     /// Exit the current room of the specified game through the specified exit.
     #[oai(
-        path = "/game/exit_current_room",
+        path = "/game/exit_room",
         method = "post",
         tag = "UnderworldApiTags::Game"
     )]
-    async fn exit_current_room(
+    async fn exit_room(
         &self,
         pool: Data<&PgPool>,
         args: Json<ExitRoomArgs>,
     ) -> Result<ExitRoomResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let exit_result = exit_current_room(&mut transaction, &args).await;
+        let exit_result = exit_room(&mut transaction, &args).await;
         transaction.commit().await.unwrap();
         match exit_result {
             Ok(it) => Ok(ExitRoomResponse::RoomExited(Json(it))),
@@ -254,11 +254,11 @@ impl UnderworldGameApi {
 
     /// Take a closer look at the current room.
     #[oai(
-        path = "/game/look_at_current_room",
+        path = "/game/look_around_room",
         method = "post",
         tag = "UnderworldApiTags::Game"
     )]
-    async fn look_at_current_room(
+    async fn look_around_room(
         &self,
         pool: Data<&PgPool>,
         args: Json<RoomLookArgs>,

@@ -86,7 +86,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
             Action::LookAtCurrentRoom(_) => Some(PerformAction {
                 name: ActionName::LookAtRoom,
                 description: "Look at current room".to_string(),
-                link: get_api_link("game/look_at_current_room"),
+                link: get_api_link("game/look_around_room"),
                 http_action: "POST".to_string(),
                 args: Some(serde_json::to_value(&look_args).unwrap()),
             }),
@@ -114,7 +114,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
                 Some(PerformAction {
                     name: ActionName::ExitRoom,
                     description: "Exit current room using this exit.".to_string(),
-                    link: get_api_link("game/exit_current_room"),
+                    link: get_api_link("game/exit_room"),
                     http_action: "POST".to_string(),
                     args: Some(serde_json::to_value(&exit_args).unwrap()),
                 })
