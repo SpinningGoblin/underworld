@@ -7,7 +7,6 @@ use poem_openapi::{
 use sqlx::PgPool;
 use underworld_core::components::{non_player::NonPlayerView, rooms::room_view::RoomView};
 
-use crate::tags::UnderworldApiTags;
 use crate::{
     actions::PerformAction,
     error::{Error, GameError},
@@ -16,13 +15,16 @@ use crate::{
         exit::{exit_current_room, ExitRoomArgs, RoomExited},
         generate::{generate_game, GenerateGameArgs, GeneratedGame},
         get::{game_actions, game_ids, GameActionsArgs},
-        look::{
-            inspect_fixture, inspect_npc, look_at_npc, look_at_room, quick_look_room,
-            FixtureInspected, InspectFixtureArgs, InspectNpcArgs, NpcInspected, NpcLookArgs,
-            RoomLookArgs,
-        },
+        look::{look_at_npc, look_at_room, quick_look_room, NpcLookArgs, RoomLookArgs},
         loot::{loot_npc, LootNpcArgs, NpcLooted},
     },
+};
+use crate::{
+    game::inspect::{
+        inspect_fixture, inspect_npc, FixtureInspected, InspectFixtureArgs, InspectNpcArgs,
+        NpcInspected,
+    },
+    tags::UnderworldApiTags,
 };
 
 #[derive(ApiResponse)]

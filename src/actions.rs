@@ -7,7 +7,8 @@ use crate::{
     game::{
         attack::AttackNpcArgs,
         exit::ExitRoomArgs,
-        look::{InspectNpcArgs, NpcLookArgs, RoomLookArgs},
+        inspect::InspectNpcArgs,
+        look::{NpcLookArgs, RoomLookArgs},
         loot::LootNpcArgs,
     },
     player_characters::current::SetPlayerCharacterArgs,
