@@ -20,6 +20,7 @@ pub struct GeneratePlayerCharacter {
 pub struct GeneratedPlayerCharacter {
     pub actions: Vec<PerformAction>,
     pub player_character_id: String,
+    pub set_as_current: bool,
 }
 
 pub async fn generate_player_character(
@@ -38,14 +39,19 @@ pub async fn generate_player_character(
         .await
         .unwrap();
 
+    let mut set_as_current = false;
+
     match super::repository::current(transaction, &args.username)
         .await
         .unwrap()
     {
         Some(_) => {}
-        None => super::repository::set_current(transaction, &args.username, &player_character)
-            .await
-            .unwrap(),
+        None => {
+            super::repository::set_current(transaction, &args.username, &player_character)
+                .await
+                .unwrap();
+            set_as_current = true;
+        }
     };
 
     GeneratedPlayerCharacter {
@@ -54,5 +60,6 @@ pub async fn generate_player_character(
             &player_character.identifier.id.to_string(),
         ),
         player_character_id: player_character.identifier.id.to_string(),
+        set_as_current,
     }
 }

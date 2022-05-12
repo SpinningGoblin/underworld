@@ -7,8 +7,8 @@ use crate::{
     game::{
         attack::AttackNpcArgs,
         exit::ExitRoomArgs,
-        inspect::InspectNpcArgs,
-        look::{NpcLookArgs, RoomLookArgs},
+        inspect::{InspectFixtureArgs, InspectNpcArgs},
+        look::{FixtureLookArgs, NpcLookArgs, RoomLookArgs},
         loot::LootNpcArgs,
     },
     player_characters::current::SetPlayerCharacterArgs,
@@ -20,7 +20,9 @@ pub enum ActionName {
     AttackNpc,
     CheckPlayerCharacter,
     ExitRoom,
+    InspectFixture,
     InspectNpc,
+    LookAtFixture,
     LookAtNpc,
     LookAtRoom,
     LootNpc,
@@ -167,8 +169,38 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
                     .unwrap(),
                 ),
             }),
-            Action::InspectFixture(_) => None,
-            Action::LookAtFixture(_) => None,
+            Action::InspectFixture(inspect) => Some(PerformAction {
+                name: ActionName::InspectFixture,
+                description: "Inspect a fixture to discover new information".to_string(),
+                link: get_api_link("game/inspect_npc"),
+                http_action: "POST".to_string(),
+                args: Some(
+                    serde_json::to_value(InspectFixtureArgs {
+                        username: username.to_string(),
+                        game_id: game_id.clone(),
+                        fixture_id: inspect.fixture_id,
+                        discover_has_hidden: inspect.discover_hidden,
+                        discover_hidden_items: inspect.discover_hidden_items,
+                        discover_contained: inspect.discover_contained,
+                        discover_can_be_opened: inspect.discover_can_be_opened,
+                    })
+                    .unwrap(),
+                ),
+            }),
+            Action::LookAtFixture(look_at) => Some(PerformAction {
+                name: ActionName::LookAtFixture,
+                description: "Look at a fixture.".to_string(),
+                link: get_api_link("game/look_at_fixture"),
+                http_action: "POST".to_string(),
+                args: Some(
+                    serde_json::to_value(FixtureLookArgs {
+                        username: username.to_string(),
+                        game_id: game_id.clone(),
+                        fixture_id: look_at.fixture_id,
+                    })
+                    .unwrap(),
+                ),
+            }),
         })
         .collect()
 }

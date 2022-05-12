@@ -5,7 +5,9 @@ use poem_openapi::{
     ApiResponse, OpenApi,
 };
 use sqlx::PgPool;
-use underworld_core::components::{non_player::NonPlayerView, rooms::room_view::RoomView};
+use underworld_core::components::{
+    fixtures::fixture::FixtureView, non_player::NonPlayerView, rooms::room_view::RoomView,
+};
 
 use crate::{
     actions::PerformAction,
@@ -15,7 +17,9 @@ use crate::{
         exit::{exit_room, ExitRoomArgs, RoomExited},
         generate::{generate_game, GenerateGameArgs, GeneratedGame},
         get::{game_actions, game_ids, GameActionsArgs},
-        look::{look_at_npc, look_at_room, NpcLookArgs, RoomLookArgs},
+        look::{
+            look_at_fixture, look_at_npc, look_at_room, FixtureLookArgs, NpcLookArgs, RoomLookArgs,
+        },
         loot::{loot_npc, LootNpcArgs, NpcLooted},
     },
 };
@@ -34,6 +38,18 @@ enum LookResponse {
 
     #[oai(status = 404)]
     NotFound(PlainText<String>),
+}
+
+#[derive(ApiResponse)]
+enum LookFixtureResponse {
+    #[oai(status = 200)]
+    FixtureViewed(Json<FixtureView>),
+
+    #[oai(status = 404)]
+    NotFound(PlainText<String>),
+
+    #[oai(status = 500)]
+    GameError(Json<GameError>),
 }
 
 #[derive(ApiResponse)]
@@ -270,6 +286,30 @@ impl UnderworldGameApi {
         match view_result {
             Ok(it) => Ok(LookResponse::LookAtRoom(Json(it))),
             Err(e) => Ok(LookResponse::NotFound(PlainText(e.to_string()))),
+        }
+    }
+
+    /// Look at a specific Fixture in the current room.
+    #[oai(
+        path = "/game/look_at_fixture",
+        method = "post",
+        tag = "UnderworldApiTags::Game"
+    )]
+    async fn look_at_fixture(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<FixtureLookArgs>,
+    ) -> Result<LookFixtureResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        match look_at_fixture(&mut transaction, &args).await {
+            Ok(it) => {
+                transaction.commit().await.unwrap();
+                Ok(LookFixtureResponse::FixtureViewed(Json(it)))
+            }
+            Err(GameError::GameNotFound) => Ok(LookFixtureResponse::NotFound(PlainText(
+                "game_not_found".to_string(),
+            ))),
+            Err(it) => Ok(LookFixtureResponse::GameError(Json(it))),
         }
     }
 
