@@ -3,13 +3,9 @@ use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{action::Action, look_at_current_room::LookAtCurrentRoom, look_at_npc::LookAtNpc},
-    components::{
-        non_player::NonPlayerView,
-        rooms::room_view::{RoomView, RoomViewArgs},
-    },
+    components::{non_player::NonPlayerView, rooms::room_view::RoomView},
     events::event::Event,
     game::Game,
-    systems::view::room,
 };
 
 use crate::error::GameError;
@@ -67,25 +63,6 @@ pub async fn look_at_room(
         Some(room_viewed) => Ok(room_viewed.view.clone()),
         None => Err(GameError::General),
     }
-}
-
-pub async fn quick_look_room(
-    transaction: &mut Transaction<'_, Postgres>,
-    args: &RoomLookArgs,
-) -> Result<RoomView, GameError> {
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
-        .await
-        .unwrap()
-    {
-        Some(it) => it,
-        None => return Err(GameError::GameNotFound),
-    };
-
-    Ok(room::look_at(
-        state.current_room(),
-        RoomViewArgs::default(),
-        false,
-    ))
 }
 
 pub async fn look_at_npc(

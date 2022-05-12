@@ -15,7 +15,7 @@ use crate::{
         exit::{exit_current_room, ExitRoomArgs, RoomExited},
         generate::{generate_game, GenerateGameArgs, GeneratedGame},
         get::{game_actions, game_ids, GameActionsArgs},
-        look::{look_at_npc, look_at_room, quick_look_room, NpcLookArgs, RoomLookArgs},
+        look::{look_at_npc, look_at_room, NpcLookArgs, RoomLookArgs},
         loot::{loot_npc, LootNpcArgs, NpcLooted},
     },
 };
@@ -267,26 +267,6 @@ impl UnderworldGameApi {
         let view_result = look_at_room(&mut transaction, &args).await;
         transaction.commit().await.unwrap();
 
-        match view_result {
-            Ok(it) => Ok(LookResponse::LookAtRoom(Json(it))),
-            Err(e) => Ok(LookResponse::NotFound(PlainText(e.to_string()))),
-        }
-    }
-
-    /// Glance quickly at the current room.
-    #[oai(
-        path = "/game/quick_look_current_room",
-        method = "post",
-        tag = "UnderworldApiTags::Game"
-    )]
-    async fn quick_look_current_room(
-        &self,
-        pool: Data<&PgPool>,
-        args: Json<RoomLookArgs>,
-    ) -> Result<LookResponse> {
-        let mut transaction = pool.0.begin().await.unwrap();
-        let view_result = quick_look_room(&mut transaction, &args).await;
-        transaction.commit().await.unwrap();
         match view_result {
             Ok(it) => Ok(LookResponse::LookAtRoom(Json(it))),
             Err(e) => Ok(LookResponse::NotFound(PlainText(e.to_string()))),
