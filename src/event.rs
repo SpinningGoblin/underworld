@@ -19,6 +19,7 @@ pub enum EventName {
     FixtureHasHiddenDiscovered,
     FixtureHiddenItemsDiscovered,
     FixtureViewed,
+    ItemTakenFromFixture,
     ItemTakenFromNpc,
     NpcHealthDiscovered,
     NpcHiddenDiscovered,
@@ -136,6 +137,10 @@ impl From<Event> for GameEvent {
             },
             Event::RoomFirstSeen(it) => GameEvent {
                 name: EventName::RoomFirstSeen,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::ItemTakenFromFixture(it) => GameEvent {
+                name: EventName::ItemTakenFromFixture,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
         }

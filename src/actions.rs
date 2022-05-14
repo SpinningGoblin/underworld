@@ -201,6 +201,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
                     .unwrap(),
                 ),
             }),
+            Action::LootFixture(_) => None,
         })
         .collect()
 }
