@@ -13,6 +13,7 @@ use crate::{
 };
 
 #[derive(Serialize, Object)]
+/// Results from attack on the NPC.
 pub struct NpcAttacked {
     /// Events that happened due to the attack.
     events: Vec<GameEvent>,
@@ -21,9 +22,13 @@ pub struct NpcAttacked {
 }
 
 #[derive(Deserialize, Object, Serialize)]
+/// Args for an attack action against a single NPC.
 pub struct AttackNpcArgs {
+    /// Username for the action.
     pub username: String,
+    /// The ID of the game which the action will happen in.
     pub game_id: String,
+    /// ID of the NPC being attacked.
     pub npc_id: String,
 }
 

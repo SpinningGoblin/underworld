@@ -13,15 +13,20 @@ use crate::{
 };
 
 #[derive(Serialize, Object)]
+/// Result of exiting the room.
 pub struct RoomExited {
     events: Vec<GameEvent>,
     actions: Vec<PerformAction>,
 }
 
 #[derive(Deserialize, Object, Serialize)]
+/// Args for exiting the current room.
 pub struct ExitRoomArgs {
+    /// Username for the action.
     pub username: String,
+    /// The ID of the game to perform the action.
     pub game_id: String,
+    /// The ID of the exit to leave through.
     pub exit_id: String,
 }
 
