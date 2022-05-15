@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Start Here</a></li><li class="chapter-item expanded "><a href="generating_pc.html"><strong aria-hidden="true">1.</strong> Generating a Player Character</a></li><li class="chapter-item expanded "><a href="generating_game.html"><strong aria-hidden="true">2.</strong> Generating a Game</a></li><li class="chapter-item expanded "><a href="game_actions.html"><strong aria-hidden="true">3.</strong> Game Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="actions/attacking.html"><strong aria-hidden="true">3.1.</strong> Attacking</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Start Here</a></li><li class="chapter-item expanded affix "><a href="how_to_play.html">How To Play</a></li><li class="chapter-item expanded "><a href="player_characters.html"><strong aria-hidden="true">1.</strong> Player Characters</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="player_characters/generating.html"><strong aria-hidden="true">1.1.</strong> Generating</a></li><li class="chapter-item expanded "><a href="player_characters/current.html"><strong aria-hidden="true">1.2.</strong> Current PC</a></li></ol></li><li class="chapter-item expanded "><a href="game.html"><strong aria-hidden="true">2.</strong> Game</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="game/generating.html"><strong aria-hidden="true">2.1.</strong> Generating</a></li><li class="chapter-item expanded "><a href="game/actions.html"><strong aria-hidden="true">2.2.</strong> Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="game/actions/attacking.html"><strong aria-hidden="true">2.2.1.</strong> Attacking</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -143,10 +143,53 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="start-here"><a class="header" href="#start-here">Start Here</a></h1>
+                        <h1 id="welcome-to-the-world-of-underworld-server"><a class="header" href="#welcome-to-the-world-of-underworld-server">Welcome to the World of Underworld Server</a></h1>
+<p>Underworld Server is a single-player dungeon crawl played entirely via a JSON web API. Generate a character for yourself to play, generate a game, and perform actions in the game to progress.</p>
+<h2 id="early-days-warning"><a class="header" href="#early-days-warning">Early Days Warning</a></h2>
+<p>This whole thing is very, very early days. Maybe not even an alpha. Here's some of what's missing:</p>
+<ul>
+<li>Any kind of auth. Right now everything is just usernames, but there's no user data.</li>
+<li>Progression. There is no &quot;progression&quot; for a character yet beyond just seeing what else pops up.</li>
+<li>Combat systems. Everything is very early here, and might change at any time.</li>
+<li>More. Of everything. Spells, items, etc. I've been focusing on everything else and this is only something I do in my spare time.</li>
+</ul>
+<h4 id="more-warnings"><a class="header" href="#more-warnings">More warnings</a></h4>
+<ul>
+<li>Breaking changes. The game is early, I expect lots of these.</li>
+<li>Data disappearing. Goes along with the above, I might need to wipe out data at any point. Or if someone just creates thousands of player characters or games, I'll just dump the entire DB.</li>
+</ul>
+<h2 id="open-api"><a class="header" href="#open-api">Open API</a></h2>
+<p>The current swagger UI for the server can be found at <code>&lt;BASE_URL&gt;/swagger_ui</code>, where <code>&lt;BASE_URL&gt;</code> is the url of the server, likely where you're reading this. The JSON spec can be found at <code>&lt;BASE_URL&gt;/spec</code>.</p>
+<h2 id="git-repos"><a class="header" href="#git-repos">Git Repos</a></h2>
+<p>The server and the &quot;core&quot; logic are both in different git repositories. If you'd like to spin up your own server, or use the core code for your own thing, go ahead.</p>
+<ul>
+<li><a href="https://github.com/derrickp/underworld_server">Server code</a></li>
+<li><a href="https://github.com/derrickp/underworld_core">Core code</a></li>
+</ul>
+<h3 id="note-on-urls-in-the-docs"><a class="header" href="#note-on-urls-in-the-docs">Note on URLs in the docs</a></h3>
+<p>All urls mentioned in the docs assume they are from the root of the <code>&lt;BASE_URL&gt;</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="how-to-play"><a class="header" href="#how-to-play">How To Play</a></h1>
+<p>You can play the game using anything that can consume a JSON API. Even the Swagger UI if you want.</p>
+<h2 id="order-of-operations"><a class="header" href="#order-of-operations">Order of Operations</a></h2>
+<p>Underworld Server keeps track of what a user's &quot;current&quot; player character is. Whenever you perform an action for a game, the current player character for that username is used to perform the action. If there is no current player character, it will be an error.</p>
+<p>You can swap your player character at any time, check <a href="./player_characters/current.html">here</a> for more information.</p>
+<p>To do anything you first need to <a href="./player_characters/generating.html">generate a player character (PC)</a>. If this is your first player character, it will automatically be set as your current player.</p>
+<p>After you have a PC, you can <a href="./game/generating.html">generate a game</a>. Once you have a game, almost every other action will take that game ID to <a href="./game/actions.html">perform the action</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="player-characters"><a class="header" href="#player-characters">Player Characters</a></h1>
+<p>All actions for games are undertaken in the context of the &quot;current&quot; player character associated with a username.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="generating-a-player-character"><a class="header" href="#generating-a-player-character">Generating a Player Character</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="generating-a-game"><a class="header" href="#generating-a-game">Generating a Game</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="game-actions"><a class="header" href="#game-actions">Game Actions</a></h1>
+<p>To generate a player character you send a JSON POST request to <code>/api/player_characters/generate</code>. The payload for the generation request looks like</p>
+<pre><code class="language-JSON">{
+  &quot;username&quot;: &quot;username&quot;, // Whatever username you want to associate with this player character.
+  &quot;character_size&quot;: &quot;average&quot;, // optional, will be random if not specified
+  &quot;character_species&quot;: &quot;bugbear&quot;, // optional, will be random if not specified
+  &quot;character_name&quot;: &quot;string&quot; // optional, will be empty if not specified
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="getting-and-setting-current-player-character"><a class="header" href="#getting-and-setting-current-player-character">Getting and Setting Current Player Character</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="game"><a class="header" href="#game">Game</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="generating"><a class="header" href="#generating">Generating</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="actions"><a class="header" href="#actions">Actions</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="attacking"><a class="header" href="#attacking">Attacking</a></h1>
 
                     </main>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Game Actions - Underworld Server</title>
+        <title>How To Play - Underworld Server</title>
 
 
         <!-- Custom HTML head -->
@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Start Here</a></li><li class="chapter-item expanded "><a href="generating_pc.html"><strong aria-hidden="true">1.</strong> Generating a Player Character</a></li><li class="chapter-item expanded "><a href="generating_game.html"><strong aria-hidden="true">2.</strong> Generating a Game</a></li><li class="chapter-item expanded "><a href="game_actions.html" class="active"><strong aria-hidden="true">3.</strong> Game Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="actions/attacking.html"><strong aria-hidden="true">3.1.</strong> Attacking</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Start Here</a></li><li class="chapter-item expanded affix "><a href="how_to_play.html" class="active">How To Play</a></li><li class="chapter-item expanded "><a href="player_characters.html"><strong aria-hidden="true">1.</strong> Player Characters</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="player_characters/generating.html"><strong aria-hidden="true">1.1.</strong> Generating</a></li><li class="chapter-item expanded "><a href="player_characters/current.html"><strong aria-hidden="true">1.2.</strong> Current PC</a></li></ol></li><li class="chapter-item expanded "><a href="game.html"><strong aria-hidden="true">2.</strong> Game</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="game/generating.html"><strong aria-hidden="true">2.1.</strong> Generating</a></li><li class="chapter-item expanded "><a href="game/actions.html"><strong aria-hidden="true">2.2.</strong> Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="game/actions/attacking.html"><strong aria-hidden="true">2.2.1.</strong> Attacking</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -142,17 +142,23 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="game-actions"><a class="header" href="#game-actions">Game Actions</a></h1>
+                        <h1 id="how-to-play"><a class="header" href="#how-to-play">How To Play</a></h1>
+<p>You can play the game using anything that can consume a JSON API. Even the Swagger UI if you want.</p>
+<h2 id="order-of-operations"><a class="header" href="#order-of-operations">Order of Operations</a></h2>
+<p>Underworld Server keeps track of what a user's &quot;current&quot; player character is. Whenever you perform an action for a game, the current player character for that username is used to perform the action. If there is no current player character, it will be an error.</p>
+<p>You can swap your player character at any time, check <a href="./player_characters/current.html">here</a> for more information.</p>
+<p>To do anything you first need to <a href="./player_characters/generating.html">generate a player character (PC)</a>. If this is your first player character, it will automatically be set as your current player.</p>
+<p>After you have a PC, you can <a href="./game/generating.html">generate a game</a>. Once you have a game, almost every other action will take that game ID to <a href="./game/actions.html">perform the action</a>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="generating_game.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="actions/attacking.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="player_characters.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -162,11 +168,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="generating_game.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="actions/attacking.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="player_characters.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

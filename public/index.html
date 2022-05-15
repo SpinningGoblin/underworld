@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html" class="active">Start Here</a></li><li class="chapter-item expanded "><a href="generating_pc.html"><strong aria-hidden="true">1.</strong> Generating a Player Character</a></li><li class="chapter-item expanded "><a href="generating_game.html"><strong aria-hidden="true">2.</strong> Generating a Game</a></li><li class="chapter-item expanded "><a href="game_actions.html"><strong aria-hidden="true">3.</strong> Game Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="actions/attacking.html"><strong aria-hidden="true">3.1.</strong> Attacking</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html" class="active">Start Here</a></li><li class="chapter-item expanded affix "><a href="how_to_play.html">How To Play</a></li><li class="chapter-item expanded "><a href="player_characters.html"><strong aria-hidden="true">1.</strong> Player Characters</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="player_characters/generating.html"><strong aria-hidden="true">1.1.</strong> Generating</a></li><li class="chapter-item expanded "><a href="player_characters/current.html"><strong aria-hidden="true">1.2.</strong> Current PC</a></li></ol></li><li class="chapter-item expanded "><a href="game.html"><strong aria-hidden="true">2.</strong> Game</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="game/generating.html"><strong aria-hidden="true">2.1.</strong> Generating</a></li><li class="chapter-item expanded "><a href="game/actions.html"><strong aria-hidden="true">2.2.</strong> Actions</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="game/actions/attacking.html"><strong aria-hidden="true">2.2.1.</strong> Attacking</a></li></ol></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -142,14 +142,38 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="start-here"><a class="header" href="#start-here">Start Here</a></h1>
+                        <h1 id="welcome-to-the-world-of-underworld-server"><a class="header" href="#welcome-to-the-world-of-underworld-server">Welcome to the World of Underworld Server</a></h1>
+<p>Underworld Server is a single-player dungeon crawl played entirely via a JSON web API. Generate a character for yourself to play, generate a game, and perform actions in the game to progress.</p>
+<h2 id="early-days-warning"><a class="header" href="#early-days-warning">Early Days Warning</a></h2>
+<p>This whole thing is very, very early days. Maybe not even an alpha. Here's some of what's missing:</p>
+<ul>
+<li>Any kind of auth. Right now everything is just usernames, but there's no user data.</li>
+<li>Progression. There is no &quot;progression&quot; for a character yet beyond just seeing what else pops up.</li>
+<li>Combat systems. Everything is very early here, and might change at any time.</li>
+<li>More. Of everything. Spells, items, etc. I've been focusing on everything else and this is only something I do in my spare time.</li>
+</ul>
+<h4 id="more-warnings"><a class="header" href="#more-warnings">More warnings</a></h4>
+<ul>
+<li>Breaking changes. The game is early, I expect lots of these.</li>
+<li>Data disappearing. Goes along with the above, I might need to wipe out data at any point. Or if someone just creates thousands of player characters or games, I'll just dump the entire DB.</li>
+</ul>
+<h2 id="open-api"><a class="header" href="#open-api">Open API</a></h2>
+<p>The current swagger UI for the server can be found at <code>&lt;BASE_URL&gt;/swagger_ui</code>, where <code>&lt;BASE_URL&gt;</code> is the url of the server, likely where you're reading this. The JSON spec can be found at <code>&lt;BASE_URL&gt;/spec</code>.</p>
+<h2 id="git-repos"><a class="header" href="#git-repos">Git Repos</a></h2>
+<p>The server and the &quot;core&quot; logic are both in different git repositories. If you'd like to spin up your own server, or use the core code for your own thing, go ahead.</p>
+<ul>
+<li><a href="https://github.com/derrickp/underworld_server">Server code</a></li>
+<li><a href="https://github.com/derrickp/underworld_core">Core code</a></li>
+</ul>
+<h3 id="note-on-urls-in-the-docs"><a class="header" href="#note-on-urls-in-the-docs">Note on URLs in the docs</a></h3>
+<p>All urls mentioned in the docs assume they are from the root of the <code>&lt;BASE_URL&gt;</code>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
 
-                            <a rel="next" href="generating_pc.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="how_to_play.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -160,7 +184,7 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
 
-                    <a rel="next" href="generating_pc.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="how_to_play.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
