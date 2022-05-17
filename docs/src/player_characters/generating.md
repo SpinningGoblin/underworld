@@ -9,3 +9,5 @@ To generate a player character you send a JSON POST request to `/api/player_char
   "character_name": "string" // optional, will be empty if not specified
 }
 ```
+
+You can check the Open API spec for all of the options for both `character_size` and `character_species`. Neither species nor size impact gameplay at all (I am not sure if they ever will) and are just for flavour.
