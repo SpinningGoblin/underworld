@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
@@ -8,7 +10,7 @@ use underworld_core::{
 
 use crate::{
     actions::{game_actions, PerformAction},
-    error::GameError,
+    error::{GameNotFoundError, NoPlayerCharacterSetError},
     event::GameEvent,
 };
 
@@ -35,22 +37,16 @@ pub struct AttackNpcArgs {
 pub async fn attack_npc(
     transaction: &mut Transaction<'_, Postgres>,
     args: &AttackNpcArgs,
-) -> Result<NpcAttacked, GameError> {
+) -> Result<NpcAttacked, Box<dyn Error>> {
     let player_character =
-        match crate::player_characters::repository::current(transaction, &args.username)
-            .await
-            .unwrap()
-        {
+        match crate::player_characters::repository::current(transaction, &args.username).await? {
             Some(it) => it,
-            None => return Err(GameError::NoPlayerCharacterSet),
+            None => return Err(Box::new(NoPlayerCharacterSetError)),
         };
 
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
-        .await
-        .unwrap()
-    {
+    let state = match super::repository::by_id(transaction, &args.username, &args.game_id).await? {
         Some(it) => it,
-        None => return Err(GameError::GameNotFound),
+        None => return Err(Box::new(GameNotFoundError)),
     };
 
     let mut game = Game {
@@ -63,12 +59,8 @@ pub async fn attack_npc(
     };
 
     let events = game.handle_action(&Action::AttackNpc(attack_npc)).unwrap();
-    super::repository::save(transaction, &args.username, &game.state)
-        .await
-        .unwrap();
-    crate::player_characters::repository::save(transaction, &args.username, &game.player)
-        .await
-        .unwrap();
+    super::repository::save(transaction, &args.username, &game.state).await?;
+    crate::player_characters::repository::save(transaction, &args.username, &game.player).await?;
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 

@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
@@ -8,7 +10,7 @@ use underworld_core::{
 
 use crate::{
     actions::{game_actions, PerformAction},
-    error::GameError,
+    error::NoPlayerCharacterSetError,
 };
 
 #[derive(Deserialize, Object)]
@@ -25,19 +27,16 @@ pub struct GeneratedGame {
 pub async fn generate_game(
     transaction: &mut Transaction<'_, Postgres>,
     args: &GenerateGameArgs,
-) -> Result<GeneratedGame, GameError> {
+) -> Result<GeneratedGame, Box<dyn Error>> {
     let game_generator = game_generator();
     let game_state = game_generator.generate();
 
-    super::repository::save(transaction, &args.username, &game_state)
-        .await
-        .unwrap();
+    super::repository::save(transaction, &args.username, &game_state).await?;
 
     let player =
-        match crate::player_characters::repository::current(transaction, &args.username).await {
-            Ok(Some(it)) => it,
-            Ok(None) => return Err(GameError::NoPlayerCharacterSet),
-            Err(_) => return Err(GameError::General),
+        match crate::player_characters::repository::current(transaction, &args.username).await? {
+            Some(it) => it,
+            None => return Err(Box::new(NoPlayerCharacterSetError)),
         };
 
     let game_id = game_state.identifier.id.to_string();

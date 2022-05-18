@@ -1,9 +1,5 @@
 use poem::{web::Data, Result};
-use poem_openapi::{
-    param::Path,
-    payload::{Json, PlainText},
-    ApiResponse, OpenApi,
-};
+use poem_openapi::{param::Path, payload::Json, ApiResponse, OpenApi};
 use sqlx::PgPool;
 use underworld_core::components::{
     fixtures::fixture::FixtureView, non_player::NonPlayerView, rooms::room_view::RoomView,
@@ -11,7 +7,6 @@ use underworld_core::components::{
 
 use crate::{
     actions::PerformAction,
-    error::{Error, GameError},
     game::{
         attack::{attack_npc, AttackNpcArgs, NpcAttacked},
         exit::{exit_room, ExitRoomArgs, RoomExited},
@@ -35,96 +30,54 @@ use crate::{
 enum LookResponse {
     #[oai(status = 200)]
     LookAtRoom(Json<RoomView>),
-
-    #[oai(status = 404)]
-    NotFound(PlainText<String>),
 }
 
 #[derive(ApiResponse)]
 enum LookFixtureResponse {
     #[oai(status = 200)]
     FixtureViewed(Json<FixtureView>),
-
-    #[oai(status = 404)]
-    NotFound(PlainText<String>),
-
-    #[oai(status = 500)]
-    GameError(Json<GameError>),
 }
 
 #[derive(ApiResponse)]
 enum LookNpcResponse {
     #[oai(status = 200)]
     NpcViewed(Json<NonPlayerView>),
-
-    #[oai(status = 404)]
-    NotFound(PlainText<String>),
-
-    #[oai(status = 500)]
-    GameError(Json<GameError>),
 }
 
 #[derive(ApiResponse)]
 enum InspectNpcResponse {
     #[oai(status = 200)]
     NpcInspected(Json<NpcInspected>),
-
-    #[oai(status = 404)]
-    NotFound(PlainText<String>),
-
-    #[oai(status = 500)]
-    GameError(Json<GameError>),
 }
 
 #[derive(ApiResponse)]
 enum InspectFixtureResponse {
     #[oai(status = 200)]
     FixtureInspected(Json<FixtureInspected>),
-
-    #[oai(status = 404)]
-    NotFound(PlainText<String>),
-
-    #[oai(status = 500)]
-    GameError(Json<GameError>),
 }
 
 #[derive(ApiResponse)]
 enum LootNpcResponse {
     #[oai(status = 200)]
     NpcLooted(Json<NpcLooted>),
-
-    #[oai(status = 404)]
-    NotFound(PlainText<String>),
-
-    #[oai(status = 500)]
-    GameError(Json<GameError>),
 }
 
 #[derive(ApiResponse)]
 pub enum GenerateGameResponse {
     #[oai(status = 201)]
     GameGenerated(Json<GeneratedGame>),
-
-    #[oai(status = 500)]
-    GameError(Json<GameError>),
 }
 
 #[derive(ApiResponse)]
 enum AttackNpcResponse {
     #[oai(status = 200)]
     NpcAttacked(Json<NpcAttacked>),
-
-    #[oai(status = 500)]
-    BadRequest(Json<Error>),
 }
 
 #[derive(ApiResponse)]
 enum ExitRoomResponse {
     #[oai(status = 200)]
     RoomExited(Json<RoomExited>),
-
-    #[oai(status = 500)]
-    BadRequest(Json<Error>),
 }
 
 #[derive(ApiResponse)]
@@ -137,9 +90,6 @@ enum GameIdResponse {
 enum GameActionsResponse {
     #[oai(status = 200)]
     GameActions(Json<Vec<PerformAction>>),
-
-    #[oai(status = 500)]
-    BadRequest(Json<GameError>),
 }
 
 pub struct UnderworldGameApi;
@@ -168,13 +118,10 @@ impl UnderworldGameApi {
         args: Json<GenerateGameArgs>,
     ) -> Result<GenerateGameResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let generated_result = generate_game(&mut transaction, &args).await;
+        let generated_result = generate_game(&mut transaction, &args).await.unwrap();
         transaction.commit().await.unwrap();
 
-        match generated_result {
-            Ok(generated_game) => Ok(GenerateGameResponse::GameGenerated(Json(generated_game))),
-            Err(e) => Ok(GenerateGameResponse::GameError(Json(e))),
-        }
+        Ok(GenerateGameResponse::GameGenerated(Json(generated_result)))
     }
 
     /// Get IDs of all current games
@@ -210,14 +157,9 @@ impl UnderworldGameApi {
         args: Json<ExitRoomArgs>,
     ) -> Result<ExitRoomResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let exit_result = exit_room(&mut transaction, &args).await;
+        let exit_result = exit_room(&mut transaction, &args).await.unwrap();
         transaction.commit().await.unwrap();
-        match exit_result {
-            Ok(it) => Ok(ExitRoomResponse::RoomExited(Json(it))),
-            Err(it) => Ok(ExitRoomResponse::BadRequest(Json(Error {
-                message: it.to_string(),
-            }))),
-        }
+        Ok(ExitRoomResponse::RoomExited(Json(exit_result)))
     }
 
     /// Attack a specific NPC inside the current room of the specified game.
@@ -232,15 +174,10 @@ impl UnderworldGameApi {
         args: Json<AttackNpcArgs>,
     ) -> Result<AttackNpcResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let attack_result = attack_npc(&mut transaction, &args).await;
+        let attack_result = attack_npc(&mut transaction, &args).await.unwrap();
         transaction.commit().await.unwrap();
 
-        match attack_result {
-            Ok(it) => Ok(AttackNpcResponse::NpcAttacked(Json(it))),
-            Err(e) => Ok(AttackNpcResponse::BadRequest(Json(Error {
-                message: e.to_string(),
-            }))),
-        }
+        Ok(AttackNpcResponse::NpcAttacked(Json(attack_result)))
     }
 
     /// Loot some items from an NPC.
@@ -255,17 +192,10 @@ impl UnderworldGameApi {
         args: Json<LootNpcArgs>,
     ) -> Result<LootNpcResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let loot_result = loot_npc(&mut transaction, &args).await;
+        let loot_result = loot_npc(&mut transaction, &args).await.unwrap();
         transaction.commit().await.unwrap();
 
-        match loot_result {
-            Ok(it) => Ok(LootNpcResponse::NpcLooted(Json(it))),
-            Err(GameError::GameNotFound) => Ok(LootNpcResponse::NotFound(PlainText(format!(
-                "{}",
-                GameError::GameNotFound
-            )))),
-            Err(e) => Ok(LootNpcResponse::GameError(Json(e))),
-        }
+        Ok(LootNpcResponse::NpcLooted(Json(loot_result)))
     }
 
     /// Take a closer look at the current room.
@@ -280,13 +210,10 @@ impl UnderworldGameApi {
         args: Json<RoomLookArgs>,
     ) -> Result<LookResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let view_result = look_at_room(&mut transaction, &args).await;
+        let view_result = look_at_room(&mut transaction, &args).await.unwrap();
         transaction.commit().await.unwrap();
 
-        match view_result {
-            Ok(it) => Ok(LookResponse::LookAtRoom(Json(it))),
-            Err(e) => Ok(LookResponse::NotFound(PlainText(e.to_string()))),
-        }
+        Ok(LookResponse::LookAtRoom(Json(view_result)))
     }
 
     /// Look at a specific Fixture in the current room.
@@ -301,16 +228,9 @@ impl UnderworldGameApi {
         args: Json<FixtureLookArgs>,
     ) -> Result<LookFixtureResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        match look_at_fixture(&mut transaction, &args).await {
-            Ok(it) => {
-                transaction.commit().await.unwrap();
-                Ok(LookFixtureResponse::FixtureViewed(Json(it)))
-            }
-            Err(GameError::GameNotFound) => Ok(LookFixtureResponse::NotFound(PlainText(
-                "game_not_found".to_string(),
-            ))),
-            Err(it) => Ok(LookFixtureResponse::GameError(Json(it))),
-        }
+        let view = look_at_fixture(&mut transaction, &args).await.unwrap();
+        transaction.commit().await.unwrap();
+        Ok(LookFixtureResponse::FixtureViewed(Json(view)))
     }
 
     /// Look at a specific NPC in the current room.
@@ -325,16 +245,9 @@ impl UnderworldGameApi {
         args: Json<NpcLookArgs>,
     ) -> Result<LookNpcResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        match look_at_npc(&mut transaction, &args).await {
-            Ok(it) => {
-                transaction.commit().await.unwrap();
-                Ok(LookNpcResponse::NpcViewed(Json(it)))
-            }
-            Err(GameError::GameNotFound) => Ok(LookNpcResponse::NotFound(PlainText(
-                "game_not_found".to_string(),
-            ))),
-            Err(it) => Ok(LookNpcResponse::GameError(Json(it))),
-        }
+        let view = look_at_npc(&mut transaction, &args).await.unwrap();
+        transaction.commit().await.unwrap();
+        Ok(LookNpcResponse::NpcViewed(Json(view)))
     }
 
     /// Inspect a fixture to find out more information about them when looking at them next.
@@ -350,16 +263,9 @@ impl UnderworldGameApi {
         args: Json<InspectFixtureArgs>,
     ) -> Result<InspectFixtureResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        match inspect_fixture(&mut transaction, &args).await {
-            Ok(it) => {
-                transaction.commit().await.unwrap();
-                Ok(InspectFixtureResponse::FixtureInspected(Json(it)))
-            }
-            Err(GameError::GameNotFound) => Ok(InspectFixtureResponse::NotFound(PlainText(
-                "game_not_found".to_string(),
-            ))),
-            Err(it) => Ok(InspectFixtureResponse::GameError(Json(it))),
-        }
+        let inspection = inspect_fixture(&mut transaction, &args).await.unwrap();
+        transaction.commit().await.unwrap();
+        Ok(InspectFixtureResponse::FixtureInspected(Json(inspection)))
     }
 
     /// Inspect an NPC to find out more information about them when looking at them next.
@@ -375,16 +281,9 @@ impl UnderworldGameApi {
         args: Json<InspectNpcArgs>,
     ) -> Result<InspectNpcResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        match inspect_npc(&mut transaction, &args).await {
-            Ok(it) => {
-                transaction.commit().await.unwrap();
-                Ok(InspectNpcResponse::NpcInspected(Json(it)))
-            }
-            Err(GameError::GameNotFound) => Ok(InspectNpcResponse::NotFound(PlainText(
-                "game_not_found".to_string(),
-            ))),
-            Err(it) => Ok(InspectNpcResponse::GameError(Json(it))),
-        }
+        let inspection = inspect_npc(&mut transaction, &args).await.unwrap();
+        transaction.commit().await.unwrap();
+        Ok(InspectNpcResponse::NpcInspected(Json(inspection)))
     }
 
     /// Get the current actions available for the game.
@@ -399,10 +298,7 @@ impl UnderworldGameApi {
         args: Json<GameActionsArgs>,
     ) -> Result<GameActionsResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-
-        match game_actions(&mut transaction, &args).await {
-            Ok(actions) => Ok(GameActionsResponse::GameActions(Json(actions))),
-            Err(e) => Ok(GameActionsResponse::BadRequest(Json(e))),
-        }
+        let actions = game_actions(&mut transaction, &args).await.unwrap();
+        Ok(GameActionsResponse::GameActions(Json(actions)))
     }
 }

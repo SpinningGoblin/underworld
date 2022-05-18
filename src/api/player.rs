@@ -7,17 +7,12 @@ use poem_openapi::{
 use sqlx::PgPool;
 use underworld_core::{components::player::PlayerCharacterView, systems::view::player};
 
-use crate::tags::UnderworldApiTags;
-use crate::{
-    error::Error,
-    player_characters::{
-        current::{
-            get_current_player_character, set_current_player_character, SetPlayerCharacterArgs,
-        },
-        generate::{generate_player_character, GeneratePlayerCharacter, GeneratedPlayerCharacter},
-        get::{get_player_character, player_character_ids},
-    },
+use crate::player_characters::{
+    current::{get_current_player_character, set_current_player_character, SetPlayerCharacterArgs},
+    generate::{generate_player_character, GeneratePlayerCharacter, GeneratedPlayerCharacter},
+    get::{get_player_character, player_character_ids},
 };
+use crate::tags::UnderworldApiTags;
 
 #[derive(ApiResponse)]
 enum PlayerCharacterResponse {
@@ -44,9 +39,6 @@ enum PlayerCharacterGeneratedResponse {
 enum SetCurrentPlayerCharacterResponse {
     #[oai(status = 200)]
     PlayerCharacterSet(PlainText<String>),
-
-    #[oai(status = 500)]
-    BadRequest(Json<Error>),
 }
 
 pub struct UnderworldPlayerApi;
@@ -134,17 +126,13 @@ impl UnderworldPlayerApi {
         username: Path<String>,
     ) -> Result<PlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let player_character_result =
-            get_current_player_character(&mut transaction, &username).await;
+        let player_character_result = get_current_player_character(&mut transaction, &username)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
-        match player_character_result {
-            Ok(it) => Ok(PlayerCharacterResponse::PlayerCharacter(Json(
-                player::check(it),
-            ))),
-            Err(_) => Ok(PlayerCharacterResponse::NotFound(PlainText(
-                "No character found".to_string(),
-            ))),
-        }
+        Ok(PlayerCharacterResponse::PlayerCharacter(Json(
+            player::check(player_character_result),
+        )))
     }
 
     /// Set the specified player character as the current one for any actions in a game.
@@ -159,15 +147,12 @@ impl UnderworldPlayerApi {
         args: Json<SetPlayerCharacterArgs>,
     ) -> Result<SetCurrentPlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let result = set_current_player_character(&mut transaction, &args.0).await;
+        set_current_player_character(&mut transaction, &args.0)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
-        match result {
-            Ok(_) => Ok(SetCurrentPlayerCharacterResponse::PlayerCharacterSet(
-                PlainText("Good to go".to_string()),
-            )),
-            Err(e) => Ok(SetCurrentPlayerCharacterResponse::BadRequest(Json(Error {
-                message: format!("{}", e),
-            }))),
-        }
+        Ok(SetCurrentPlayerCharacterResponse::PlayerCharacterSet(
+            PlainText("Good to go".to_string()),
+        ))
     }
 }

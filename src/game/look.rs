@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
@@ -13,7 +15,7 @@ use underworld_core::{
     game::Game,
 };
 
-use crate::error::GameError;
+use crate::error::{GameNotFoundError, GeneralError, NoPlayerCharacterSetError};
 
 #[derive(Deserialize, Object, Serialize)]
 pub struct RoomLookArgs {
@@ -39,22 +41,17 @@ impl From<&NpcLookArgs> for LookAtNpc {
 pub async fn look_at_room(
     transaction: &mut Transaction<'_, Postgres>,
     args: &RoomLookArgs,
-) -> Result<RoomView, GameError> {
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
-        .await
-        .unwrap()
-    {
+) -> Result<RoomView, Box<dyn Error>> {
+    let state = match super::repository::by_id(transaction, &args.username, &args.game_id).await? {
         Some(it) => it,
-        None => return Err(GameError::GameNotFound),
+        None => return Err(Box::new(GameNotFoundError)),
     };
 
-    let player = match crate::player_characters::repository::current(transaction, &args.username)
-        .await
-        .unwrap()
-    {
-        Some(it) => it,
-        None => return Err(GameError::NoPlayerCharacterSet),
-    };
+    let player =
+        match crate::player_characters::repository::current(transaction, &args.username).await? {
+            Some(it) => it,
+            None => return Err(Box::new(NoPlayerCharacterSetError)),
+        };
 
     let mut game = Game { state, player };
 
@@ -66,20 +63,20 @@ pub async fn look_at_room(
         _ => None,
     }) {
         Some(room_viewed) => Ok(room_viewed.view.clone()),
-        None => Err(GameError::General),
+        None => Err(Box::new(GeneralError("room_view_failed".to_string()))),
     }
 }
 
 pub async fn look_at_npc(
     transaction: &mut Transaction<'_, Postgres>,
     args: &NpcLookArgs,
-) -> Result<NonPlayerView, GameError> {
+) -> Result<NonPlayerView, Box<dyn Error>> {
     let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
         .await
         .unwrap()
     {
         Some(it) => it,
-        None => return Err(GameError::GameNotFound),
+        None => return Err(Box::new(GameNotFoundError)),
     };
 
     let player = match crate::player_characters::repository::current(transaction, &args.username)
@@ -87,7 +84,7 @@ pub async fn look_at_npc(
         .unwrap()
     {
         Some(it) => it,
-        None => return Err(GameError::NoPlayerCharacterSet),
+        None => return Err(Box::new(NoPlayerCharacterSetError)),
     };
 
     let mut game = Game { state, player };
@@ -100,7 +97,7 @@ pub async fn look_at_npc(
         _ => None,
     }) {
         Some(npc_viewed) => Ok(npc_viewed.npc_view.clone()),
-        None => Err(GameError::General),
+        None => Err(Box::new(GeneralError("look_at_npc_failed".to_string()))),
     }
 }
 
@@ -114,13 +111,13 @@ pub struct FixtureLookArgs {
 pub async fn look_at_fixture(
     transaction: &mut Transaction<'_, Postgres>,
     args: &FixtureLookArgs,
-) -> Result<FixtureView, GameError> {
+) -> Result<FixtureView, Box<dyn Error>> {
     let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
         .await
         .unwrap()
     {
         Some(it) => it,
-        None => return Err(GameError::GameNotFound),
+        None => return Err(Box::new(GameNotFoundError)),
     };
 
     let player = match crate::player_characters::repository::current(transaction, &args.username)
@@ -128,7 +125,7 @@ pub async fn look_at_fixture(
         .unwrap()
     {
         Some(it) => it,
-        None => return Err(GameError::NoPlayerCharacterSet),
+        None => return Err(Box::new(NoPlayerCharacterSetError)),
     };
 
     let mut game = Game { state, player };
@@ -143,6 +140,6 @@ pub async fn look_at_fixture(
         _ => None,
     }) {
         Some(fixture_viewed) => Ok(fixture_viewed.fixture_view.clone()),
-        None => Err(GameError::General),
+        None => Err(Box::new(GeneralError("look_at_fixture_failed".to_string()))),
     }
 }

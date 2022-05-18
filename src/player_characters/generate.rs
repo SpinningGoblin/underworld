@@ -28,7 +28,6 @@ pub async fn generate_player_character(
     args: &GeneratePlayerCharacter,
 ) -> GeneratedPlayerCharacter {
     let generator = player_generator(
-        &args.username,
         args.character_name.clone(),
         args.character_species.clone(),
         args.character_size.clone(),
@@ -41,18 +40,16 @@ pub async fn generate_player_character(
 
     let mut set_as_current = false;
 
-    match super::repository::current(transaction, &args.username)
+    if super::repository::current(transaction, &args.username)
         .await
         .unwrap()
+        .is_none()
     {
-        Some(_) => {}
-        None => {
-            super::repository::set_current(transaction, &args.username, &player_character)
-                .await
-                .unwrap();
-            set_as_current = true;
-        }
-    };
+        super::repository::set_current(transaction, &args.username, &player_character)
+            .await
+            .unwrap();
+        set_as_current = true;
+    }
 
     GeneratedPlayerCharacter {
         actions: player_character_actions(

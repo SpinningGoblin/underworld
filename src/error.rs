@@ -1,37 +1,71 @@
-use std::fmt::Display;
+use std::{error::Error, fmt::Display};
 
-use poem_openapi::{Enum, Object};
-use serde::Serialize;
-use underworld_core::errors::Errors;
+use poem::error::ResponseError;
 
-#[derive(Object, Serialize, Debug)]
-pub struct Error {
-    pub message: String,
-}
+#[derive(Debug)]
+pub struct GeneralError(pub String);
 
-#[derive(Enum, Serialize)]
-pub enum GameError {
-    General,
-    NoPlayerCharacterSet,
-    UnknownPlayerCharacter,
-    GameNotFound,
-}
-
-impl From<Errors> for GameError {
-    fn from(_: Errors) -> Self {
-        GameError::General
+impl Display for GeneralError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "GeneralError:{}", self.0)
     }
 }
 
-impl Display for GameError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let text = match *self {
-            GameError::General => "general_error",
-            GameError::NoPlayerCharacterSet => "no_player_character_set",
-            GameError::UnknownPlayerCharacter => "unknown_player_character_specified",
-            GameError::GameNotFound => "game_not_found",
-        };
+impl Error for GeneralError {}
 
-        write!(f, "{}", text)
+impl ResponseError for GeneralError {
+    fn status(&self) -> poem::http::StatusCode {
+        poem::http::StatusCode::BAD_REQUEST
+    }
+}
+
+#[derive(Debug)]
+pub struct NoPlayerCharacterSetError;
+
+impl Display for NoPlayerCharacterSetError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "NoPlayerCharacterSet")
+    }
+}
+
+impl Error for NoPlayerCharacterSetError {}
+
+impl ResponseError for NoPlayerCharacterSetError {
+    fn status(&self) -> poem::http::StatusCode {
+        poem::http::StatusCode::BAD_REQUEST
+    }
+}
+
+#[derive(Debug)]
+pub struct UnknownPlayerCharacterError;
+
+impl Display for UnknownPlayerCharacterError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "UnknownPlayerCharacter")
+    }
+}
+
+impl Error for UnknownPlayerCharacterError {}
+
+impl ResponseError for UnknownPlayerCharacterError {
+    fn status(&self) -> poem::http::StatusCode {
+        poem::http::StatusCode::NOT_FOUND
+    }
+}
+
+#[derive(Debug)]
+pub struct GameNotFoundError;
+
+impl Display for GameNotFoundError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "GameNotFound")
+    }
+}
+
+impl Error for GameNotFoundError {}
+
+impl ResponseError for GameNotFoundError {
+    fn status(&self) -> poem::http::StatusCode {
+        poem::http::StatusCode::NOT_FOUND
     }
 }

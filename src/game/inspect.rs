@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
@@ -9,7 +11,7 @@ use underworld_core::{
 
 use crate::{
     actions::{game_actions, PerformAction},
-    error::GameError,
+    error::{GameNotFoundError, NoPlayerCharacterSetError},
 };
 
 #[derive(Deserialize, Object, Serialize)]
@@ -42,21 +44,16 @@ pub struct NpcInspected {
 pub async fn inspect_npc(
     transaction: &mut Transaction<'_, Postgres>,
     args: &InspectNpcArgs,
-) -> Result<NpcInspected, GameError> {
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
-        .await
-        .unwrap()
-    {
+) -> Result<NpcInspected, Box<dyn Error>> {
+    let state = match super::repository::by_id(transaction, &args.username, &args.game_id).await? {
         Some(it) => it,
-        None => return Err(GameError::GameNotFound),
+        None => return Err(Box::new(GameNotFoundError)),
     };
-    let player = match crate::player_characters::repository::current(transaction, &args.username)
-        .await
-        .unwrap()
-    {
-        Some(it) => it,
-        None => return Err(GameError::NoPlayerCharacterSet),
-    };
+    let player =
+        match crate::player_characters::repository::current(transaction, &args.username).await? {
+            Some(it) => it,
+            None => return Err(Box::new(NoPlayerCharacterSetError)),
+        };
     let mut game = Game { state, player };
 
     let inspect_args = InspectNpc {
@@ -135,20 +132,20 @@ pub struct FixtureInspected {
 pub async fn inspect_fixture(
     transaction: &mut Transaction<'_, Postgres>,
     args: &InspectFixtureArgs,
-) -> Result<FixtureInspected, GameError> {
+) -> Result<FixtureInspected, Box<dyn Error>> {
     let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
         .await
         .unwrap()
     {
         Some(it) => it,
-        None => return Err(GameError::GameNotFound),
+        None => return Err(Box::new(GameNotFoundError)),
     };
     let player = match crate::player_characters::repository::current(transaction, &args.username)
         .await
         .unwrap()
     {
         Some(it) => it,
-        None => return Err(GameError::NoPlayerCharacterSet),
+        None => return Err(Box::new(NoPlayerCharacterSetError)),
     };
     let mut game = Game { state, player };
 
@@ -162,12 +159,8 @@ pub async fn inspect_fixture(
     let action = Action::InspectFixture(inspect_args);
     let events = game.handle_action(&action)?;
 
-    super::repository::save(transaction, &args.username, &game.state)
-        .await
-        .unwrap();
-    crate::player_characters::repository::save(transaction, &args.username, &game.player)
-        .await
-        .unwrap();
+    super::repository::save(transaction, &args.username, &game.state).await?;
+    crate::player_characters::repository::save(transaction, &args.username, &game.player).await?;
 
     let mut fixture_inspected = FixtureInspected {
         actions: game_actions(&game, &args.username),
