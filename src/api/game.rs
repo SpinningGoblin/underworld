@@ -94,7 +94,7 @@ enum GameActionsResponse {
 
 pub struct UnderworldGameApi;
 
-#[OpenApi]
+#[OpenApi(tag = "UnderworldApiTags::Game")]
 impl UnderworldGameApi {
     /// Generate and persist a new game.
     ///
@@ -110,7 +110,6 @@ impl UnderworldGameApi {
     #[oai(
         path = "/game/generate",
         method = "post",
-        tag = "UnderworldApiTags::Game"
     )]
     async fn generate_game(
         &self,
@@ -132,7 +131,6 @@ impl UnderworldGameApi {
     #[oai(
         path = "/:username/games",
         method = "get",
-        tag = "UnderworldApiTags::Game"
     )]
     async fn list_games(
         &self,
@@ -149,7 +147,6 @@ impl UnderworldGameApi {
     #[oai(
         path = "/game/exit_room",
         method = "post",
-        tag = "UnderworldApiTags::Game"
     )]
     async fn exit_room(
         &self,
@@ -166,7 +163,6 @@ impl UnderworldGameApi {
     #[oai(
         path = "/game/attack_npc",
         method = "post",
-        tag = "UnderworldApiTags::Game"
     )]
     async fn attack_npc(
         &self,
@@ -184,7 +180,6 @@ impl UnderworldGameApi {
     #[oai(
         path = "/game/loot_npc",
         method = "post",
-        tag = "UnderworldApiTags::Game"
     )]
     async fn loot_npc(
         &self,
@@ -202,7 +197,6 @@ impl UnderworldGameApi {
     #[oai(
         path = "/game/look_around_room",
         method = "post",
-        tag = "UnderworldApiTags::Game"
     )]
     async fn look_around_room(
         &self,
@@ -220,7 +214,6 @@ impl UnderworldGameApi {
     #[oai(
         path = "/game/look_at_fixture",
         method = "post",
-        tag = "UnderworldApiTags::Game"
     )]
     async fn look_at_fixture(
         &self,
@@ -237,7 +230,6 @@ impl UnderworldGameApi {
     #[oai(
         path = "/game/look_at_npc",
         method = "post",
-        tag = "UnderworldApiTags::Game"
     )]
     async fn look_at_npc(
         &self,
@@ -255,7 +247,6 @@ impl UnderworldGameApi {
     #[oai(
         path = "/game/inspect_fixture",
         method = "post",
-        tag = "UnderworldApiTags::Game"
     )]
     async fn inspect_fixture(
         &self,
@@ -273,7 +264,6 @@ impl UnderworldGameApi {
     #[oai(
         path = "/game/inspect_npc",
         method = "post",
-        tag = "UnderworldApiTags::Game"
     )]
     async fn inspect_npc(
         &self,
@@ -290,7 +280,6 @@ impl UnderworldGameApi {
     #[oai(
         path = "/game/current_actions",
         method = "post",
-        tag = "UnderworldApiTags::Game"
     )]
     async fn current_actions(
         &self,
