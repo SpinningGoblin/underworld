@@ -48,7 +48,7 @@ impl UnderworldNpcApi {
             knows_hidden_in_inventory: true,
             knows_packed_in_inventory: true,
         };
-        let view = non_player::look_at(&non_player, &character_args, true, true);
+        let view = non_player::view(&non_player, &character_args, true, true);
 
         let generated = GeneratedNpc {
             inventory_description: view.character.describe_inventory(""),

@@ -202,6 +202,9 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
                 ),
             }),
             Action::LootFixture(_) => None,
+            Action::CastSpellOnNpc(_) => None,
+            Action::CastSpellOnPlayer(_) => None,
+            Action::UseItemOnPlayer(_) => None,
         })
         .collect()
 }

@@ -30,10 +30,21 @@ pub enum EventName {
     NpcPackedDiscovered,
     NpcViewed,
     NpcWeaponReadied,
+    PlayerGainsResurrectionAura,
+    PlayerGainsRetributionAura,
+    PlayerGainsShieldAura,
+    PlayerHealed,
     PlayerHit,
     PlayerItemMoved,
+    PlayerItemRemoved,
+    PlayerItemUsed,
     PlayerKilled,
     PlayerMissed,
+    PlayerResurrected,
+    PlayerRetributionAuraDissipated,
+    PlayerSpellForgotten,
+    PlayerSpellLearned,
+    PlayerSpellUsed,
     RoomExited,
     RoomFirstSeen,
     RoomGenerated,
@@ -141,6 +152,50 @@ impl From<Event> for GameEvent {
             },
             Event::ItemTakenFromFixture(it) => GameEvent {
                 name: EventName::ItemTakenFromFixture,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerGainsResurrectionAura(it) => GameEvent {
+                name: EventName::PlayerGainsResurrectionAura,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerGainsRetributionAura(it) => GameEvent {
+                name: EventName::PlayerGainsRetributionAura,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerGainsShieldAura(it) => GameEvent {
+                name: EventName::PlayerGainsShieldAura,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerHealed(it) => GameEvent {
+                name: EventName::PlayerHealed,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerItemRemoved(it) => GameEvent {
+                name: EventName::PlayerItemRemoved,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerItemUsed(it) => GameEvent {
+                name: EventName::PlayerItemUsed,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerResurrected(it) => GameEvent {
+                name: EventName::PlayerResurrected,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerRetributionAuraDissipated(it) => GameEvent {
+                name: EventName::PlayerRetributionAuraDissipated,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerSpellForgotten(it) => GameEvent {
+                name: EventName::PlayerSpellForgotten,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerSpellLearned(it) => GameEvent {
+                name: EventName::PlayerSpellLearned,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerSpellUsed(it) => GameEvent {
+                name: EventName::PlayerSpellUsed,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
         }

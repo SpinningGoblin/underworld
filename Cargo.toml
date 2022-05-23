@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 serde = { version = "1.0.137", features = ["derive"] }
-underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "fe4a4a2a98e6a0bc4400075ecf0e8657fc2f4b28", features = ["serialization", "openapi"] }
+underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "0daebe6bec7e143908686ee9a6fbc4a01b079f24", features = ["serialization", "openapi"] }
 # underworld_core = { path = "../underworld_core", features = ["serialization", "openapi"] }
 serde_json = { version = "1.0.81" }
 rand = "0.8.5"
