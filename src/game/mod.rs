@@ -3,6 +3,8 @@ pub mod exit;
 pub mod generate;
 pub mod get;
 pub mod inspect;
+pub mod items;
 pub mod look;
 pub mod loot;
 pub mod repository;
+pub mod spells;

@@ -12,10 +12,12 @@ use crate::{
         exit::{exit_room, ExitRoomArgs, RoomExited},
         generate::{generate_game, GenerateGameArgs, GeneratedGame},
         get::{game_actions, game_ids, GameActionsArgs},
+        items::{use_item_on_player, ItemUsed, UseItemOnPlayerArgs},
         look::{
             look_at_fixture, look_at_npc, look_at_room, FixtureLookArgs, NpcLookArgs, RoomLookArgs,
         },
         loot::{loot_npc, LootNpcArgs, NpcLooted},
+        spells::{cast_spell_on_player, CastSpellOnPlayerArgs, SpellCast},
     },
 };
 use crate::{
@@ -75,6 +77,18 @@ enum AttackNpcResponse {
 }
 
 #[derive(ApiResponse)]
+enum CastSpellResponse {
+    #[oai(status = 200)]
+    SpellCast(Json<SpellCast>),
+}
+
+#[derive(ApiResponse)]
+enum UseItemResponse {
+    #[oai(status = 200)]
+    ItemUsed(Json<ItemUsed>),
+}
+
+#[derive(ApiResponse)]
 enum ExitRoomResponse {
     #[oai(status = 200)]
     RoomExited(Json<RoomExited>),
@@ -107,10 +121,7 @@ impl UnderworldGameApi {
     /// }
     /// ```
     /// to generate and save a new game for my_username
-    #[oai(
-        path = "/game/generate",
-        method = "post",
-    )]
+    #[oai(path = "/game/generate", method = "post")]
     async fn generate_game(
         &self,
         pool: Data<&PgPool>,
@@ -128,10 +139,7 @@ impl UnderworldGameApi {
     /// # Example
     ///
     /// Call `/my_username/games` to retrieve all game ids for my_username
-    #[oai(
-        path = "/:username/games",
-        method = "get",
-    )]
+    #[oai(path = "/:username/games", method = "get")]
     async fn list_games(
         &self,
         pool: Data<&PgPool>,
@@ -144,10 +152,7 @@ impl UnderworldGameApi {
     }
 
     /// Exit the current room of the specified game through the specified exit.
-    #[oai(
-        path = "/game/exit_room",
-        method = "post",
-    )]
+    #[oai(path = "/game/exit_room", method = "post")]
     async fn exit_room(
         &self,
         pool: Data<&PgPool>,
@@ -160,10 +165,7 @@ impl UnderworldGameApi {
     }
 
     /// Attack a specific NPC inside the current room of the specified game.
-    #[oai(
-        path = "/game/attack_npc",
-        method = "post",
-    )]
+    #[oai(path = "/game/attack_npc", method = "post")]
     async fn attack_npc(
         &self,
         pool: Data<&PgPool>,
@@ -176,11 +178,36 @@ impl UnderworldGameApi {
         Ok(AttackNpcResponse::NpcAttacked(Json(attack_result)))
     }
 
+    /// Cast a spell on your player character.
+    #[oai(path = "/game/cast_spell_on_player", method = "post")]
+    async fn cast_spell_on_player(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<CastSpellOnPlayerArgs>,
+    ) -> Result<CastSpellResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let cast_result = cast_spell_on_player(&mut transaction, &args).await.unwrap();
+        transaction.commit().await.unwrap();
+
+        Ok(CastSpellResponse::SpellCast(Json(cast_result)))
+    }
+
+    /// Use an item on your player character.
+    #[oai(path = "/game/use_item_on_player", method = "post")]
+    async fn use_item_on_player(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<UseItemOnPlayerArgs>,
+    ) -> Result<UseItemResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let use_item_result = use_item_on_player(&mut transaction, &args).await.unwrap();
+        transaction.commit().await.unwrap();
+
+        Ok(UseItemResponse::ItemUsed(Json(use_item_result)))
+    }
+
     /// Loot some items from an NPC.
-    #[oai(
-        path = "/game/loot_npc",
-        method = "post",
-    )]
+    #[oai(path = "/game/loot_npc", method = "post")]
     async fn loot_npc(
         &self,
         pool: Data<&PgPool>,
@@ -194,10 +221,7 @@ impl UnderworldGameApi {
     }
 
     /// Take a closer look at the current room.
-    #[oai(
-        path = "/game/look_around_room",
-        method = "post",
-    )]
+    #[oai(path = "/game/look_around_room", method = "post")]
     async fn look_around_room(
         &self,
         pool: Data<&PgPool>,
@@ -211,10 +235,7 @@ impl UnderworldGameApi {
     }
 
     /// Look at a specific Fixture in the current room.
-    #[oai(
-        path = "/game/look_at_fixture",
-        method = "post",
-    )]
+    #[oai(path = "/game/look_at_fixture", method = "post")]
     async fn look_at_fixture(
         &self,
         pool: Data<&PgPool>,
@@ -227,10 +248,7 @@ impl UnderworldGameApi {
     }
 
     /// Look at a specific NPC in the current room.
-    #[oai(
-        path = "/game/look_at_npc",
-        method = "post",
-    )]
+    #[oai(path = "/game/look_at_npc", method = "post")]
     async fn look_at_npc(
         &self,
         pool: Data<&PgPool>,
@@ -244,10 +262,7 @@ impl UnderworldGameApi {
 
     /// Inspect a fixture to find out more information about them when looking at them next.
     /// After completing an inspect, look at the fixture to see new information.
-    #[oai(
-        path = "/game/inspect_fixture",
-        method = "post",
-    )]
+    #[oai(path = "/game/inspect_fixture", method = "post")]
     async fn inspect_fixture(
         &self,
         pool: Data<&PgPool>,
@@ -261,10 +276,7 @@ impl UnderworldGameApi {
 
     /// Inspect an NPC to find out more information about them when looking at them next.
     /// After completing an inspect, look at the NPC to see new information.
-    #[oai(
-        path = "/game/inspect_npc",
-        method = "post",
-    )]
+    #[oai(path = "/game/inspect_npc", method = "post")]
     async fn inspect_npc(
         &self,
         pool: Data<&PgPool>,
@@ -277,10 +289,7 @@ impl UnderworldGameApi {
     }
 
     /// Get the current actions available for the game.
-    #[oai(
-        path = "/game/current_actions",
-        method = "post",
-    )]
+    #[oai(path = "/game/current_actions", method = "post")]
     async fn current_actions(
         &self,
         pool: Data<&PgPool>,
