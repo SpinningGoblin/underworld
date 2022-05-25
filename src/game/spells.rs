@@ -34,6 +34,18 @@ pub struct CastSpellOnPlayerArgs {
     pub spell_id: String,
 }
 
+#[derive(Deserialize, Object, Serialize)]
+/// Args for an attack action against a single NPC.
+pub struct CastSpellOnNpcArgs {
+    /// Username for the action.
+    pub username: String,
+    /// The ID of the game which the action will happen in.
+    pub game_id: String,
+    /// ID of the spell to be cast.
+    pub spell_id: String,
+    pub npc_id: String,
+}
+
 pub async fn cast_spell_on_player(
     transaction: &mut Transaction<'_, Postgres>,
     args: &CastSpellOnPlayerArgs,

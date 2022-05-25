@@ -8,8 +8,10 @@ use crate::{
         attack::AttackNpcArgs,
         exit::ExitRoomArgs,
         inspect::{InspectFixtureArgs, InspectNpcArgs},
+        items::UseItemOnPlayerArgs,
         look::{FixtureLookArgs, NpcLookArgs, RoomLookArgs},
-        loot::LootNpcArgs,
+        loot::{LootFixtureArgs, LootNpcArgs},
+        spells::{CastSpellOnNpcArgs, CastSpellOnPlayerArgs},
     },
     player_characters::current::SetPlayerCharacterArgs,
 };
@@ -18,6 +20,8 @@ use crate::{
 #[oai(rename_all = "snake_case")]
 pub enum ActionName {
     AttackNpc,
+    CastSpellOnNpc,
+    CastSpellOnPlayer,
     CheckPlayerCharacter,
     ExitRoom,
     InspectFixture,
@@ -25,9 +29,11 @@ pub enum ActionName {
     LookAtFixture,
     LookAtNpc,
     LookAtRoom,
+    LootFixture,
     LootNpc,
     QuickLookRoom,
     SetCurrentPlayerCharacter,
+    UseItemOnPlayer,
 }
 
 #[derive(Object, Serialize)]
@@ -201,10 +207,64 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
                     .unwrap(),
                 ),
             }),
-            Action::LootFixture(_) => None,
-            Action::CastSpellOnNpc(_) => None,
-            Action::CastSpellOnPlayer(_) => None,
-            Action::UseItemOnPlayer(_) => None,
+            Action::LootFixture(loot_fixture) => Some(PerformAction {
+                name: ActionName::LootFixture,
+                description: "Loot a fixture".to_string(),
+                link: get_api_link("game/loot_fixture"),
+                http_action: "POST".to_string(),
+                args: Some(
+                    serde_json::to_value(LootFixtureArgs {
+                        username: username.to_string(),
+                        game_id: game_id.clone(),
+                        fixture_id: loot_fixture.fixture_id,
+                        item_ids: loot_fixture.item_ids,
+                    })
+                    .unwrap(),
+                ),
+            }),
+            Action::CastSpellOnNpc(cast_spell_on_npc) => Some(PerformAction {
+                name: ActionName::CastSpellOnNpc,
+                description: "Cast a spell on an NPC".to_string(),
+                link: get_api_link("game/cast_spell_on_npc"),
+                http_action: "POST".to_string(),
+                args: Some(
+                    serde_json::to_value(CastSpellOnNpcArgs {
+                        username: username.to_string(),
+                        game_id: game_id.clone(),
+                        spell_id: cast_spell_on_npc.spell_id,
+                        npc_id: cast_spell_on_npc.npc_id,
+                    })
+                    .unwrap(),
+                ),
+            }),
+            Action::CastSpellOnPlayer(cast_spell_on_player) => Some(PerformAction {
+                name: ActionName::CastSpellOnPlayer,
+                description: "Cast a spell on yourself".to_string(),
+                link: get_api_link("game/cast_spell_on_player"),
+                http_action: "POST".to_string(),
+                args: Some(
+                    serde_json::to_value(CastSpellOnPlayerArgs {
+                        username: username.to_string(),
+                        game_id: game_id.clone(),
+                        spell_id: cast_spell_on_player.spell_id,
+                    })
+                    .unwrap(),
+                ),
+            }),
+            Action::UseItemOnPlayer(use_item_on_player) => Some(PerformAction {
+                name: ActionName::CastSpellOnPlayer,
+                description: "Use an item on yourself".to_string(),
+                link: get_api_link("game/use_item_on_player"),
+                http_action: "POST".to_string(),
+                args: Some(
+                    serde_json::to_value(UseItemOnPlayerArgs {
+                        username: username.to_string(),
+                        game_id: game_id.clone(),
+                        item_id: use_item_on_player.item_id,
+                    })
+                    .unwrap(),
+                ),
+            }),
         })
         .collect()
 }

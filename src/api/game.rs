@@ -16,7 +16,7 @@ use crate::{
         look::{
             look_at_fixture, look_at_npc, look_at_room, FixtureLookArgs, NpcLookArgs, RoomLookArgs,
         },
-        loot::{loot_npc, LootNpcArgs, NpcLooted},
+        loot::{loot_fixture, loot_npc, FixtureLooted, LootFixtureArgs, LootNpcArgs, NpcLooted},
         spells::{cast_spell_on_player, CastSpellOnPlayerArgs, SpellCast},
     },
 };
@@ -62,6 +62,12 @@ enum InspectFixtureResponse {
 enum LootNpcResponse {
     #[oai(status = 200)]
     NpcLooted(Json<NpcLooted>),
+}
+
+#[derive(ApiResponse)]
+enum LootFixtureResponse {
+    #[oai(status = 200)]
+    FixtureLooted(Json<FixtureLooted>),
 }
 
 #[derive(ApiResponse)]
@@ -218,6 +224,20 @@ impl UnderworldGameApi {
         transaction.commit().await.unwrap();
 
         Ok(LootNpcResponse::NpcLooted(Json(loot_result)))
+    }
+
+    /// Loot some items from a fixture.
+    #[oai(path = "/game/loot_fixture", method = "post")]
+    async fn loot_fixture(
+        &self,
+        pool: Data<&PgPool>,
+        args: Json<LootFixtureArgs>,
+    ) -> Result<LootFixtureResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let loot_result = loot_fixture(&mut transaction, &args).await.unwrap();
+        transaction.commit().await.unwrap();
+
+        Ok(LootFixtureResponse::FixtureLooted(Json(loot_result)))
     }
 
     /// Take a closer look at the current room.
