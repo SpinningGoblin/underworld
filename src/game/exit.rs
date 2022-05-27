@@ -1,7 +1,7 @@
 use std::error::Error;
 
 use poem_openapi::Object;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{action::Action, exit_room::ExitRoom},
@@ -21,28 +21,19 @@ pub struct RoomExited {
     actions: Vec<PerformAction>,
 }
 
-#[derive(Deserialize, Object, Serialize)]
-/// Args for exiting the current room.
-pub struct ExitRoomArgs {
-    /// Username for the action.
-    pub username: String,
-    /// The ID of the game to perform the action.
-    pub game_id: String,
-    /// The ID of the exit to leave through.
-    pub exit_id: String,
-}
-
 pub async fn exit_room(
     transaction: &mut Transaction<'_, Postgres>,
-    args: &ExitRoomArgs,
+    username: &str,
+    game_id: &str,
+    args: &ExitRoom,
 ) -> Result<RoomExited, Box<dyn Error>> {
     let player_character =
-        match crate::player_characters::repository::current(transaction, &args.username).await? {
+        match crate::player_characters::repository::current(transaction, &username).await? {
             Some(it) => it,
             None => return Err(Box::new(NoPlayerCharacterSetError)),
         };
 
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id).await? {
+    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
         Some(it) => it,
         None => return Err(Box::new(GameNotFoundError)),
     };
@@ -52,16 +43,14 @@ pub async fn exit_room(
         state,
     };
 
-    let exit_room = ExitRoom {
-        exit_id: args.exit_id.clone(),
-    };
-
-    let events = game.handle_action(&Action::ExitRoom(exit_room)).unwrap();
-    super::repository::save(transaction, &args.username, &game.state).await?;
+    let events = game
+        .handle_action(&Action::ExitRoom(args.to_owned()))
+        .unwrap();
+    super::repository::save(transaction, &username, &game.state).await?;
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
     Ok(RoomExited {
         events: game_events,
-        actions: game_actions(&game, &args.username),
+        actions: game_actions(&game, &username),
     })
 }

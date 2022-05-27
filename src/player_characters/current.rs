@@ -1,7 +1,5 @@
 use std::error::Error;
 
-use poem_openapi::Object;
-use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
 use underworld_core::components::player::PlayerCharacter;
 
@@ -19,22 +17,16 @@ pub async fn get_current_player_character(
     }
 }
 
-#[derive(Deserialize, Object, Serialize)]
-pub struct SetPlayerCharacterArgs {
-    pub username: String,
-    pub player_character_id: String,
-}
-
 pub async fn set_current_player_character(
     transaction: &mut Transaction<'_, Postgres>,
-    args: &SetPlayerCharacterArgs,
+    username: &str,
+    pc_id: &str,
 ) -> Result<(), Box<dyn Error>> {
-    let player_result =
-        super::repository::by_id(transaction, &args.username, &args.player_character_id).await?;
+    let player_result = super::repository::by_id(transaction, &username, &pc_id).await?;
 
     match player_result {
         Some(it) => {
-            super::repository::set_current(transaction, &args.username, &it).await?;
+            super::repository::set_current(transaction, &username, &it).await?;
             Ok(())
         }
         None => Err(Box::new(UnknownPlayerCharacterError)),

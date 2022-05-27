@@ -1,11 +1,10 @@
 use std::error::Error;
 
 use poem_openapi::Object;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{action::Action, MovePlayerItem, UseItemOnPlayer},
-    components::items::location_tag::LocationTag,
     game::Game,
 };
 
@@ -24,28 +23,19 @@ pub struct ItemUsed {
     actions: Vec<PerformAction>,
 }
 
-#[derive(Deserialize, Object, Serialize)]
-/// Args for an attack action against a single NPC.
-pub struct UseItemOnPlayerArgs {
-    /// Username for the action.
-    pub username: String,
-    /// The ID of the game which the action will happen in.
-    pub game_id: String,
-    /// ID of the item to use.
-    pub item_id: String,
-}
-
 pub async fn use_item_on_player(
     transaction: &mut Transaction<'_, Postgres>,
-    args: &UseItemOnPlayerArgs,
+    username: &str,
+    game_id: &str,
+    args: &UseItemOnPlayer,
 ) -> Result<ItemUsed, Box<dyn Error>> {
     let player_character =
-        match crate::player_characters::repository::current(transaction, &args.username).await? {
+        match crate::player_characters::repository::current(transaction, &username).await? {
             Some(it) => it,
             None => return Err(Box::new(NoPlayerCharacterSetError)),
         };
 
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id).await? {
+    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
         Some(it) => it,
         None => return Err(Box::new(GameNotFoundError)),
     };
@@ -55,37 +45,18 @@ pub async fn use_item_on_player(
         state,
     };
 
-    let use_item = UseItemOnPlayer {
-        item_id: args.item_id.clone(),
-    };
-
     let events = game
-        .handle_action(&Action::UseItemOnPlayer(use_item))
+        .handle_action(&Action::UseItemOnPlayer(args.to_owned()))
         .unwrap();
-    super::repository::save(transaction, &args.username, &game.state).await?;
-    crate::player_characters::repository::save(transaction, &args.username, &game.player).await?;
+    super::repository::save(transaction, &username, &game.state).await?;
+    crate::player_characters::repository::save(transaction, &username, &game.player).await?;
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
     Ok(ItemUsed {
         events: game_events,
-        actions: game_actions(&game, &args.username),
+        actions: game_actions(&game, &username),
     })
-}
-
-#[derive(Deserialize, Object, Serialize)]
-/// Args for an attack action against a single NPC.
-pub struct MovePlayerItemArgs {
-    /// Username for the action.
-    pub username: String,
-    /// The ID of the game which the action will happen in.
-    pub game_id: String,
-    /// ID of the item to use.
-    pub item_id: String,
-    /// Location to put item in
-    pub location_tag: LocationTag,
-    /// Ready the item so that it will be used for attack/defense.
-    pub put_at_the_ready: bool,
 }
 
 #[derive(Serialize, Object)]
@@ -99,15 +70,17 @@ pub struct ItemMoved {
 
 pub async fn move_player_item(
     transaction: &mut Transaction<'_, Postgres>,
-    args: &MovePlayerItemArgs,
+    username: &str,
+    game_id: &str,
+    args: &MovePlayerItem,
 ) -> Result<ItemMoved, Box<dyn Error>> {
     let player_character =
-        match crate::player_characters::repository::current(transaction, &args.username).await? {
+        match crate::player_characters::repository::current(transaction, &username).await? {
             Some(it) => it,
             None => return Err(Box::new(NoPlayerCharacterSetError)),
         };
 
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id).await? {
+    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
         Some(it) => it,
         None => return Err(Box::new(GameNotFoundError)),
     };
@@ -117,22 +90,16 @@ pub async fn move_player_item(
         state,
     };
 
-    let move_item = MovePlayerItem {
-        item_id: args.item_id.clone(),
-        location_tag: args.location_tag.clone(),
-        put_at_the_ready: args.put_at_the_ready,
-    };
-
     let events = game
-        .handle_action(&Action::MovePlayerItem(move_item))
+        .handle_action(&Action::MovePlayerItem(args.to_owned()))
         .unwrap();
-    super::repository::save(transaction, &args.username, &game.state).await?;
-    crate::player_characters::repository::save(transaction, &args.username, &game.player).await?;
+    super::repository::save(transaction, &username, &game.state).await?;
+    crate::player_characters::repository::save(transaction, &username, &game.player).await?;
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
     Ok(ItemMoved {
         events: game_events,
-        actions: game_actions(&game, &args.username),
+        actions: game_actions(&game, &username),
     })
 }

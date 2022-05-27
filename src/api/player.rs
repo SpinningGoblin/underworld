@@ -1,6 +1,6 @@
 use poem::{web::Data, Result};
 use poem_openapi::{
-    param::Path,
+    param::{Header, Path},
     payload::{Json, PlainText},
     ApiResponse, OpenApi,
 };
@@ -8,7 +8,7 @@ use sqlx::PgPool;
 use underworld_core::{components::player::PlayerCharacterView, systems::view::player};
 
 use crate::player_characters::{
-    current::{get_current_player_character, set_current_player_character, SetPlayerCharacterArgs},
+    current::{get_current_player_character, set_current_player_character},
     generate::{generate_player_character, GeneratePlayerCharacter, GeneratedPlayerCharacter},
     get::{get_player_character, player_character_ids},
 };
@@ -47,17 +47,15 @@ pub struct UnderworldPlayerApi;
 impl UnderworldPlayerApi {
     /// Generate and save a new player_character for the user.
     /// If user has no player set as current, this one gets set as the current.
-    #[oai(
-        path = "/player_character/generate",
-        method = "post",
-    )]
+    #[oai(path = "/pcs/generate", method = "post")]
     async fn generate_player_character(
         &self,
         pool: Data<&PgPool>,
+        #[oai(name = "underworld-username")] username: Header<String>,
         args: Json<GeneratePlayerCharacter>,
     ) -> Result<PlayerCharacterGeneratedResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let result = generate_player_character(&mut transaction, &args).await;
+        let result = generate_player_character(&mut transaction, &username, &args).await;
         transaction.commit().await.unwrap();
         Ok(PlayerCharacterGeneratedResponse::PlayerCharacterGenerated(
             Json(result),
@@ -70,14 +68,11 @@ impl UnderworldPlayerApi {
     ///
     /// Call `/my_username/player_characters` to retrieve all player character
     /// ids for my_username
-    #[oai(
-        path = "/:username/player_characters",
-        method = "get",
-    )]
+    #[oai(path = "/pcs/ids", method = "get")]
     async fn list_player_characters(
         &self,
         pool: Data<&PgPool>,
-        username: Path<String>,
+        #[oai(name = "underworld-username")] username: Header<String>,
     ) -> Result<PlayerCharacterIdsResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let result = player_character_ids(&mut transaction, &username).await;
@@ -86,14 +81,11 @@ impl UnderworldPlayerApi {
     }
 
     /// Check the player character for the user with specified ID.
-    #[oai(
-        path = "/:username/player_character/:id/check",
-        method = "get",
-    )]
+    #[oai(path = "/pcs/:id/check", method = "get")]
     async fn check_player_character(
         &self,
         pool: Data<&PgPool>,
-        username: Path<String>,
+        #[oai(name = "underworld-username")] username: Header<String>,
         id: Path<String>,
     ) -> Result<PlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
@@ -112,14 +104,11 @@ impl UnderworldPlayerApi {
     }
 
     /// Check the status of the current player character.
-    #[oai(
-        path = "/:username/check_current_player_character",
-        method = "get",
-    )]
+    #[oai(path = "/pcs/current", method = "get")]
     async fn check_current_player_character(
         &self,
         pool: Data<&PgPool>,
-        username: Path<String>,
+        #[oai(name = "underworld-username")] username: Header<String>,
     ) -> Result<PlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let player_character_result = get_current_player_character(&mut transaction, &username)
@@ -132,17 +121,15 @@ impl UnderworldPlayerApi {
     }
 
     /// Set the specified player character as the current one for any actions in a game.
-    #[oai(
-        path = "/set_current_player_character",
-        method = "post",
-    )]
+    #[oai(path = "/pcs/:id/set_as_current", method = "post")]
     async fn set_current_player_character(
         &self,
         pool: Data<&PgPool>,
-        args: Json<SetPlayerCharacterArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        id: Path<String>,
     ) -> Result<SetCurrentPlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        set_current_player_character(&mut transaction, &args.0)
+        set_current_player_character(&mut transaction, &username, &id)
             .await
             .unwrap();
         transaction.commit().await.unwrap();

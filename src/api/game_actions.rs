@@ -1,29 +1,31 @@
 use poem::{web::Data, Result};
-use poem_openapi::{payload::Json, ApiResponse, OpenApi};
+use poem_openapi::{
+    param::{Header, Path},
+    payload::Json,
+    ApiResponse, OpenApi,
+};
 use sqlx::PgPool;
-use underworld_core::components::{
-    fixtures::fixture::FixtureView, non_player::NonPlayerView, rooms::room_view::RoomView,
+use underworld_core::{
+    actions::{
+        AttackNpc, CastSpellOnPlayer, ExitRoom, InspectFixture, InspectNpc, LookAtFixture,
+        LookAtNpc, LootFixture, LootNpc, MovePlayerItem, UseItemOnPlayer,
+    },
+    components::{
+        fixtures::fixture::FixtureView, non_player::NonPlayerView, rooms::room_view::RoomView,
+    },
 };
 
 use crate::{
     actions::PerformAction,
     game::{
-        attack::{attack_npc, AttackNpcArgs, NpcAttacked},
-        exit::{exit_room, ExitRoomArgs, RoomExited},
-        get::{game_actions, GameActionsArgs},
-        inspect::{
-            inspect_fixture, inspect_npc, FixtureInspected, InspectFixtureArgs, InspectNpcArgs,
-            NpcInspected,
-        },
-        items::{
-            move_player_item, use_item_on_player, ItemMoved, ItemUsed, MovePlayerItemArgs,
-            UseItemOnPlayerArgs,
-        },
-        look::{
-            look_at_fixture, look_at_npc, look_at_room, FixtureLookArgs, NpcLookArgs, RoomLookArgs,
-        },
-        loot::{loot_fixture, loot_npc, FixtureLooted, LootFixtureArgs, LootNpcArgs, NpcLooted},
-        spells::{cast_spell_on_player, CastSpellOnPlayerArgs, SpellCast},
+        attack::{attack_npc, NpcAttacked},
+        exit::{exit_room, RoomExited},
+        get::game_actions,
+        inspect::{inspect_fixture, inspect_npc, FixtureInspected, NpcInspected},
+        items::{move_player_item, use_item_on_player, ItemMoved, ItemUsed},
+        look::{look_at_fixture, look_at_npc, look_at_room},
+        loot::{loot_fixture, loot_npc, FixtureLooted, NpcLooted},
+        spells::{cast_spell_on_player, SpellCast},
     },
 };
 
@@ -109,17 +111,24 @@ enum GameActionsResponse {
 
 pub struct UnderworldGameActionApi;
 
-#[OpenApi(tag = "UnderworldApiTags::GameActions", prefix_path = "/game/action/")]
+#[OpenApi(
+    tag = "UnderworldApiTags::GameActions",
+    prefix_path = "/game/:game_id/"
+)]
 impl UnderworldGameActionApi {
     /// Exit the current room of the specified game through the specified exit.
     #[oai(path = "/exit_room", method = "post")]
     async fn exit_room(
         &self,
         pool: Data<&PgPool>,
-        args: Json<ExitRoomArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<ExitRoom>,
     ) -> Result<ExitRoomResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let exit_result = exit_room(&mut transaction, &args).await.unwrap();
+        let exit_result = exit_room(&mut transaction, &username, &game_id, &args)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
         Ok(ExitRoomResponse::RoomExited(Json(exit_result)))
     }
@@ -129,10 +138,14 @@ impl UnderworldGameActionApi {
     async fn attack_npc(
         &self,
         pool: Data<&PgPool>,
-        args: Json<AttackNpcArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<AttackNpc>,
     ) -> Result<AttackNpcResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let attack_result = attack_npc(&mut transaction, &args).await.unwrap();
+        let attack_result = attack_npc(&mut transaction, &username, &game_id, &args)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
 
         Ok(AttackNpcResponse::NpcAttacked(Json(attack_result)))
@@ -143,10 +156,14 @@ impl UnderworldGameActionApi {
     async fn cast_spell_on_player(
         &self,
         pool: Data<&PgPool>,
-        args: Json<CastSpellOnPlayerArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<CastSpellOnPlayer>,
     ) -> Result<CastSpellResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let cast_result = cast_spell_on_player(&mut transaction, &args).await.unwrap();
+        let cast_result = cast_spell_on_player(&mut transaction, &username, &game_id, &args)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
 
         Ok(CastSpellResponse::SpellCast(Json(cast_result)))
@@ -157,10 +174,14 @@ impl UnderworldGameActionApi {
     async fn use_item_on_player(
         &self,
         pool: Data<&PgPool>,
-        args: Json<UseItemOnPlayerArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<UseItemOnPlayer>,
     ) -> Result<UseItemResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let use_item_result = use_item_on_player(&mut transaction, &args).await.unwrap();
+        let use_item_result = use_item_on_player(&mut transaction, &username, &game_id, &args)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
 
         Ok(UseItemResponse::ItemUsed(Json(use_item_result)))
@@ -171,10 +192,14 @@ impl UnderworldGameActionApi {
     async fn move_player_item(
         &self,
         pool: Data<&PgPool>,
-        args: Json<MovePlayerItemArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<MovePlayerItem>,
     ) -> Result<MoveItemResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let move_item_result = move_player_item(&mut transaction, &args).await.unwrap();
+        let move_item_result = move_player_item(&mut transaction, &username, &game_id, &args)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
 
         Ok(MoveItemResponse::ItemMoved(Json(move_item_result)))
@@ -185,10 +210,14 @@ impl UnderworldGameActionApi {
     async fn loot_npc(
         &self,
         pool: Data<&PgPool>,
-        args: Json<LootNpcArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<LootNpc>,
     ) -> Result<LootNpcResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let loot_result = loot_npc(&mut transaction, &args).await.unwrap();
+        let loot_result = loot_npc(&mut transaction, &username, &game_id, &args)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
 
         Ok(LootNpcResponse::NpcLooted(Json(loot_result)))
@@ -199,10 +228,14 @@ impl UnderworldGameActionApi {
     async fn loot_fixture(
         &self,
         pool: Data<&PgPool>,
-        args: Json<LootFixtureArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<LootFixture>,
     ) -> Result<LootFixtureResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let loot_result = loot_fixture(&mut transaction, &args).await.unwrap();
+        let loot_result = loot_fixture(&mut transaction, &username, &game_id, &args)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
 
         Ok(LootFixtureResponse::FixtureLooted(Json(loot_result)))
@@ -213,10 +246,13 @@ impl UnderworldGameActionApi {
     async fn look_around_room(
         &self,
         pool: Data<&PgPool>,
-        args: Json<RoomLookArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
     ) -> Result<LookResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let view_result = look_at_room(&mut transaction, &args).await.unwrap();
+        let view_result = look_at_room(&mut transaction, &username, &game_id)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
 
         Ok(LookResponse::LookAtRoom(Json(view_result)))
@@ -227,10 +263,14 @@ impl UnderworldGameActionApi {
     async fn look_at_fixture(
         &self,
         pool: Data<&PgPool>,
-        args: Json<FixtureLookArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<LookAtFixture>,
     ) -> Result<LookFixtureResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let view = look_at_fixture(&mut transaction, &args).await.unwrap();
+        let view = look_at_fixture(&mut transaction, &username, &game_id, &args)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
         Ok(LookFixtureResponse::FixtureViewed(Json(view)))
     }
@@ -240,10 +280,14 @@ impl UnderworldGameActionApi {
     async fn look_at_npc(
         &self,
         pool: Data<&PgPool>,
-        args: Json<NpcLookArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<LookAtNpc>,
     ) -> Result<LookNpcResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let view = look_at_npc(&mut transaction, &args).await.unwrap();
+        let view = look_at_npc(&mut transaction, &username, &game_id, &args)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
         Ok(LookNpcResponse::NpcViewed(Json(view)))
     }
@@ -254,10 +298,14 @@ impl UnderworldGameActionApi {
     async fn inspect_fixture(
         &self,
         pool: Data<&PgPool>,
-        args: Json<InspectFixtureArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<InspectFixture>,
     ) -> Result<InspectFixtureResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let inspection = inspect_fixture(&mut transaction, &args).await.unwrap();
+        let inspection = inspect_fixture(&mut transaction, &username, &game_id, &args)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
         Ok(InspectFixtureResponse::FixtureInspected(Json(inspection)))
     }
@@ -268,10 +316,14 @@ impl UnderworldGameActionApi {
     async fn inspect_npc(
         &self,
         pool: Data<&PgPool>,
-        args: Json<InspectNpcArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<InspectNpc>,
     ) -> Result<InspectNpcResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let inspection = inspect_npc(&mut transaction, &args).await.unwrap();
+        let inspection = inspect_npc(&mut transaction, &username, &game_id, &args)
+            .await
+            .unwrap();
         transaction.commit().await.unwrap();
         Ok(InspectNpcResponse::NpcInspected(Json(inspection)))
     }
@@ -281,10 +333,13 @@ impl UnderworldGameActionApi {
     async fn current_actions(
         &self,
         pool: Data<&PgPool>,
-        args: Json<GameActionsArgs>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
     ) -> Result<GameActionsResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let actions = game_actions(&mut transaction, &args).await.unwrap();
+        let actions = game_actions(&mut transaction, &username, &game_id)
+            .await
+            .unwrap();
         Ok(GameActionsResponse::GameActions(Json(actions)))
     }
 }

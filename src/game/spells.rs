@@ -1,7 +1,7 @@
 use std::error::Error;
 
 use poem_openapi::Object;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{action::Action, CastSpellOnPlayer},
@@ -23,40 +23,19 @@ pub struct SpellCast {
     actions: Vec<PerformAction>,
 }
 
-#[derive(Deserialize, Object, Serialize)]
-/// Args for an attack action against a single NPC.
-pub struct CastSpellOnPlayerArgs {
-    /// Username for the action.
-    pub username: String,
-    /// The ID of the game which the action will happen in.
-    pub game_id: String,
-    /// ID of the spell to be cast.
-    pub spell_id: String,
-}
-
-#[derive(Deserialize, Object, Serialize)]
-/// Args for an attack action against a single NPC.
-pub struct CastSpellOnNpcArgs {
-    /// Username for the action.
-    pub username: String,
-    /// The ID of the game which the action will happen in.
-    pub game_id: String,
-    /// ID of the spell to be cast.
-    pub spell_id: String,
-    pub npc_id: String,
-}
-
 pub async fn cast_spell_on_player(
     transaction: &mut Transaction<'_, Postgres>,
-    args: &CastSpellOnPlayerArgs,
+    username: &str,
+    game_id: &str,
+    args: &CastSpellOnPlayer,
 ) -> Result<SpellCast, Box<dyn Error>> {
     let player_character =
-        match crate::player_characters::repository::current(transaction, &args.username).await? {
+        match crate::player_characters::repository::current(transaction, &username).await? {
             Some(it) => it,
             None => return Err(Box::new(NoPlayerCharacterSetError)),
         };
 
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id).await? {
+    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
         Some(it) => it,
         None => return Err(Box::new(GameNotFoundError)),
     };
@@ -66,20 +45,16 @@ pub async fn cast_spell_on_player(
         state,
     };
 
-    let cast_spell = CastSpellOnPlayer {
-        spell_id: args.spell_id.clone(),
-    };
-
     let events = game
-        .handle_action(&Action::CastSpellOnPlayer(cast_spell))
+        .handle_action(&Action::CastSpellOnPlayer(args.to_owned()))
         .unwrap();
-    super::repository::save(transaction, &args.username, &game.state).await?;
-    crate::player_characters::repository::save(transaction, &args.username, &game.player).await?;
+    super::repository::save(transaction, &username, &game.state).await?;
+    crate::player_characters::repository::save(transaction, &username, &game.player).await?;
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
     Ok(SpellCast {
         events: game_events,
-        actions: game_actions(&game, &args.username),
+        actions: game_actions(&game, &username),
     })
 }

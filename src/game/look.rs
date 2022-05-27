@@ -1,7 +1,5 @@
 use std::error::Error;
 
-use poem_openapi::Object;
-use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{
@@ -17,41 +15,21 @@ use underworld_core::{
 
 use crate::error::{GameNotFoundError, GeneralError, NoPlayerCharacterSetError};
 
-#[derive(Deserialize, Object, Serialize)]
-pub struct RoomLookArgs {
-    pub username: String,
-    pub game_id: String,
-}
-
-#[derive(Deserialize, Object, Serialize)]
-pub struct NpcLookArgs {
-    pub username: String,
-    pub game_id: String,
-    pub npc_id: String,
-}
-
-impl From<&NpcLookArgs> for LookAtNpc {
-    fn from(val: &NpcLookArgs) -> Self {
-        LookAtNpc {
-            npc_id: val.npc_id.clone(),
-        }
-    }
-}
-
 pub async fn look_at_room(
     transaction: &mut Transaction<'_, Postgres>,
-    args: &RoomLookArgs,
+    username: &str,
+    game_id: &str,
 ) -> Result<RoomView, Box<dyn Error>> {
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id).await? {
+    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
         Some(it) => it,
         None => return Err(Box::new(GameNotFoundError)),
     };
 
-    let player =
-        match crate::player_characters::repository::current(transaction, &args.username).await? {
-            Some(it) => it,
-            None => return Err(Box::new(NoPlayerCharacterSetError)),
-        };
+    let player = match crate::player_characters::repository::current(transaction, &username).await?
+    {
+        Some(it) => it,
+        None => return Err(Box::new(NoPlayerCharacterSetError)),
+    };
 
     let mut game = Game { state, player };
 
@@ -69,9 +47,11 @@ pub async fn look_at_room(
 
 pub async fn look_at_npc(
     transaction: &mut Transaction<'_, Postgres>,
-    args: &NpcLookArgs,
+    username: &str,
+    game_id: &str,
+    args: &LookAtNpc,
 ) -> Result<NonPlayerView, Box<dyn Error>> {
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
+    let state = match super::repository::by_id(transaction, &username, &game_id)
         .await
         .unwrap()
     {
@@ -79,7 +59,7 @@ pub async fn look_at_npc(
         None => return Err(Box::new(GameNotFoundError)),
     };
 
-    let player = match crate::player_characters::repository::current(transaction, &args.username)
+    let player = match crate::player_characters::repository::current(transaction, &username)
         .await
         .unwrap()
     {
@@ -88,8 +68,7 @@ pub async fn look_at_npc(
     };
 
     let mut game = Game { state, player };
-    let look_args: LookAtNpc = LookAtNpc::from(args);
-    let action = Action::LookAtNpc(look_args);
+    let action = Action::LookAtNpc(args.to_owned());
     let events = game.handle_action(&action)?;
 
     match events.iter().find_map(|event| match event {
@@ -101,18 +80,13 @@ pub async fn look_at_npc(
     }
 }
 
-#[derive(Deserialize, Object, Serialize)]
-pub struct FixtureLookArgs {
-    pub username: String,
-    pub game_id: String,
-    pub fixture_id: String,
-}
-
 pub async fn look_at_fixture(
     transaction: &mut Transaction<'_, Postgres>,
-    args: &FixtureLookArgs,
+    username: &str,
+    game_id: &str,
+    args: &LookAtFixture,
 ) -> Result<FixtureView, Box<dyn Error>> {
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
+    let state = match super::repository::by_id(transaction, &username, &game_id)
         .await
         .unwrap()
     {
@@ -120,7 +94,7 @@ pub async fn look_at_fixture(
         None => return Err(Box::new(GameNotFoundError)),
     };
 
-    let player = match crate::player_characters::repository::current(transaction, &args.username)
+    let player = match crate::player_characters::repository::current(transaction, &username)
         .await
         .unwrap()
     {
@@ -129,10 +103,7 @@ pub async fn look_at_fixture(
     };
 
     let mut game = Game { state, player };
-    let look_args = LookAtFixture {
-        fixture_id: args.fixture_id.clone(),
-    };
-    let action = Action::LookAtFixture(look_args);
+    let action = Action::LookAtFixture(args.to_owned());
     let events = game.handle_action(&action)?;
 
     match events.iter().find_map(|event| match event {

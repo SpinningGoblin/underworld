@@ -1,5 +1,5 @@
 use poem::{web::Data, Result};
-use poem_openapi::{param::Path, payload::Json, ApiResponse, OpenApi};
+use poem_openapi::{param::Header, payload::Json, ApiResponse, OpenApi};
 use sqlx::PgPool;
 
 use crate::game::{
@@ -22,7 +22,7 @@ enum GameIdResponse {
 
 pub struct UnderworldGameApi;
 
-#[OpenApi(tag = "UnderworldApiTags::Games", prefix_path = "/:username/games")]
+#[OpenApi(tag = "UnderworldApiTags::Games", prefix_path = "/games")]
 impl UnderworldGameApi {
     /// Generate and persist a new game.
     ///
@@ -34,7 +34,7 @@ impl UnderworldGameApi {
     async fn generate_game(
         &self,
         pool: Data<&PgPool>,
-        username: Path<String>,
+        #[oai(name = "underworld-username")] username: Header<String>,
     ) -> Result<GenerateGameResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let generated_result = generate_game(&mut transaction, &username).await.unwrap();
@@ -52,7 +52,7 @@ impl UnderworldGameApi {
     async fn list_games(
         &self,
         pool: Data<&PgPool>,
-        username: Path<String>,
+        #[oai(name = "underworld-username")] username: Header<String>,
     ) -> Result<GameIdResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let result = game_ids(&mut transaction, &username).await;

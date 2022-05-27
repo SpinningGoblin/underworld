@@ -28,11 +28,11 @@ pub async fn generate_game(
 
     super::repository::save(transaction, &username, &game_state).await?;
 
-    let player =
-        match crate::player_characters::repository::current(transaction, &username).await? {
-            Some(it) => it,
-            None => return Err(Box::new(NoPlayerCharacterSetError)),
-        };
+    let player = match crate::player_characters::repository::current(transaction, &username).await?
+    {
+        Some(it) => it,
+        None => return Err(Box::new(NoPlayerCharacterSetError)),
+    };
 
     let game_id = game_state.identifier.id.to_string();
     let game = Game {

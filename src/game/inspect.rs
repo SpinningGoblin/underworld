@@ -1,7 +1,7 @@
 use std::error::Error;
 
 use poem_openapi::Object;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{action::Action, inspect_fixture::InspectFixture, inspect_npc::InspectNpc},
@@ -14,24 +14,6 @@ use crate::{
     error::{GameNotFoundError, NoPlayerCharacterSetError},
 };
 
-#[derive(Deserialize, Object, Serialize)]
-pub struct InspectNpcArgs {
-    /// Username to use.
-    pub username: String,
-    /// Game to perform action.
-    pub game_id: String,
-    /// NPC to inspect.
-    pub npc_id: String,
-    /// Attempt to discover the NPC's health.
-    pub discover_health: bool,
-    /// Attempt to discover the NPC's name.
-    pub discover_name: bool,
-    /// Attempt to discover the items the NPC has packed away.
-    pub discover_packed_items: bool,
-    /// Attempt to discover any hidden items the NPC has.
-    pub discover_hidden_items: bool,
-}
-
 #[derive(Object, Serialize)]
 pub struct NpcInspected {
     pub health_discovered: bool,
@@ -43,33 +25,28 @@ pub struct NpcInspected {
 
 pub async fn inspect_npc(
     transaction: &mut Transaction<'_, Postgres>,
-    args: &InspectNpcArgs,
+    username: &str,
+    game_id: &str,
+    args: &InspectNpc,
 ) -> Result<NpcInspected, Box<dyn Error>> {
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id).await? {
+    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
         Some(it) => it,
         None => return Err(Box::new(GameNotFoundError)),
     };
-    let player =
-        match crate::player_characters::repository::current(transaction, &args.username).await? {
-            Some(it) => it,
-            None => return Err(Box::new(NoPlayerCharacterSetError)),
-        };
+    let player = match crate::player_characters::repository::current(transaction, &username).await?
+    {
+        Some(it) => it,
+        None => return Err(Box::new(NoPlayerCharacterSetError)),
+    };
     let mut game = Game { state, player };
 
-    let inspect_args = InspectNpc {
-        npc_id: args.npc_id.clone(),
-        discover_health: args.discover_health,
-        discover_name: args.discover_name,
-        discover_packed_items: args.discover_packed_items,
-        discover_hidden_items: args.discover_hidden_items,
-    };
-    let action = Action::InspectNpc(inspect_args);
+    let action = Action::InspectNpc(args.to_owned());
     let events = game.handle_action(&action)?;
 
-    super::repository::save(transaction, &args.username, &game.state)
+    super::repository::save(transaction, &username, &game.state)
         .await
         .unwrap();
-    crate::player_characters::repository::save(transaction, &args.username, &game.player)
+    crate::player_characters::repository::save(transaction, &username, &game.player)
         .await
         .unwrap();
 
@@ -78,7 +55,7 @@ pub async fn inspect_npc(
         name_discovered: false,
         packed_items_discovered: false,
         hidden_items_discovered: false,
-        actions: game_actions(&game, &args.username),
+        actions: game_actions(&game, &username),
     };
 
     for event in events {
@@ -102,24 +79,6 @@ pub async fn inspect_npc(
     Ok(npc_inspected)
 }
 
-#[derive(Deserialize, Object, Serialize)]
-pub struct InspectFixtureArgs {
-    /// Username to use.
-    pub username: String,
-    /// Game to perform action.
-    pub game_id: String,
-    /// NPC to inspect.
-    pub fixture_id: String,
-    /// Attempt to discover any hidden compartments and its contents.
-    pub discover_has_hidden: bool,
-    /// Attempt to discover any items in any hidden compartments.
-    pub discover_hidden_items: bool,
-    /// Attempt to discover the items inside of the container, without opening.
-    pub discover_contained: bool,
-    /// Attempt to discover if the fixture can be opened.
-    pub discover_can_be_opened: bool,
-}
-
 #[derive(Object, Serialize)]
 pub struct FixtureInspected {
     pub can_be_opened_discovered: bool,
@@ -131,16 +90,18 @@ pub struct FixtureInspected {
 
 pub async fn inspect_fixture(
     transaction: &mut Transaction<'_, Postgres>,
-    args: &InspectFixtureArgs,
+    username: &str,
+    game_id: &str,
+    args: &InspectFixture,
 ) -> Result<FixtureInspected, Box<dyn Error>> {
-    let state = match super::repository::by_id(transaction, &args.username, &args.game_id)
+    let state = match super::repository::by_id(transaction, &username, &game_id)
         .await
         .unwrap()
     {
         Some(it) => it,
         None => return Err(Box::new(GameNotFoundError)),
     };
-    let player = match crate::player_characters::repository::current(transaction, &args.username)
+    let player = match crate::player_characters::repository::current(transaction, &username)
         .await
         .unwrap()
     {
@@ -149,21 +110,14 @@ pub async fn inspect_fixture(
     };
     let mut game = Game { state, player };
 
-    let inspect_args = InspectFixture {
-        fixture_id: args.fixture_id.clone(),
-        discover_can_be_opened: args.discover_can_be_opened,
-        discover_contained: args.discover_contained,
-        discover_hidden: args.discover_has_hidden,
-        discover_hidden_items: args.discover_hidden_items,
-    };
-    let action = Action::InspectFixture(inspect_args);
+    let action = Action::InspectFixture(args.to_owned());
     let events = game.handle_action(&action)?;
 
-    super::repository::save(transaction, &args.username, &game.state).await?;
-    crate::player_characters::repository::save(transaction, &args.username, &game.player).await?;
+    super::repository::save(transaction, &username, &game.state).await?;
+    crate::player_characters::repository::save(transaction, &username, &game.player).await?;
 
     let mut fixture_inspected = FixtureInspected {
-        actions: game_actions(&game, &args.username),
+        actions: game_actions(&game, &username),
         can_be_opened_discovered: false,
         has_hidden_discovered: false,
         hidden_items_discovered: false,
