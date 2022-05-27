@@ -35,7 +35,7 @@ impl UnderworldNpcApi {
     /// # Example
     ///
     /// Call `/npc/random` to generate a completely random character
-    #[oai(path = "/npc/random", method = "get", tag = "UnderworldApiTags::Npc")]
+    #[oai(path = "/npc/random", method = "get", tag = "UnderworldApiTags::Npcs")]
     async fn generate_character(&self) -> Result<CharacterGeneratedResponse> {
         let generator = npc_generator(generate_name());
         let non_player = generator.generate();

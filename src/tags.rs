@@ -2,7 +2,8 @@ use poem_openapi::Tags;
 
 #[derive(Tags)]
 pub enum UnderworldApiTags {
-    Npc,
-    PlayerCharacter,
-    Game,
+    Npcs,
+    PlayerCharacters,
+    Games,
+    GameActions,
 }

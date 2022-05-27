@@ -9,7 +9,10 @@ pub mod tags;
 
 use std::env;
 
-use api::{game::UnderworldGameApi, npc::UnderworldNpcApi, player::UnderworldPlayerApi};
+use api::{
+    game::UnderworldGameApi, game_actions::UnderworldGameActionApi, npc::UnderworldNpcApi,
+    player::UnderworldPlayerApi,
+};
 use poem::{
     endpoint::StaticFilesEndpoint, listener::TcpListener, middleware::Cors, EndpointExt, Result,
     Route, Server,
@@ -36,7 +39,12 @@ async fn main() -> Result<(), std::io::Error> {
     let pool = sqlx::PgPool::connect(&get_psql_url()).await.unwrap();
 
     let api_service = OpenApiService::new(
-        (UnderworldNpcApi, UnderworldPlayerApi, UnderworldGameApi),
+        (
+            UnderworldNpcApi,
+            UnderworldPlayerApi,
+            UnderworldGameApi,
+            UnderworldGameActionApi,
+        ),
         "Underworld",
         "0.1.0",
     )

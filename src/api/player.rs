@@ -43,14 +43,13 @@ enum SetCurrentPlayerCharacterResponse {
 
 pub struct UnderworldPlayerApi;
 
-#[OpenApi]
+#[OpenApi(tag = "UnderworldApiTags::PlayerCharacters")]
 impl UnderworldPlayerApi {
     /// Generate and save a new player_character for the user.
     /// If user has no player set as current, this one gets set as the current.
     #[oai(
         path = "/player_character/generate",
         method = "post",
-        tag = "UnderworldApiTags::PlayerCharacter"
     )]
     async fn generate_player_character(
         &self,
@@ -74,7 +73,6 @@ impl UnderworldPlayerApi {
     #[oai(
         path = "/:username/player_characters",
         method = "get",
-        tag = "UnderworldApiTags::PlayerCharacter"
     )]
     async fn list_player_characters(
         &self,
@@ -91,7 +89,6 @@ impl UnderworldPlayerApi {
     #[oai(
         path = "/:username/player_character/:id/check",
         method = "get",
-        tag = "UnderworldApiTags::PlayerCharacter"
     )]
     async fn check_player_character(
         &self,
@@ -118,7 +115,6 @@ impl UnderworldPlayerApi {
     #[oai(
         path = "/:username/check_current_player_character",
         method = "get",
-        tag = "UnderworldApiTags::PlayerCharacter"
     )]
     async fn check_current_player_character(
         &self,
@@ -139,7 +135,6 @@ impl UnderworldPlayerApi {
     #[oai(
         path = "/set_current_player_character",
         method = "post",
-        tag = "UnderworldApiTags::PlayerCharacter"
     )]
     async fn set_current_player_character(
         &self,

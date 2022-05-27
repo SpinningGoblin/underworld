@@ -8,7 +8,7 @@ use crate::{
         attack::AttackNpcArgs,
         exit::ExitRoomArgs,
         inspect::{InspectFixtureArgs, InspectNpcArgs},
-        items::UseItemOnPlayerArgs,
+        items::{MovePlayerItemArgs, UseItemOnPlayerArgs},
         look::{FixtureLookArgs, NpcLookArgs, RoomLookArgs},
         loot::{LootFixtureArgs, LootNpcArgs},
         spells::{CastSpellOnNpcArgs, CastSpellOnPlayerArgs},
@@ -31,6 +31,7 @@ pub enum ActionName {
     LookAtRoom,
     LootFixture,
     LootNpc,
+    MovePlayerItem,
     QuickLookRoom,
     SetCurrentPlayerCharacter,
     UseItemOnPlayer,
@@ -94,7 +95,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
             Action::LookAtCurrentRoom(_) => Some(PerformAction {
                 name: ActionName::LookAtRoom,
                 description: "Look at current room".to_string(),
-                link: get_api_link("game/look_around_room"),
+                link: get_api_link("game/action/look_around_room"),
                 http_action: "POST".to_string(),
                 args: Some(serde_json::to_value(&look_args).unwrap()),
             }),
@@ -107,7 +108,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
                 Some(PerformAction {
                     name: ActionName::AttackNpc,
                     description: "Attack an NPC in the room.".to_string(),
-                    link: get_api_link("game/attack_npc"),
+                    link: get_api_link("game/action/attack_npc"),
                     http_action: "POST".to_string(),
                     args: Some(serde_json::to_value(&attack_args).unwrap()),
                 })
@@ -122,7 +123,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
                 Some(PerformAction {
                     name: ActionName::ExitRoom,
                     description: "Exit current room using this exit.".to_string(),
-                    link: get_api_link("game/exit_room"),
+                    link: get_api_link("game/action/exit_room"),
                     http_action: "POST".to_string(),
                     args: Some(serde_json::to_value(&exit_args).unwrap()),
                 })
@@ -130,7 +131,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
             Action::LookAtNpc(it) => Some(PerformAction {
                 name: ActionName::LookAtNpc,
                 description: "Look at an NPC".to_string(),
-                link: get_api_link("game/look_at_npc"),
+                link: get_api_link("game/action/look_at_npc"),
                 http_action: "POST".to_string(),
                 args: Some(
                     serde_json::to_value(NpcLookArgs {
@@ -144,7 +145,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
             Action::LootNpc(loot_npc) => Some(PerformAction {
                 name: ActionName::LootNpc,
                 description: "Loot an NPC.".to_string(),
-                link: get_api_link("game/loot_npc"),
+                link: get_api_link("game/action/loot_npc"),
                 http_action: "POST".to_string(),
                 args: Some(
                     serde_json::to_value(LootNpcArgs {
@@ -156,11 +157,27 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
                     .unwrap(),
                 ),
             }),
-            Action::MovePlayerItem(_) => None,
+            Action::MovePlayerItem(move_player_item) => Some(PerformAction {
+                name: ActionName::MovePlayerItem,
+                description: "Move an item around on the player, either equipping or unequipping."
+                    .to_string(),
+                link: get_api_link("game/action/move_player_item"),
+                http_action: "POST".to_string(),
+                args: Some(
+                    serde_json::to_value(MovePlayerItemArgs {
+                        username: username.to_string(),
+                        game_id: game_id.clone(),
+                        item_id: move_player_item.item_id,
+                        location_tag: move_player_item.location_tag.clone(),
+                        put_at_the_ready: move_player_item.put_at_the_ready,
+                    })
+                    .unwrap(),
+                ),
+            }),
             Action::InspectNpc(inspect) => Some(PerformAction {
                 name: ActionName::InspectNpc,
                 description: "Inspect an NPC to reveal more information.".to_string(),
-                link: get_api_link("game/inspect_npc"),
+                link: get_api_link("game/action/inspect_npc"),
                 http_action: "POST".to_string(),
                 args: Some(
                     serde_json::to_value(InspectNpcArgs {
@@ -178,7 +195,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
             Action::InspectFixture(inspect) => Some(PerformAction {
                 name: ActionName::InspectFixture,
                 description: "Inspect a fixture to discover new information".to_string(),
-                link: get_api_link("game/inspect_npc"),
+                link: get_api_link("game/action/inspect_npc"),
                 http_action: "POST".to_string(),
                 args: Some(
                     serde_json::to_value(InspectFixtureArgs {
@@ -196,7 +213,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
             Action::LookAtFixture(look_at) => Some(PerformAction {
                 name: ActionName::LookAtFixture,
                 description: "Look at a fixture.".to_string(),
-                link: get_api_link("game/look_at_fixture"),
+                link: get_api_link("game/action/look_at_fixture"),
                 http_action: "POST".to_string(),
                 args: Some(
                     serde_json::to_value(FixtureLookArgs {
@@ -210,7 +227,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
             Action::LootFixture(loot_fixture) => Some(PerformAction {
                 name: ActionName::LootFixture,
                 description: "Loot a fixture".to_string(),
-                link: get_api_link("game/loot_fixture"),
+                link: get_api_link("game/action/loot_fixture"),
                 http_action: "POST".to_string(),
                 args: Some(
                     serde_json::to_value(LootFixtureArgs {
@@ -225,7 +242,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
             Action::CastSpellOnNpc(cast_spell_on_npc) => Some(PerformAction {
                 name: ActionName::CastSpellOnNpc,
                 description: "Cast a spell on an NPC".to_string(),
-                link: get_api_link("game/cast_spell_on_npc"),
+                link: get_api_link("game/action/cast_spell_on_npc"),
                 http_action: "POST".to_string(),
                 args: Some(
                     serde_json::to_value(CastSpellOnNpcArgs {
@@ -240,7 +257,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
             Action::CastSpellOnPlayer(cast_spell_on_player) => Some(PerformAction {
                 name: ActionName::CastSpellOnPlayer,
                 description: "Cast a spell on yourself".to_string(),
-                link: get_api_link("game/cast_spell_on_player"),
+                link: get_api_link("game/action/cast_spell_on_player"),
                 http_action: "POST".to_string(),
                 args: Some(
                     serde_json::to_value(CastSpellOnPlayerArgs {
@@ -254,7 +271,7 @@ pub fn game_actions(game: &Game, username: &str) -> Vec<PerformAction> {
             Action::UseItemOnPlayer(use_item_on_player) => Some(PerformAction {
                 name: ActionName::CastSpellOnPlayer,
                 description: "Use an item on yourself".to_string(),
-                link: get_api_link("game/use_item_on_player"),
+                link: get_api_link("game/action/use_item_on_player"),
                 http_action: "POST".to_string(),
                 args: Some(
                     serde_json::to_value(UseItemOnPlayerArgs {
