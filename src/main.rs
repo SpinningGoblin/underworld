@@ -55,7 +55,7 @@ async fn main() -> Result<(), std::io::Error> {
     let route = Route::new()
         .nest(
             "/docs",
-            StaticFilesEndpoint::new("./public").index_file("index.html"),
+            StaticFilesEndpoint::new("./public_docs").index_file("index.html"),
         )
         .nest("/api", api_service)
         .nest("/swagger_ui", ui)
