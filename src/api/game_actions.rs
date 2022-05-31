@@ -117,7 +117,7 @@ pub struct UnderworldGameActionApi;
 )]
 impl UnderworldGameActionApi {
     /// Exit the current room of the specified game through the specified exit.
-    #[oai(path = "/exit_room", method = "post")]
+    #[oai(path = "/exit_room", method = "post", operation_id = "exit_room")]
     async fn exit_room(
         &self,
         pool: Data<&PgPool>,
@@ -134,7 +134,7 @@ impl UnderworldGameActionApi {
     }
 
     /// Attack a specific NPC inside the current room of the specified game.
-    #[oai(path = "/attack_npc", method = "post")]
+    #[oai(path = "/attack_npc", method = "post", operation_id = "attack_npc")]
     async fn attack_npc(
         &self,
         pool: Data<&PgPool>,
@@ -152,7 +152,11 @@ impl UnderworldGameActionApi {
     }
 
     /// Cast a spell on your player character.
-    #[oai(path = "/cast_spell_on_player", method = "post")]
+    #[oai(
+        path = "/cast_spell_on_player",
+        method = "post",
+        operation_id = "cast_spell_on_player"
+    )]
     async fn cast_spell_on_player(
         &self,
         pool: Data<&PgPool>,
@@ -170,7 +174,11 @@ impl UnderworldGameActionApi {
     }
 
     /// Use an item on your player character.
-    #[oai(path = "/use_item_on_player", method = "post")]
+    #[oai(
+        path = "/use_item_on_player",
+        method = "post",
+        operation_id = "use_item_on_player"
+    )]
     async fn use_item_on_player(
         &self,
         pool: Data<&PgPool>,
@@ -188,7 +196,11 @@ impl UnderworldGameActionApi {
     }
 
     /// Use an item on your player character.
-    #[oai(path = "/move_player_item", method = "post")]
+    #[oai(
+        path = "/move_player_item",
+        method = "post",
+        operation_id = "move_player_item"
+    )]
     async fn move_player_item(
         &self,
         pool: Data<&PgPool>,
@@ -206,7 +218,7 @@ impl UnderworldGameActionApi {
     }
 
     /// Loot some items from an NPC.
-    #[oai(path = "/loot_npc", method = "post")]
+    #[oai(path = "/loot_npc", method = "post", operation_id = "loot_npc")]
     async fn loot_npc(
         &self,
         pool: Data<&PgPool>,
@@ -224,7 +236,7 @@ impl UnderworldGameActionApi {
     }
 
     /// Loot some items from a fixture.
-    #[oai(path = "/loot_fixture", method = "post")]
+    #[oai(path = "/loot_fixture", method = "post", operation_id = "loot_fixture")]
     async fn loot_fixture(
         &self,
         pool: Data<&PgPool>,
@@ -242,7 +254,11 @@ impl UnderworldGameActionApi {
     }
 
     /// Take a closer look at the current room.
-    #[oai(path = "/look_around_room", method = "post")]
+    #[oai(
+        path = "/look_around_room",
+        method = "post",
+        operation_id = "look_around_room"
+    )]
     async fn look_around_room(
         &self,
         pool: Data<&PgPool>,
@@ -259,7 +275,11 @@ impl UnderworldGameActionApi {
     }
 
     /// Look at a specific Fixture in the current room.
-    #[oai(path = "/look_at_fixture", method = "post")]
+    #[oai(
+        path = "/look_at_fixture",
+        method = "post",
+        operation_id = "look_at_fixture"
+    )]
     async fn look_at_fixture(
         &self,
         pool: Data<&PgPool>,
@@ -276,7 +296,7 @@ impl UnderworldGameActionApi {
     }
 
     /// Look at a specific NPC in the current room.
-    #[oai(path = "/look_at_npc", method = "post")]
+    #[oai(path = "/look_at_npc", method = "post", operation_id = "look_at_npc")]
     async fn look_at_npc(
         &self,
         pool: Data<&PgPool>,
@@ -294,7 +314,11 @@ impl UnderworldGameActionApi {
 
     /// Inspect a fixture to find out more information about them when looking at them next.
     /// After completing an inspect, look at the fixture to see new information.
-    #[oai(path = "/inspect_fixture", method = "post")]
+    #[oai(
+        path = "/inspect_fixture",
+        method = "post",
+        operation_id = "inspect_fixture"
+    )]
     async fn inspect_fixture(
         &self,
         pool: Data<&PgPool>,
@@ -312,7 +336,7 @@ impl UnderworldGameActionApi {
 
     /// Inspect an NPC to find out more information about them when looking at them next.
     /// After completing an inspect, look at the NPC to see new information.
-    #[oai(path = "/inspect_npc", method = "post")]
+    #[oai(path = "/inspect_npc", method = "post", operation_id = "inspect_npc")]
     async fn inspect_npc(
         &self,
         pool: Data<&PgPool>,
@@ -329,7 +353,11 @@ impl UnderworldGameActionApi {
     }
 
     /// Get the current actions available for the game.
-    #[oai(path = "/current_actions", method = "post")]
+    #[oai(
+        path = "/current_actions",
+        method = "post",
+        operation_id = "current_actions"
+    )]
     async fn current_actions(
         &self,
         pool: Data<&PgPool>,

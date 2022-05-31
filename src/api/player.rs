@@ -43,11 +43,11 @@ enum SetCurrentPlayerCharacterResponse {
 
 pub struct UnderworldPlayerApi;
 
-#[OpenApi(tag = "UnderworldApiTags::PlayerCharacters")]
+#[OpenApi(tag = "UnderworldApiTags::PlayerCharacters", prefix_path = "/pcs/")]
 impl UnderworldPlayerApi {
     /// Generate and save a new player_character for the user.
     /// If user has no player set as current, this one gets set as the current.
-    #[oai(path = "/pcs/generate", method = "post")]
+    #[oai(path = "/generate", method = "post", operation_id = "generate_pc")]
     async fn generate_player_character(
         &self,
         pool: Data<&PgPool>,
@@ -68,7 +68,7 @@ impl UnderworldPlayerApi {
     ///
     /// Call `/my_username/player_characters` to retrieve all player character
     /// ids for my_username
-    #[oai(path = "/pcs/ids", method = "get")]
+    #[oai(path = "/ids", method = "get", operation_id = "get_pc_ids")]
     async fn list_player_characters(
         &self,
         pool: Data<&PgPool>,
@@ -81,7 +81,7 @@ impl UnderworldPlayerApi {
     }
 
     /// Check the player character for the user with specified ID.
-    #[oai(path = "/pcs/:id/check", method = "get")]
+    #[oai(path = "/:id/check", method = "get", operation_id = "get_pc")]
     async fn check_player_character(
         &self,
         pool: Data<&PgPool>,
@@ -104,7 +104,7 @@ impl UnderworldPlayerApi {
     }
 
     /// Check the status of the current player character.
-    #[oai(path = "/pcs/current", method = "get")]
+    #[oai(path = "/current", method = "get", operation_id = "get_current_pc")]
     async fn check_current_player_character(
         &self,
         pool: Data<&PgPool>,
@@ -121,7 +121,11 @@ impl UnderworldPlayerApi {
     }
 
     /// Set the specified player character as the current one for any actions in a game.
-    #[oai(path = "/pcs/:id/set_as_current", method = "post")]
+    #[oai(
+        path = "/:id/set_as_current",
+        method = "post",
+        operation_id = "set_pc_as_current"
+    )]
     async fn set_current_player_character(
         &self,
         pool: Data<&PgPool>,

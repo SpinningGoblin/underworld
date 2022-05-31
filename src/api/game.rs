@@ -30,7 +30,7 @@ impl UnderworldGameApi {
     ///
     /// POST `/my_username/games/generate` to generate and save
     /// a new game for my_username
-    #[oai(path = "/generate", method = "post")]
+    #[oai(path = "/generate", method = "post", operation_id = "generate_game")]
     async fn generate_game(
         &self,
         pool: Data<&PgPool>,
@@ -48,7 +48,7 @@ impl UnderworldGameApi {
     /// # Example
     ///
     /// Call `/my_username/games/ids` to retrieve all game ids for my_username
-    #[oai(path = "/ids", method = "get")]
+    #[oai(path = "/ids", method = "get", operation_id = "get_game_ids")]
     async fn list_games(
         &self,
         pool: Data<&PgPool>,
