@@ -43,7 +43,9 @@ export const listenActionPerformed = (callback: ActionPerformedCallback) => {
   }
 };
 
-export const removeActionPerformedListener = (callback: ActionPerformedCallback) => {
+export const removeActionPerformedListener = (
+  callback: ActionPerformedCallback,
+) => {
   const index = listeners.indexOf(callback);
 
   if (index >= 0) {
