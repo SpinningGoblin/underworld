@@ -24,7 +24,7 @@ export interface AttackNpc {
      * @type {string}
      * @memberof AttackNpc
      */
-    npcId: string;
+    npc_id: string;
 }
 
 export function AttackNpcFromJSON(json: any): AttackNpc {
@@ -37,7 +37,7 @@ export function AttackNpcFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
-        'npcId': json['npc_id'],
+        'npc_id': json['npc_id'],
     };
 }
 
@@ -50,7 +50,7 @@ export function AttackNpcToJSON(value?: AttackNpc | null): any {
     }
     return {
         
-        'npc_id': value.npcId,
+        'npc_id': value.npc_id,
     };
 }
 

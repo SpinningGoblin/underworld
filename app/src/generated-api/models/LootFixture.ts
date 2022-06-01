@@ -24,13 +24,13 @@ export interface LootFixture {
      * @type {string}
      * @memberof LootFixture
      */
-    fixtureId: string;
+    fixture_id: string;
     /**
      * 
      * @type {Array<string>}
      * @memberof LootFixture
      */
-    itemIds: Array<string>;
+    item_ids: Array<string>;
 }
 
 export function LootFixtureFromJSON(json: any): LootFixture {
@@ -43,8 +43,8 @@ export function LootFixtureFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'fixtureId': json['fixture_id'],
-        'itemIds': json['item_ids'],
+        'fixture_id': json['fixture_id'],
+        'item_ids': json['item_ids'],
     };
 }
 
@@ -57,8 +57,8 @@ export function LootFixtureToJSON(value?: LootFixture | null): any {
     }
     return {
         
-        'fixture_id': value.fixtureId,
-        'item_ids': value.itemIds,
+        'fixture_id': value.fixture_id,
+        'item_ids': value.item_ids,
     };
 }
 

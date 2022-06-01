@@ -43,7 +43,7 @@ export interface Stats {
      * @type {boolean}
      * @memberof Stats
      */
-    healthKnown: boolean;
+    health_known: boolean;
     /**
      * 
      * @type {Size}
@@ -63,7 +63,7 @@ export function StatsFromJSONTyped(json: any, ignoreDiscriminator: boolean): Sta
     return {
         
         'health': !exists(json, 'health') ? undefined : HealthFromJSON(json['health']),
-        'healthKnown': json['health_known'],
+        'health_known': json['health_known'],
         'height': SizeFromJSON(json['height']),
     };
 }
@@ -78,7 +78,7 @@ export function StatsToJSON(value?: Stats | null): any {
     return {
         
         'health': HealthToJSON(value.health),
-        'health_known': value.healthKnown,
+        'health_known': value.health_known,
         'height': SizeToJSON(value.height),
     };
 }

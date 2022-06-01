@@ -24,7 +24,7 @@ export interface Attack {
      * @type {number}
      * @memberof Attack
      */
-    numRolls: number;
+    num_rolls: number;
     /**
      * 
      * @type {number}
@@ -43,7 +43,7 @@ export function AttackFromJSONTyped(json: any, ignoreDiscriminator: boolean): At
     }
     return {
         
-        'numRolls': json['num_rolls'],
+        'num_rolls': json['num_rolls'],
         'modifier': json['modifier'],
     };
 }
@@ -57,7 +57,7 @@ export function AttackToJSON(value?: Attack | null): any {
     }
     return {
         
-        'num_rolls': value.numRolls,
+        'num_rolls': value.num_rolls,
         'modifier': value.modifier,
     };
 }

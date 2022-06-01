@@ -31,25 +31,25 @@ export interface FixtureInspected {
      * @type {boolean}
      * @memberof FixtureInspected
      */
-    canBeOpenedDiscovered: boolean;
+    can_be_opened_discovered: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof FixtureInspected
      */
-    hasHiddenDiscovered: boolean;
+    has_hidden_discovered: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof FixtureInspected
      */
-    hiddenItemsDiscovered: boolean;
+    hidden_items_discovered: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof FixtureInspected
      */
-    containedItemsDiscovered: boolean;
+    contained_items_discovered: boolean;
     /**
      * 
      * @type {Array<PerformAction>}
@@ -68,10 +68,10 @@ export function FixtureInspectedFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'canBeOpenedDiscovered': json['can_be_opened_discovered'],
-        'hasHiddenDiscovered': json['has_hidden_discovered'],
-        'hiddenItemsDiscovered': json['hidden_items_discovered'],
-        'containedItemsDiscovered': json['contained_items_discovered'],
+        'can_be_opened_discovered': json['can_be_opened_discovered'],
+        'has_hidden_discovered': json['has_hidden_discovered'],
+        'hidden_items_discovered': json['hidden_items_discovered'],
+        'contained_items_discovered': json['contained_items_discovered'],
         'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
     };
 }
@@ -85,10 +85,10 @@ export function FixtureInspectedToJSON(value?: FixtureInspected | null): any {
     }
     return {
         
-        'can_be_opened_discovered': value.canBeOpenedDiscovered,
-        'has_hidden_discovered': value.hasHiddenDiscovered,
-        'hidden_items_discovered': value.hiddenItemsDiscovered,
-        'contained_items_discovered': value.containedItemsDiscovered,
+        'can_be_opened_discovered': value.can_be_opened_discovered,
+        'has_hidden_discovered': value.has_hidden_discovered,
+        'hidden_items_discovered': value.hidden_items_discovered,
+        'contained_items_discovered': value.contained_items_discovered,
         'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
     };
 }

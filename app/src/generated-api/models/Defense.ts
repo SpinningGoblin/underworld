@@ -24,7 +24,7 @@ export interface Defense {
      * @type {number}
      * @memberof Defense
      */
-    damageResistance: number;
+    damage_resistance: number;
 }
 
 export function DefenseFromJSON(json: any): Defense {
@@ -37,7 +37,7 @@ export function DefenseFromJSONTyped(json: any, ignoreDiscriminator: boolean): D
     }
     return {
         
-        'damageResistance': json['damage_resistance'],
+        'damage_resistance': json['damage_resistance'],
     };
 }
 
@@ -50,7 +50,7 @@ export function DefenseToJSON(value?: Defense | null): any {
     }
     return {
         
-        'damage_resistance': value.damageResistance,
+        'damage_resistance': value.damage_resistance,
     };
 }
 

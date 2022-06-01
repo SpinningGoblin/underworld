@@ -49,7 +49,7 @@ export interface LearnedSpell {
      * @type {string}
      * @memberof LearnedSpell
      */
-    learnedAt: string;
+    learned_at: string;
 }
 
 export function LearnedSpellFromJSON(json: any): LearnedSpell {
@@ -64,7 +64,7 @@ export function LearnedSpellFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'identifier': IdentifierFromJSON(json['identifier']),
         'spell': SpellFromJSON(json['spell']),
-        'learnedAt': json['learned_at'],
+        'learned_at': json['learned_at'],
     };
 }
 
@@ -79,7 +79,7 @@ export function LearnedSpellToJSON(value?: LearnedSpell | null): any {
         
         'identifier': IdentifierToJSON(value.identifier),
         'spell': SpellToJSON(value.spell),
-        'learned_at': value.learnedAt,
+        'learned_at': value.learned_at,
     };
 }
 

@@ -61,7 +61,7 @@ export interface Exit {
      * @type {ExitType}
      * @memberof Exit
      */
-    exitType: ExitType;
+    exit_type: ExitType;
     /**
      * 
      * @type {Material}
@@ -93,7 +93,7 @@ export function ExitFromJSONTyped(json: any, ignoreDiscriminator: boolean): Exit
     return {
         
         'identifier': IdentifierFromJSON(json['identifier']),
-        'exitType': ExitTypeFromJSON(json['exit_type']),
+        'exit_type': ExitTypeFromJSON(json['exit_type']),
         'material': !exists(json, 'material') ? undefined : MaterialFromJSON(json['material']),
         'descriptors': ((json['descriptors'] as Array<any>).map(ExitDescriptorFromJSON)),
         'size': !exists(json, 'size') ? undefined : SizeFromJSON(json['size']),
@@ -110,7 +110,7 @@ export function ExitToJSON(value?: Exit | null): any {
     return {
         
         'identifier': IdentifierToJSON(value.identifier),
-        'exit_type': ExitTypeToJSON(value.exitType),
+        'exit_type': ExitTypeToJSON(value.exit_type),
         'material': MaterialToJSON(value.material),
         'descriptors': ((value.descriptors as Array<any>).map(ExitDescriptorToJSON)),
         'size': SizeToJSON(value.size),

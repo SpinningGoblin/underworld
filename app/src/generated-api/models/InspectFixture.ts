@@ -25,31 +25,31 @@ export interface InspectFixture {
      * @type {string}
      * @memberof InspectFixture
      */
-    fixtureId: string;
+    fixture_id: string;
     /**
      * Attempt to discover any hidden compartments and its contents.
      * @type {boolean}
      * @memberof InspectFixture
      */
-    discoverHidden: boolean;
+    discover_hidden: boolean;
     /**
      * Attempt to discover any items in any hidden compartments.
      * @type {boolean}
      * @memberof InspectFixture
      */
-    discoverHiddenItems: boolean;
+    discover_hidden_items: boolean;
     /**
      * Attempt to discover the items inside of the container, without opening.
      * @type {boolean}
      * @memberof InspectFixture
      */
-    discoverContained: boolean;
+    discover_contained: boolean;
     /**
      * Attempt to discover if the fixture can be opened.
      * @type {boolean}
      * @memberof InspectFixture
      */
-    discoverCanBeOpened: boolean;
+    discover_can_be_opened: boolean;
 }
 
 export function InspectFixtureFromJSON(json: any): InspectFixture {
@@ -62,11 +62,11 @@ export function InspectFixtureFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'fixtureId': json['fixture_id'],
-        'discoverHidden': json['discover_hidden'],
-        'discoverHiddenItems': json['discover_hidden_items'],
-        'discoverContained': json['discover_contained'],
-        'discoverCanBeOpened': json['discover_can_be_opened'],
+        'fixture_id': json['fixture_id'],
+        'discover_hidden': json['discover_hidden'],
+        'discover_hidden_items': json['discover_hidden_items'],
+        'discover_contained': json['discover_contained'],
+        'discover_can_be_opened': json['discover_can_be_opened'],
     };
 }
 
@@ -79,11 +79,11 @@ export function InspectFixtureToJSON(value?: InspectFixture | null): any {
     }
     return {
         
-        'fixture_id': value.fixtureId,
-        'discover_hidden': value.discoverHidden,
-        'discover_hidden_items': value.discoverHiddenItems,
-        'discover_contained': value.discoverContained,
-        'discover_can_be_opened': value.discoverCanBeOpened,
+        'fixture_id': value.fixture_id,
+        'discover_hidden': value.discover_hidden,
+        'discover_hidden_items': value.discover_hidden_items,
+        'discover_contained': value.discover_contained,
+        'discover_can_be_opened': value.discover_can_be_opened,
     };
 }
 

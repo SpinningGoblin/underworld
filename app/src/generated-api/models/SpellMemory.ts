@@ -37,7 +37,7 @@ export interface SpellMemory {
      * @type {boolean}
      * @memberof SpellMemory
      */
-    knowsSpells: boolean;
+    knows_spells: boolean;
 }
 
 export function SpellMemoryFromJSON(json: any): SpellMemory {
@@ -51,7 +51,7 @@ export function SpellMemoryFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         
         'spells': ((json['spells'] as Array<any>).map(LearnedSpellFromJSON)),
-        'knowsSpells': json['knows_spells'],
+        'knows_spells': json['knows_spells'],
     };
 }
 
@@ -65,7 +65,7 @@ export function SpellMemoryToJSON(value?: SpellMemory | null): any {
     return {
         
         'spells': ((value.spells as Array<any>).map(LearnedSpellToJSON)),
-        'knows_spells': value.knowsSpells,
+        'knows_spells': value.knows_spells,
     };
 }
 

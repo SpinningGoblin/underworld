@@ -37,13 +37,13 @@ export interface FixtureItem {
      * @type {boolean}
      * @memberof FixtureItem
      */
-    isHidden: boolean;
+    is_hidden: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof FixtureItem
      */
-    isHiddenKnown: boolean;
+    is_hidden_known: boolean;
 }
 
 export function FixtureItemFromJSON(json: any): FixtureItem {
@@ -57,8 +57,8 @@ export function FixtureItemFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         
         'item': ItemFromJSON(json['item']),
-        'isHidden': json['is_hidden'],
-        'isHiddenKnown': json['is_hidden_known'],
+        'is_hidden': json['is_hidden'],
+        'is_hidden_known': json['is_hidden_known'],
     };
 }
 
@@ -72,8 +72,8 @@ export function FixtureItemToJSON(value?: FixtureItem | null): any {
     return {
         
         'item': ItemToJSON(value.item),
-        'is_hidden': value.isHidden,
-        'is_hidden_known': value.isHiddenKnown,
+        'is_hidden': value.is_hidden,
+        'is_hidden_known': value.is_hidden_known,
     };
 }
 

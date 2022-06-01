@@ -37,7 +37,7 @@ export interface Consumable {
      * @type {boolean}
      * @memberof Consumable
      */
-    knowsUses: boolean;
+    knows_uses: boolean;
     /**
      * 
      * @type {ConsumableEffect}
@@ -49,7 +49,7 @@ export interface Consumable {
      * @type {boolean}
      * @memberof Consumable
      */
-    knowsEffect: boolean;
+    knows_effect: boolean;
 }
 
 export function ConsumableFromJSON(json: any): Consumable {
@@ -63,9 +63,9 @@ export function ConsumableFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     return {
         
         'uses': json['uses'],
-        'knowsUses': json['knows_uses'],
+        'knows_uses': json['knows_uses'],
         'effect': ConsumableEffectFromJSON(json['effect']),
-        'knowsEffect': json['knows_effect'],
+        'knows_effect': json['knows_effect'],
     };
 }
 
@@ -79,9 +79,9 @@ export function ConsumableToJSON(value?: Consumable | null): any {
     return {
         
         'uses': value.uses,
-        'knows_uses': value.knowsUses,
+        'knows_uses': value.knows_uses,
         'effect': ConsumableEffectToJSON(value.effect),
-        'knows_effect': value.knowsEffect,
+        'knows_effect': value.knows_effect,
     };
 }
 

@@ -36,7 +36,7 @@ export interface Identifier {
      * @type {boolean}
      * @memberof Identifier
      */
-    nameKnown: boolean;
+    name_known: boolean;
 }
 
 export function IdentifierFromJSON(json: any): Identifier {
@@ -51,7 +51,7 @@ export function IdentifierFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'id': json['id'],
         'name': !exists(json, 'name') ? undefined : json['name'],
-        'nameKnown': json['name_known'],
+        'name_known': json['name_known'],
     };
 }
 
@@ -66,7 +66,7 @@ export function IdentifierToJSON(value?: Identifier | null): any {
         
         'id': value.id,
         'name': value.name,
-        'name_known': value.nameKnown,
+        'name_known': value.name_known,
     };
 }
 

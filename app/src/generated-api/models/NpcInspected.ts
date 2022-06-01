@@ -31,25 +31,25 @@ export interface NpcInspected {
      * @type {boolean}
      * @memberof NpcInspected
      */
-    healthDiscovered: boolean;
+    health_discovered: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof NpcInspected
      */
-    nameDiscovered: boolean;
+    name_discovered: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof NpcInspected
      */
-    packedItemsDiscovered: boolean;
+    packed_items_discovered: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof NpcInspected
      */
-    hiddenItemsDiscovered: boolean;
+    hidden_items_discovered: boolean;
     /**
      * 
      * @type {Array<PerformAction>}
@@ -68,10 +68,10 @@ export function NpcInspectedFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'healthDiscovered': json['health_discovered'],
-        'nameDiscovered': json['name_discovered'],
-        'packedItemsDiscovered': json['packed_items_discovered'],
-        'hiddenItemsDiscovered': json['hidden_items_discovered'],
+        'health_discovered': json['health_discovered'],
+        'name_discovered': json['name_discovered'],
+        'packed_items_discovered': json['packed_items_discovered'],
+        'hidden_items_discovered': json['hidden_items_discovered'],
         'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
     };
 }
@@ -85,10 +85,10 @@ export function NpcInspectedToJSON(value?: NpcInspected | null): any {
     }
     return {
         
-        'health_discovered': value.healthDiscovered,
-        'name_discovered': value.nameDiscovered,
-        'packed_items_discovered': value.packedItemsDiscovered,
-        'hidden_items_discovered': value.hiddenItemsDiscovered,
+        'health_discovered': value.health_discovered,
+        'name_discovered': value.name_discovered,
+        'packed_items_discovered': value.packed_items_discovered,
+        'hidden_items_discovered': value.hidden_items_discovered,
         'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
     };
 }

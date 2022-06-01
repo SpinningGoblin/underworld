@@ -43,7 +43,7 @@ export interface NpcPosition {
      * @type {GroupDescriptor}
      * @memberof NpcPosition
      */
-    groupDescriptor?: GroupDescriptor;
+    group_descriptor?: GroupDescriptor;
     /**
      * 
      * @type {NonPlayer}
@@ -55,7 +55,7 @@ export interface NpcPosition {
      * @type {NpcPositionDescriptor}
      * @memberof NpcPosition
      */
-    positionDescriptor?: NpcPositionDescriptor;
+    position_descriptor?: NpcPositionDescriptor;
 }
 
 export function NpcPositionFromJSON(json: any): NpcPosition {
@@ -68,9 +68,9 @@ export function NpcPositionFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'groupDescriptor': !exists(json, 'group_descriptor') ? undefined : GroupDescriptorFromJSON(json['group_descriptor']),
+        'group_descriptor': !exists(json, 'group_descriptor') ? undefined : GroupDescriptorFromJSON(json['group_descriptor']),
         'npc': NonPlayerFromJSON(json['npc']),
-        'positionDescriptor': !exists(json, 'position_descriptor') ? undefined : NpcPositionDescriptorFromJSON(json['position_descriptor']),
+        'position_descriptor': !exists(json, 'position_descriptor') ? undefined : NpcPositionDescriptorFromJSON(json['position_descriptor']),
     };
 }
 
@@ -83,9 +83,9 @@ export function NpcPositionToJSON(value?: NpcPosition | null): any {
     }
     return {
         
-        'group_descriptor': GroupDescriptorToJSON(value.groupDescriptor),
+        'group_descriptor': GroupDescriptorToJSON(value.group_descriptor),
         'npc': NonPlayerToJSON(value.npc),
-        'position_descriptor': NpcPositionDescriptorToJSON(value.positionDescriptor),
+        'position_descriptor': NpcPositionDescriptorToJSON(value.position_descriptor),
     };
 }
 

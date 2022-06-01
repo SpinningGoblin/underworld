@@ -31,19 +31,19 @@ export interface MovePlayerItem {
      * @type {string}
      * @memberof MovePlayerItem
      */
-    itemId: string;
+    item_id: string;
     /**
      * 
      * @type {EquipLocationTag}
      * @memberof MovePlayerItem
      */
-    locationTag: EquipLocationTag;
+    location_tag: EquipLocationTag;
     /**
      * 
      * @type {boolean}
      * @memberof MovePlayerItem
      */
-    putAtTheReady: boolean;
+    put_at_the_ready: boolean;
 }
 
 export function MovePlayerItemFromJSON(json: any): MovePlayerItem {
@@ -56,9 +56,9 @@ export function MovePlayerItemFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'itemId': json['item_id'],
-        'locationTag': EquipLocationTagFromJSON(json['location_tag']),
-        'putAtTheReady': json['put_at_the_ready'],
+        'item_id': json['item_id'],
+        'location_tag': EquipLocationTagFromJSON(json['location_tag']),
+        'put_at_the_ready': json['put_at_the_ready'],
     };
 }
 
@@ -71,9 +71,9 @@ export function MovePlayerItemToJSON(value?: MovePlayerItem | null): any {
     }
     return {
         
-        'item_id': value.itemId,
-        'location_tag': EquipLocationTagToJSON(value.locationTag),
-        'put_at_the_ready': value.putAtTheReady,
+        'item_id': value.item_id,
+        'location_tag': EquipLocationTagToJSON(value.location_tag),
+        'put_at_the_ready': value.put_at_the_ready,
     };
 }
 

@@ -85,13 +85,13 @@ export interface Room {
      * @type {RoomType}
      * @memberof Room
      */
-    roomType: RoomType;
+    room_type: RoomType;
     /**
      * 
      * @type {Array<FixturePosition>}
      * @memberof Room
      */
-    fixturePositions: Array<FixturePosition>;
+    fixture_positions: Array<FixturePosition>;
     /**
      * 
      * @type {Dimensions}
@@ -103,7 +103,7 @@ export interface Room {
      * @type {Array<NpcPosition>}
      * @memberof Room
      */
-    npcPositions: Array<NpcPosition>;
+    npc_positions: Array<NpcPosition>;
     /**
      * 
      * @type {FlavourText}
@@ -130,10 +130,10 @@ export function RoomFromJSONTyped(json: any, ignoreDiscriminator: boolean): Room
         
         'identifier': IdentifierFromJSON(json['identifier']),
         'descriptors': ((json['descriptors'] as Array<any>).map(RoomDescriptorFromJSON)),
-        'roomType': RoomTypeFromJSON(json['room_type']),
-        'fixturePositions': ((json['fixture_positions'] as Array<any>).map(FixturePositionFromJSON)),
+        'room_type': RoomTypeFromJSON(json['room_type']),
+        'fixture_positions': ((json['fixture_positions'] as Array<any>).map(FixturePositionFromJSON)),
         'dimensions': DimensionsFromJSON(json['dimensions']),
-        'npcPositions': ((json['npc_positions'] as Array<any>).map(NpcPositionFromJSON)),
+        'npc_positions': ((json['npc_positions'] as Array<any>).map(NpcPositionFromJSON)),
         'flavour': !exists(json, 'flavour') ? undefined : FlavourTextFromJSON(json['flavour']),
         'exits': ((json['exits'] as Array<any>).map(ExitFromJSON)),
     };
@@ -150,10 +150,10 @@ export function RoomToJSON(value?: Room | null): any {
         
         'identifier': IdentifierToJSON(value.identifier),
         'descriptors': ((value.descriptors as Array<any>).map(RoomDescriptorToJSON)),
-        'room_type': RoomTypeToJSON(value.roomType),
-        'fixture_positions': ((value.fixturePositions as Array<any>).map(FixturePositionToJSON)),
+        'room_type': RoomTypeToJSON(value.room_type),
+        'fixture_positions': ((value.fixture_positions as Array<any>).map(FixturePositionToJSON)),
         'dimensions': DimensionsToJSON(value.dimensions),
-        'npc_positions': ((value.npcPositions as Array<any>).map(NpcPositionToJSON)),
+        'npc_positions': ((value.npc_positions as Array<any>).map(NpcPositionToJSON)),
         'flavour': FlavourTextToJSON(value.flavour),
         'exits': ((value.exits as Array<any>).map(ExitToJSON)),
     };

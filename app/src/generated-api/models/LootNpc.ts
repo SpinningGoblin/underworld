@@ -24,13 +24,13 @@ export interface LootNpc {
      * @type {string}
      * @memberof LootNpc
      */
-    npcId: string;
+    npc_id: string;
     /**
      * 
      * @type {Array<string>}
      * @memberof LootNpc
      */
-    itemIds: Array<string>;
+    item_ids: Array<string>;
 }
 
 export function LootNpcFromJSON(json: any): LootNpc {
@@ -43,8 +43,8 @@ export function LootNpcFromJSONTyped(json: any, ignoreDiscriminator: boolean): L
     }
     return {
         
-        'npcId': json['npc_id'],
-        'itemIds': json['item_ids'],
+        'npc_id': json['npc_id'],
+        'item_ids': json['item_ids'],
     };
 }
 
@@ -57,8 +57,8 @@ export function LootNpcToJSON(value?: LootNpc | null): any {
     }
     return {
         
-        'npc_id': value.npcId,
-        'item_ids': value.itemIds,
+        'npc_id': value.npc_id,
+        'item_ids': value.item_ids,
     };
 }
 

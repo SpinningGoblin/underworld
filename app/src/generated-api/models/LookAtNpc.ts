@@ -25,7 +25,7 @@ export interface LookAtNpc {
      * @type {string}
      * @memberof LookAtNpc
      */
-    npcId: string;
+    npc_id: string;
 }
 
 export function LookAtNpcFromJSON(json: any): LookAtNpc {
@@ -38,7 +38,7 @@ export function LookAtNpcFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
-        'npcId': json['npc_id'],
+        'npc_id': json['npc_id'],
     };
 }
 
@@ -51,7 +51,7 @@ export function LookAtNpcToJSON(value?: LookAtNpc | null): any {
     }
     return {
         
-        'npc_id': value.npcId,
+        'npc_id': value.npc_id,
     };
 }
 
