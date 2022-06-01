@@ -24,7 +24,7 @@ export interface UseItemOnPlayer {
      * @type {string}
      * @memberof UseItemOnPlayer
      */
-    itemId: string;
+    item_id: string;
 }
 
 export function UseItemOnPlayerFromJSON(json: any): UseItemOnPlayer {
@@ -37,7 +37,7 @@ export function UseItemOnPlayerFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'itemId': json['item_id'],
+        'item_id': json['item_id'],
     };
 }
 
@@ -50,7 +50,7 @@ export function UseItemOnPlayerToJSON(value?: UseItemOnPlayer | null): any {
     }
     return {
         
-        'item_id': value.itemId,
+        'item_id': value.item_id,
     };
 }
 

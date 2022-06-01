@@ -43,7 +43,7 @@ export interface ConsumableEffect {
      * @type {LearnSpellEffect}
      * @memberof ConsumableEffect
      */
-    learnSpellEffect?: LearnSpellEffect;
+    learn_spell_effect?: LearnSpellEffect;
 }
 
 export function ConsumableEffectFromJSON(json: any): ConsumableEffect {
@@ -57,7 +57,7 @@ export function ConsumableEffectFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'name': ConsumableEffectNameFromJSON(json['name']),
-        'learnSpellEffect': !exists(json, 'learn_spell_effect') ? undefined : LearnSpellEffectFromJSON(json['learn_spell_effect']),
+        'learn_spell_effect': !exists(json, 'learn_spell_effect') ? undefined : LearnSpellEffectFromJSON(json['learn_spell_effect']),
     };
 }
 
@@ -71,7 +71,7 @@ export function ConsumableEffectToJSON(value?: ConsumableEffect | null): any {
     return {
         
         'name': ConsumableEffectNameToJSON(value.name),
-        'learn_spell_effect': LearnSpellEffectToJSON(value.learnSpellEffect),
+        'learn_spell_effect': LearnSpellEffectToJSON(value.learn_spell_effect),
     };
 }
 

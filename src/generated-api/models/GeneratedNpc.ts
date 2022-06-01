@@ -31,19 +31,19 @@ export interface GeneratedNpc {
      * @type {NonPlayer}
      * @memberof GeneratedNpc
      */
-    nonPlayer: NonPlayer;
+    non_player: NonPlayer;
     /**
      * 
      * @type {string}
      * @memberof GeneratedNpc
      */
-    inventoryDescription: string;
+    inventory_description: string;
     /**
      * 
      * @type {string}
      * @memberof GeneratedNpc
      */
-    speciesDescription: string;
+    species_description: string;
 }
 
 export function GeneratedNpcFromJSON(json: any): GeneratedNpc {
@@ -56,9 +56,9 @@ export function GeneratedNpcFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'nonPlayer': NonPlayerFromJSON(json['non_player']),
-        'inventoryDescription': json['inventory_description'],
-        'speciesDescription': json['species_description'],
+        'non_player': NonPlayerFromJSON(json['non_player']),
+        'inventory_description': json['inventory_description'],
+        'species_description': json['species_description'],
     };
 }
 
@@ -71,9 +71,9 @@ export function GeneratedNpcToJSON(value?: GeneratedNpc | null): any {
     }
     return {
         
-        'non_player': NonPlayerToJSON(value.nonPlayer),
-        'inventory_description': value.inventoryDescription,
-        'species_description': value.speciesDescription,
+        'non_player': NonPlayerToJSON(value.non_player),
+        'inventory_description': value.inventory_description,
+        'species_description': value.species_description,
     };
 }
 

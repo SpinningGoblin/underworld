@@ -37,37 +37,37 @@ export interface EffectsView {
      * @type {Defense}
      * @memberof EffectsView
      */
-    shieldAura?: Defense;
+    shield_aura?: Defense;
     /**
      * 
      * @type {boolean}
      * @memberof EffectsView
      */
-    knowsHasShieldAura: boolean;
+    knows_has_shield_aura: boolean;
     /**
      * 
      * @type {Attack}
      * @memberof EffectsView
      */
-    retributionAura?: Attack;
+    retribution_aura?: Attack;
     /**
      * 
      * @type {boolean}
      * @memberof EffectsView
      */
-    knowsHasRetributionAura: boolean;
+    knows_has_retribution_aura: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof EffectsView
      */
-    resurrectionAura: boolean;
+    resurrection_aura: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof EffectsView
      */
-    knowsHasResurrectionAura: boolean;
+    knows_has_resurrection_aura: boolean;
 }
 
 export function EffectsViewFromJSON(json: any): EffectsView {
@@ -80,12 +80,12 @@ export function EffectsViewFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'shieldAura': !exists(json, 'shield_aura') ? undefined : DefenseFromJSON(json['shield_aura']),
-        'knowsHasShieldAura': json['knows_has_shield_aura'],
-        'retributionAura': !exists(json, 'retribution_aura') ? undefined : AttackFromJSON(json['retribution_aura']),
-        'knowsHasRetributionAura': json['knows_has_retribution_aura'],
-        'resurrectionAura': json['resurrection_aura'],
-        'knowsHasResurrectionAura': json['knows_has_resurrection_aura'],
+        'shield_aura': !exists(json, 'shield_aura') ? undefined : DefenseFromJSON(json['shield_aura']),
+        'knows_has_shield_aura': json['knows_has_shield_aura'],
+        'retribution_aura': !exists(json, 'retribution_aura') ? undefined : AttackFromJSON(json['retribution_aura']),
+        'knows_has_retribution_aura': json['knows_has_retribution_aura'],
+        'resurrection_aura': json['resurrection_aura'],
+        'knows_has_resurrection_aura': json['knows_has_resurrection_aura'],
     };
 }
 
@@ -98,12 +98,12 @@ export function EffectsViewToJSON(value?: EffectsView | null): any {
     }
     return {
         
-        'shield_aura': DefenseToJSON(value.shieldAura),
-        'knows_has_shield_aura': value.knowsHasShieldAura,
-        'retribution_aura': AttackToJSON(value.retributionAura),
-        'knows_has_retribution_aura': value.knowsHasRetributionAura,
-        'resurrection_aura': value.resurrectionAura,
-        'knows_has_resurrection_aura': value.knowsHasResurrectionAura,
+        'shield_aura': DefenseToJSON(value.shield_aura),
+        'knows_has_shield_aura': value.knows_has_shield_aura,
+        'retribution_aura': AttackToJSON(value.retribution_aura),
+        'knows_has_retribution_aura': value.knows_has_retribution_aura,
+        'resurrection_aura': value.resurrection_aura,
+        'knows_has_resurrection_aura': value.knows_has_resurrection_aura,
     };
 }
 

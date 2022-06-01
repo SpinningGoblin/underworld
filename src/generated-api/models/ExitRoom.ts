@@ -24,7 +24,7 @@ export interface ExitRoom {
      * @type {string}
      * @memberof ExitRoom
      */
-    exitId: string;
+    exit_id: string;
 }
 
 export function ExitRoomFromJSON(json: any): ExitRoom {
@@ -37,7 +37,7 @@ export function ExitRoomFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     }
     return {
         
-        'exitId': json['exit_id'],
+        'exit_id': json['exit_id'],
     };
 }
 
@@ -50,7 +50,7 @@ export function ExitRoomToJSON(value?: ExitRoom | null): any {
     }
     return {
         
-        'exit_id': value.exitId,
+        'exit_id': value.exit_id,
     };
 }
 

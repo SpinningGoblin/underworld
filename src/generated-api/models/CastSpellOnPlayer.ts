@@ -24,7 +24,7 @@ export interface CastSpellOnPlayer {
      * @type {string}
      * @memberof CastSpellOnPlayer
      */
-    spellId: string;
+    spell_id: string;
 }
 
 export function CastSpellOnPlayerFromJSON(json: any): CastSpellOnPlayer {
@@ -37,7 +37,7 @@ export function CastSpellOnPlayerFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'spellId': json['spell_id'],
+        'spell_id': json['spell_id'],
     };
 }
 
@@ -50,7 +50,7 @@ export function CastSpellOnPlayerToJSON(value?: CastSpellOnPlayer | null): any {
     }
     return {
         
-        'spell_id': value.spellId,
+        'spell_id': value.spell_id,
     };
 }
 

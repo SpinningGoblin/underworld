@@ -73,19 +73,19 @@ export interface Character {
      * @type {boolean}
      * @memberof Character
      */
-    speciesKnown: boolean;
+    species_known: boolean;
     /**
      * 
      * @type {LifeModifier}
      * @memberof Character
      */
-    lifeModifier?: LifeModifier;
+    life_modifier?: LifeModifier;
     /**
      * 
      * @type {boolean}
      * @memberof Character
      */
-    lifeModifierKnown: boolean;
+    life_modifier_known: boolean;
     /**
      * 
      * @type {Inventory}
@@ -97,31 +97,31 @@ export interface Character {
      * @type {boolean}
      * @memberof Character
      */
-    inventoryKnown: boolean;
+    inventory_known: boolean;
     /**
      * 
      * @type {EffectsView}
      * @memberof Character
      */
-    currentEffects?: EffectsView;
+    current_effects?: EffectsView;
     /**
      * 
      * @type {boolean}
      * @memberof Character
      */
-    currentEffectsKnown: boolean;
+    current_effects_known: boolean;
     /**
      * 
      * @type {SpellMemory}
      * @memberof Character
      */
-    spellMemory?: SpellMemory;
+    spell_memory?: SpellMemory;
     /**
      * 
      * @type {boolean}
      * @memberof Character
      */
-    spellMemoryKnown: boolean;
+    spell_memory_known: boolean;
 }
 
 export function CharacterFromJSON(json: any): Character {
@@ -136,15 +136,15 @@ export function CharacterFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         
         'stats': StatsFromJSON(json['stats']),
         'species': !exists(json, 'species') ? undefined : SpeciesFromJSON(json['species']),
-        'speciesKnown': json['species_known'],
-        'lifeModifier': !exists(json, 'life_modifier') ? undefined : LifeModifierFromJSON(json['life_modifier']),
-        'lifeModifierKnown': json['life_modifier_known'],
+        'species_known': json['species_known'],
+        'life_modifier': !exists(json, 'life_modifier') ? undefined : LifeModifierFromJSON(json['life_modifier']),
+        'life_modifier_known': json['life_modifier_known'],
         'inventory': !exists(json, 'inventory') ? undefined : InventoryFromJSON(json['inventory']),
-        'inventoryKnown': json['inventory_known'],
-        'currentEffects': !exists(json, 'current_effects') ? undefined : EffectsViewFromJSON(json['current_effects']),
-        'currentEffectsKnown': json['current_effects_known'],
-        'spellMemory': !exists(json, 'spell_memory') ? undefined : SpellMemoryFromJSON(json['spell_memory']),
-        'spellMemoryKnown': json['spell_memory_known'],
+        'inventory_known': json['inventory_known'],
+        'current_effects': !exists(json, 'current_effects') ? undefined : EffectsViewFromJSON(json['current_effects']),
+        'current_effects_known': json['current_effects_known'],
+        'spell_memory': !exists(json, 'spell_memory') ? undefined : SpellMemoryFromJSON(json['spell_memory']),
+        'spell_memory_known': json['spell_memory_known'],
     };
 }
 
@@ -159,15 +159,15 @@ export function CharacterToJSON(value?: Character | null): any {
         
         'stats': StatsToJSON(value.stats),
         'species': SpeciesToJSON(value.species),
-        'species_known': value.speciesKnown,
-        'life_modifier': LifeModifierToJSON(value.lifeModifier),
-        'life_modifier_known': value.lifeModifierKnown,
+        'species_known': value.species_known,
+        'life_modifier': LifeModifierToJSON(value.life_modifier),
+        'life_modifier_known': value.life_modifier_known,
         'inventory': InventoryToJSON(value.inventory),
-        'inventory_known': value.inventoryKnown,
-        'current_effects': EffectsViewToJSON(value.currentEffects),
-        'current_effects_known': value.currentEffectsKnown,
-        'spell_memory': SpellMemoryToJSON(value.spellMemory),
-        'spell_memory_known': value.spellMemoryKnown,
+        'inventory_known': value.inventory_known,
+        'current_effects': EffectsViewToJSON(value.current_effects),
+        'current_effects_known': value.current_effects_known,
+        'spell_memory': SpellMemoryToJSON(value.spell_memory),
+        'spell_memory_known': value.spell_memory_known,
     };
 }
 

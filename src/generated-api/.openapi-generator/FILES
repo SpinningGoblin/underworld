@@ -1,4 +1,3 @@
-.openapi-generator-ignore
 apis/GameActionsApi.ts
 apis/GamesApi.ts
 apis/NpcsApi.ts

@@ -37,19 +37,19 @@ export interface GeneratePlayerCharacter {
      * @type {Size}
      * @memberof GeneratePlayerCharacter
      */
-    characterSize?: Size;
+    character_size?: Size;
     /**
      * 
      * @type {Species}
      * @memberof GeneratePlayerCharacter
      */
-    characterSpecies?: Species;
+    character_species?: Species;
     /**
      * 
      * @type {string}
      * @memberof GeneratePlayerCharacter
      */
-    characterName?: string;
+    character_name?: string;
 }
 
 export function GeneratePlayerCharacterFromJSON(json: any): GeneratePlayerCharacter {
@@ -62,9 +62,9 @@ export function GeneratePlayerCharacterFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'characterSize': !exists(json, 'character_size') ? undefined : SizeFromJSON(json['character_size']),
-        'characterSpecies': !exists(json, 'character_species') ? undefined : SpeciesFromJSON(json['character_species']),
-        'characterName': !exists(json, 'character_name') ? undefined : json['character_name'],
+        'character_size': !exists(json, 'character_size') ? undefined : SizeFromJSON(json['character_size']),
+        'character_species': !exists(json, 'character_species') ? undefined : SpeciesFromJSON(json['character_species']),
+        'character_name': !exists(json, 'character_name') ? undefined : json['character_name'],
     };
 }
 
@@ -77,9 +77,9 @@ export function GeneratePlayerCharacterToJSON(value?: GeneratePlayerCharacter | 
     }
     return {
         
-        'character_size': SizeToJSON(value.characterSize),
-        'character_species': SpeciesToJSON(value.characterSpecies),
-        'character_name': value.characterName,
+        'character_size': SizeToJSON(value.character_size),
+        'character_species': SpeciesToJSON(value.character_species),
+        'character_name': value.character_name,
     };
 }
 

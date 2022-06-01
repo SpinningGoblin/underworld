@@ -49,7 +49,7 @@ export interface PerformAction {
      * @type {string}
      * @memberof PerformAction
      */
-    httpAction: string;
+    http_action: string;
     /**
      * Any required args for the action, as JSON.
      * @type {any}
@@ -71,7 +71,7 @@ export function PerformActionFromJSONTyped(json: any, ignoreDiscriminator: boole
         'name': ActionNameFromJSON(json['name']),
         'description': json['description'],
         'link': json['link'],
-        'httpAction': json['http_action'],
+        'http_action': json['http_action'],
         'args': !exists(json, 'args') ? undefined : json['args'],
     };
 }
@@ -88,7 +88,7 @@ export function PerformActionToJSON(value?: PerformAction | null): any {
         'name': ActionNameToJSON(value.name),
         'description': value.description,
         'link': value.link,
-        'http_action': value.httpAction,
+        'http_action': value.http_action,
         'args': value.args,
     };
 }

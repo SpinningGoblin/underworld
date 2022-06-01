@@ -31,7 +31,7 @@ export interface GeneratedGame {
      * @type {string}
      * @memberof GeneratedGame
      */
-    gameId: string;
+    game_id: string;
     /**
      * 
      * @type {Array<PerformAction>}
@@ -50,7 +50,7 @@ export function GeneratedGameFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'gameId': json['game_id'],
+        'game_id': json['game_id'],
         'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
     };
 }
@@ -64,7 +64,7 @@ export function GeneratedGameToJSON(value?: GeneratedGame | null): any {
     }
     return {
         
-        'game_id': value.gameId,
+        'game_id': value.game_id,
         'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
     };
 }

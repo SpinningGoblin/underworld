@@ -43,25 +43,25 @@ export interface LearnSpellEffect {
      * @type {SpellName}
      * @memberof LearnSpellEffect
      */
-    spellName: SpellName;
+    spell_name: SpellName;
     /**
      * 
      * @type {Attack}
      * @memberof LearnSpellEffect
      */
-    spellAttack?: Attack;
+    spell_attack?: Attack;
     /**
      * 
      * @type {Defense}
      * @memberof LearnSpellEffect
      */
-    spellDefense?: Defense;
+    spell_defense?: Defense;
     /**
      * 
      * @type {number}
      * @memberof LearnSpellEffect
      */
-    spellUses: number;
+    spell_uses: number;
 }
 
 export function LearnSpellEffectFromJSON(json: any): LearnSpellEffect {
@@ -74,10 +74,10 @@ export function LearnSpellEffectFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'spellName': SpellNameFromJSON(json['spell_name']),
-        'spellAttack': !exists(json, 'spell_attack') ? undefined : AttackFromJSON(json['spell_attack']),
-        'spellDefense': !exists(json, 'spell_defense') ? undefined : DefenseFromJSON(json['spell_defense']),
-        'spellUses': json['spell_uses'],
+        'spell_name': SpellNameFromJSON(json['spell_name']),
+        'spell_attack': !exists(json, 'spell_attack') ? undefined : AttackFromJSON(json['spell_attack']),
+        'spell_defense': !exists(json, 'spell_defense') ? undefined : DefenseFromJSON(json['spell_defense']),
+        'spell_uses': json['spell_uses'],
     };
 }
 
@@ -90,10 +90,10 @@ export function LearnSpellEffectToJSON(value?: LearnSpellEffect | null): any {
     }
     return {
         
-        'spell_name': SpellNameToJSON(value.spellName),
-        'spell_attack': AttackToJSON(value.spellAttack),
-        'spell_defense': DefenseToJSON(value.spellDefense),
-        'spell_uses': value.spellUses,
+        'spell_name': SpellNameToJSON(value.spell_name),
+        'spell_attack': AttackToJSON(value.spell_attack),
+        'spell_defense': DefenseToJSON(value.spell_defense),
+        'spell_uses': value.spell_uses,
     };
 }
 

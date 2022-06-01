@@ -67,7 +67,7 @@ export interface Fixture {
      * @type {FixtureType}
      * @memberof Fixture
      */
-    fixtureType: FixtureType;
+    fixture_type: FixtureType;
     /**
      * 
      * @type {Material}
@@ -97,25 +97,25 @@ export interface Fixture {
      * @type {boolean}
      * @memberof Fixture
      */
-    knowsContainedItems: boolean;
+    knows_contained_items: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof Fixture
      */
-    knowsHiddenCompartmentItems: boolean;
+    knows_hidden_compartment_items: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof Fixture
      */
-    hasHiddenCompartment: boolean;
+    has_hidden_compartment: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof Fixture
      */
-    knowsIfHiddenCompartment: boolean;
+    knows_if_hidden_compartment: boolean;
     /**
      * 
      * @type {boolean}
@@ -127,19 +127,19 @@ export interface Fixture {
      * @type {boolean}
      * @memberof Fixture
      */
-    canBeOpened: boolean;
+    can_be_opened: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof Fixture
      */
-    knowsIfCanBeOpened: boolean;
+    knows_if_can_be_opened: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof Fixture
      */
-    hiddenCompartmentOpen: boolean;
+    hidden_compartment_open: boolean;
 }
 
 export function FixtureFromJSON(json: any): Fixture {
@@ -153,19 +153,19 @@ export function FixtureFromJSONTyped(json: any, ignoreDiscriminator: boolean): F
     return {
         
         'identifier': IdentifierFromJSON(json['identifier']),
-        'fixtureType': FixtureTypeFromJSON(json['fixture_type']),
+        'fixture_type': FixtureTypeFromJSON(json['fixture_type']),
         'material': !exists(json, 'material') ? undefined : MaterialFromJSON(json['material']),
         'size': SizeFromJSON(json['size']),
         'descriptors': ((json['descriptors'] as Array<any>).map(ItemDescriptorFromJSON)),
         'items': ((json['items'] as Array<any>).map(FixtureItemFromJSON)),
-        'knowsContainedItems': json['knows_contained_items'],
-        'knowsHiddenCompartmentItems': json['knows_hidden_compartment_items'],
-        'hasHiddenCompartment': json['has_hidden_compartment'],
-        'knowsIfHiddenCompartment': json['knows_if_hidden_compartment'],
+        'knows_contained_items': json['knows_contained_items'],
+        'knows_hidden_compartment_items': json['knows_hidden_compartment_items'],
+        'has_hidden_compartment': json['has_hidden_compartment'],
+        'knows_if_hidden_compartment': json['knows_if_hidden_compartment'],
         'open': json['open'],
-        'canBeOpened': json['can_be_opened'],
-        'knowsIfCanBeOpened': json['knows_if_can_be_opened'],
-        'hiddenCompartmentOpen': json['hidden_compartment_open'],
+        'can_be_opened': json['can_be_opened'],
+        'knows_if_can_be_opened': json['knows_if_can_be_opened'],
+        'hidden_compartment_open': json['hidden_compartment_open'],
     };
 }
 
@@ -179,19 +179,19 @@ export function FixtureToJSON(value?: Fixture | null): any {
     return {
         
         'identifier': IdentifierToJSON(value.identifier),
-        'fixture_type': FixtureTypeToJSON(value.fixtureType),
+        'fixture_type': FixtureTypeToJSON(value.fixture_type),
         'material': MaterialToJSON(value.material),
         'size': SizeToJSON(value.size),
         'descriptors': ((value.descriptors as Array<any>).map(ItemDescriptorToJSON)),
         'items': ((value.items as Array<any>).map(FixtureItemToJSON)),
-        'knows_contained_items': value.knowsContainedItems,
-        'knows_hidden_compartment_items': value.knowsHiddenCompartmentItems,
-        'has_hidden_compartment': value.hasHiddenCompartment,
-        'knows_if_hidden_compartment': value.knowsIfHiddenCompartment,
+        'knows_contained_items': value.knows_contained_items,
+        'knows_hidden_compartment_items': value.knows_hidden_compartment_items,
+        'has_hidden_compartment': value.has_hidden_compartment,
+        'knows_if_hidden_compartment': value.knows_if_hidden_compartment,
         'open': value.open,
-        'can_be_opened': value.canBeOpened,
-        'knows_if_can_be_opened': value.knowsIfCanBeOpened,
-        'hidden_compartment_open': value.hiddenCompartmentOpen,
+        'can_be_opened': value.can_be_opened,
+        'knows_if_can_be_opened': value.knows_if_can_be_opened,
+        'hidden_compartment_open': value.hidden_compartment_open,
     };
 }
 

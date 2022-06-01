@@ -43,31 +43,31 @@ export interface CharacterItem {
      * @type {boolean}
      * @memberof CharacterItem
      */
-    isHidden?: boolean;
+    is_hidden?: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof CharacterItem
      */
-    knowsEquippedLocation: boolean;
+    knows_equipped_location: boolean;
     /**
      * 
      * @type {EquipLocationTag}
      * @memberof CharacterItem
      */
-    equippedLocation?: EquipLocationTag;
+    equipped_location?: EquipLocationTag;
     /**
      * 
      * @type {boolean}
      * @memberof CharacterItem
      */
-    isMultiple: boolean;
+    is_multiple: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof CharacterItem
      */
-    atTheReady: boolean;
+    at_the_ready: boolean;
 }
 
 export function CharacterItemFromJSON(json: any): CharacterItem {
@@ -81,11 +81,11 @@ export function CharacterItemFromJSONTyped(json: any, ignoreDiscriminator: boole
     return {
         
         'item': ItemFromJSON(json['item']),
-        'isHidden': !exists(json, 'is_hidden') ? undefined : json['is_hidden'],
-        'knowsEquippedLocation': json['knows_equipped_location'],
-        'equippedLocation': !exists(json, 'equipped_location') ? undefined : EquipLocationTagFromJSON(json['equipped_location']),
-        'isMultiple': json['is_multiple'],
-        'atTheReady': json['at_the_ready'],
+        'is_hidden': !exists(json, 'is_hidden') ? undefined : json['is_hidden'],
+        'knows_equipped_location': json['knows_equipped_location'],
+        'equipped_location': !exists(json, 'equipped_location') ? undefined : EquipLocationTagFromJSON(json['equipped_location']),
+        'is_multiple': json['is_multiple'],
+        'at_the_ready': json['at_the_ready'],
     };
 }
 
@@ -99,11 +99,11 @@ export function CharacterItemToJSON(value?: CharacterItem | null): any {
     return {
         
         'item': ItemToJSON(value.item),
-        'is_hidden': value.isHidden,
-        'knows_equipped_location': value.knowsEquippedLocation,
-        'equipped_location': EquipLocationTagToJSON(value.equippedLocation),
-        'is_multiple': value.isMultiple,
-        'at_the_ready': value.atTheReady,
+        'is_hidden': value.is_hidden,
+        'knows_equipped_location': value.knows_equipped_location,
+        'equipped_location': EquipLocationTagToJSON(value.equipped_location),
+        'is_multiple': value.is_multiple,
+        'at_the_ready': value.at_the_ready,
     };
 }
 

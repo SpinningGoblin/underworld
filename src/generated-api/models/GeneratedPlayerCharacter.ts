@@ -37,13 +37,13 @@ export interface GeneratedPlayerCharacter {
      * @type {string}
      * @memberof GeneratedPlayerCharacter
      */
-    playerCharacterId: string;
+    player_character_id: string;
     /**
      * 
      * @type {boolean}
      * @memberof GeneratedPlayerCharacter
      */
-    setAsCurrent: boolean;
+    set_as_current: boolean;
 }
 
 export function GeneratedPlayerCharacterFromJSON(json: any): GeneratedPlayerCharacter {
@@ -57,8 +57,8 @@ export function GeneratedPlayerCharacterFromJSONTyped(json: any, ignoreDiscrimin
     return {
         
         'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
-        'playerCharacterId': json['player_character_id'],
-        'setAsCurrent': json['set_as_current'],
+        'player_character_id': json['player_character_id'],
+        'set_as_current': json['set_as_current'],
     };
 }
 
@@ -72,8 +72,8 @@ export function GeneratedPlayerCharacterToJSON(value?: GeneratedPlayerCharacter 
     return {
         
         'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
-        'player_character_id': value.playerCharacterId,
-        'set_as_current': value.setAsCurrent,
+        'player_character_id': value.player_character_id,
+        'set_as_current': value.set_as_current,
     };
 }
 

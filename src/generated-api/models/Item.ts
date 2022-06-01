@@ -79,7 +79,7 @@ export interface Item {
      * @type {ItemType}
      * @memberof Item
      */
-    itemType: ItemType;
+    item_type: ItemType;
     /**
      * 
      * @type {Array<Tag>}
@@ -97,7 +97,7 @@ export interface Item {
      * @type {boolean}
      * @memberof Item
      */
-    descriptorsKnown: boolean;
+    descriptors_known: boolean;
     /**
      * 
      * @type {Material}
@@ -109,7 +109,7 @@ export interface Item {
      * @type {boolean}
      * @memberof Item
      */
-    materialKnown: boolean;
+    material_known: boolean;
     /**
      * 
      * @type {Attack}
@@ -121,7 +121,7 @@ export interface Item {
      * @type {boolean}
      * @memberof Item
      */
-    attackKnown: boolean;
+    attack_known: boolean;
     /**
      * 
      * @type {Defense}
@@ -133,7 +133,7 @@ export interface Item {
      * @type {boolean}
      * @memberof Item
      */
-    defenseKnown: boolean;
+    defense_known: boolean;
     /**
      * 
      * @type {Consumable}
@@ -145,7 +145,7 @@ export interface Item {
      * @type {boolean}
      * @memberof Item
      */
-    knowsConsumable: boolean;
+    knows_consumable: boolean;
 }
 
 export function ItemFromJSON(json: any): Item {
@@ -159,18 +159,18 @@ export function ItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): Item
     return {
         
         'identifier': IdentifierFromJSON(json['identifier']),
-        'itemType': ItemTypeFromJSON(json['item_type']),
+        'item_type': ItemTypeFromJSON(json['item_type']),
         'tags': ((json['tags'] as Array<any>).map(TagFromJSON)),
         'descriptors': ((json['descriptors'] as Array<any>).map(ItemDescriptorFromJSON)),
-        'descriptorsKnown': json['descriptors_known'],
+        'descriptors_known': json['descriptors_known'],
         'material': !exists(json, 'material') ? undefined : MaterialFromJSON(json['material']),
-        'materialKnown': json['material_known'],
+        'material_known': json['material_known'],
         'attack': !exists(json, 'attack') ? undefined : AttackFromJSON(json['attack']),
-        'attackKnown': json['attack_known'],
+        'attack_known': json['attack_known'],
         'defense': !exists(json, 'defense') ? undefined : DefenseFromJSON(json['defense']),
-        'defenseKnown': json['defense_known'],
+        'defense_known': json['defense_known'],
         'consumable': !exists(json, 'consumable') ? undefined : ConsumableFromJSON(json['consumable']),
-        'knowsConsumable': json['knows_consumable'],
+        'knows_consumable': json['knows_consumable'],
     };
 }
 
@@ -184,18 +184,18 @@ export function ItemToJSON(value?: Item | null): any {
     return {
         
         'identifier': IdentifierToJSON(value.identifier),
-        'item_type': ItemTypeToJSON(value.itemType),
+        'item_type': ItemTypeToJSON(value.item_type),
         'tags': ((value.tags as Array<any>).map(TagToJSON)),
         'descriptors': ((value.descriptors as Array<any>).map(ItemDescriptorToJSON)),
-        'descriptors_known': value.descriptorsKnown,
+        'descriptors_known': value.descriptors_known,
         'material': MaterialToJSON(value.material),
-        'material_known': value.materialKnown,
+        'material_known': value.material_known,
         'attack': AttackToJSON(value.attack),
-        'attack_known': value.attackKnown,
+        'attack_known': value.attack_known,
         'defense': DefenseToJSON(value.defense),
-        'defense_known': value.defenseKnown,
+        'defense_known': value.defense_known,
         'consumable': ConsumableToJSON(value.consumable),
-        'knows_consumable': value.knowsConsumable,
+        'knows_consumable': value.knows_consumable,
     };
 }
 

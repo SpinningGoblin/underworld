@@ -55,7 +55,7 @@ export interface Spell {
      * @type {boolean}
      * @memberof Spell
      */
-    knowsAttack: boolean;
+    knows_attack: boolean;
     /**
      * 
      * @type {Defense}
@@ -67,7 +67,7 @@ export interface Spell {
      * @type {boolean}
      * @memberof Spell
      */
-    knowsDefense: boolean;
+    knows_defense: boolean;
     /**
      * 
      * @type {number}
@@ -79,7 +79,7 @@ export interface Spell {
      * @type {boolean}
      * @memberof Spell
      */
-    knowsUses: boolean;
+    knows_uses: boolean;
 }
 
 export function SpellFromJSON(json: any): Spell {
@@ -94,11 +94,11 @@ export function SpellFromJSONTyped(json: any, ignoreDiscriminator: boolean): Spe
         
         'name': SpellNameFromJSON(json['name']),
         'attack': !exists(json, 'attack') ? undefined : AttackFromJSON(json['attack']),
-        'knowsAttack': json['knows_attack'],
+        'knows_attack': json['knows_attack'],
         'defense': !exists(json, 'defense') ? undefined : DefenseFromJSON(json['defense']),
-        'knowsDefense': json['knows_defense'],
+        'knows_defense': json['knows_defense'],
         'uses': json['uses'],
-        'knowsUses': json['knows_uses'],
+        'knows_uses': json['knows_uses'],
     };
 }
 
@@ -113,11 +113,11 @@ export function SpellToJSON(value?: Spell | null): any {
         
         'name': SpellNameToJSON(value.name),
         'attack': AttackToJSON(value.attack),
-        'knows_attack': value.knowsAttack,
+        'knows_attack': value.knows_attack,
         'defense': DefenseToJSON(value.defense),
-        'knows_defense': value.knowsDefense,
+        'knows_defense': value.knows_defense,
         'uses': value.uses,
-        'knows_uses': value.knowsUses,
+        'knows_uses': value.knows_uses,
     };
 }
 

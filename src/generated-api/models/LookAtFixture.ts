@@ -25,7 +25,7 @@ export interface LookAtFixture {
      * @type {string}
      * @memberof LookAtFixture
      */
-    fixtureId: string;
+    fixture_id: string;
 }
 
 export function LookAtFixtureFromJSON(json: any): LookAtFixture {
@@ -38,7 +38,7 @@ export function LookAtFixtureFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'fixtureId': json['fixture_id'],
+        'fixture_id': json['fixture_id'],
     };
 }
 
@@ -51,7 +51,7 @@ export function LookAtFixtureToJSON(value?: LookAtFixture | null): any {
     }
     return {
         
-        'fixture_id': value.fixtureId,
+        'fixture_id': value.fixture_id,
     };
 }
 
