@@ -1,6 +1,7 @@
 .App {
   text-align: center;
   min-height: 100vh;
+  height: 100vh;
   background-color: #282c34;
 }
 
@@ -11,7 +12,7 @@
 }
 
 .App-logo {
-  height: 20vmin;
+  height: 10vmin;
   pointer-events: none;
 }
 
@@ -23,7 +24,7 @@
   font-size: calc(10px + 2vmin);
   color: white;
   justify-content: start;
-  padding-top: 2em;
+  padding-top: 2px;
 }
 
 .game-ids {
@@ -41,13 +42,14 @@
 }
 
 .room {
-  margin-top: 20px;
+  margin-top: 8px;
 }
 
 .room-id {
   background-color: lightgrey;
-  padding: 12px;
+  padding: 8px;
   border-radius: 10px;
+  display: block;
 }
 
 .actions-list {
@@ -57,12 +59,15 @@
   background-color: lightgoldenrodyellow;
   margin-top: 25px;
   flex-wrap: wrap;
+  max-height: 30vmin;
+  overflow-y: auto;
 }
 
 .basics {
   display: flex;
   flex-direction: row;
   gap: 12px;
+  margin-bottom: 12px;
 }
 
 .generate-button {
@@ -70,6 +75,15 @@
   padding: 10px;
   border-radius: 12px;
   height: 50px;
+}
+
+.events-list {
+  overflow-y: auto;
+  height: 20vmin;
+  background-color: whitesmoke;
+  padding: 12px;
+  margin-top: 12px;
+  border: 0.5px solid black;
 }
 
 @keyframes App-logo-spin {
