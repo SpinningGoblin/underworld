@@ -5,14 +5,18 @@ import {
   GameEvent,
   InspectFixture,
   InspectNpc,
+  LookAtFixture,
+  LookAtNpc,
   LootFixture,
   LootNpc,
   MovePlayerItem,
   PerformAction,
+  PlayerCharacter,
   Room,
+  UseItemOnPlayer,
 } from "../generated-api";
 import { getCurrentGameId } from "./current-game";
-import { getGameActionsApi } from "./factory";
+import { getGameActionsApi, getPlayerApi } from "./factory";
 import { getUsername } from "./username";
 
 interface BasicParams {
@@ -24,6 +28,7 @@ export interface ActionPerformed {
   actions: Array<PerformAction>;
   events: Array<GameEvent>;
   room?: Room;
+  player?: PlayerCharacter;
 }
 
 const getBasicParams = (): BasicParams => {
@@ -127,9 +132,34 @@ export const performCastSpellOnPlayer = async (
     castSpellOnPlayer: args,
   });
 
+  const playerApi = getPlayerApi();
+  const player = await playerApi.getCurrentPc({ underworldUsername: username });
+
   notifyListeners({
     actions,
     events,
+    player,
+  });
+};
+
+export const performUseItemOnPlayer = async (
+  args: UseItemOnPlayer,
+): Promise<void> => {
+  const { username, gameId } = getBasicParams();
+  const api = getGameActionsApi();
+  const { actions, events } = await api.useItemOnPlayer({
+    underworldUsername: username,
+    gameId,
+    useItemOnPlayer: args,
+  });
+
+  const playerApi = getPlayerApi();
+  const player = await playerApi.getCurrentPc({ underworldUsername: username });
+
+  notifyListeners({
+    actions,
+    events,
+    player,
   });
 };
 
@@ -229,9 +259,7 @@ export const performInspectNpc = async (args: InspectNpc): Promise<void> => {
   });
 };
 
-export const performLootNpc = async (
-  args: LootNpc,
-): Promise<void> => {
+export const performLootNpc = async (args: LootNpc): Promise<void> => {
   const { username, gameId } = getBasicParams();
   const api = getGameActionsApi();
   const { actions, events } = await api.lootNpc({
@@ -240,15 +268,17 @@ export const performLootNpc = async (
     lootNpc: args,
   });
 
+  const playerApi = getPlayerApi();
+  const player = await playerApi.getCurrentPc({ underworldUsername: username });
+
   notifyListeners({
     actions,
     events,
+    player,
   });
 };
 
-export const performLootFixture = async (
-  args: LootFixture,
-): Promise<void> => {
+export const performLootFixture = async (args: LootFixture): Promise<void> => {
   const { username, gameId } = getBasicParams();
   const api = getGameActionsApi();
   const { actions, events } = await api.lootFixture({
@@ -256,6 +286,60 @@ export const performLootFixture = async (
     gameId,
     lootFixture: args,
   });
+
+  const playerApi = getPlayerApi();
+  const player = await playerApi.getCurrentPc({ underworldUsername: username });
+
+  notifyListeners({
+    actions,
+    events,
+    player,
+  });
+};
+
+export const performLookAtNpc = async (args: LookAtNpc): Promise<void> => {
+  const { username, gameId } = getBasicParams();
+  const api = getGameActionsApi();
+
+  const response = await api.lookAtNpc({
+    underworldUsername: username,
+    gameId,
+    lookAtNpc: args,
+  });
+
+  const actions = await getCurrentActions();
+  const events: Array<GameEvent> = [
+    {
+      name: "npc_viewed",
+      data: response,
+    },
+  ];
+
+  notifyListeners({
+    actions,
+    events,
+  });
+};
+
+export const performLookAtFixture = async (
+  args: LookAtFixture,
+): Promise<void> => {
+  const { username, gameId } = getBasicParams();
+  const api = getGameActionsApi();
+
+  const response = await api.lookAtFixture({
+    underworldUsername: username,
+    gameId,
+    lookAtFixture: args,
+  });
+
+  const actions = await getCurrentActions();
+  const events: Array<GameEvent> = [
+    {
+      name: "fixture_viewed",
+      data: response,
+    },
+  ];
 
   notifyListeners({
     actions,
