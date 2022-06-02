@@ -2,58 +2,25 @@ import styles from "./Action.module.css";
 
 import { FunctionComponent, ReactElement } from "react";
 import {
-  AttackNpc,
   InspectFixture,
   LookAtFixture,
   LookAtNpc,
-  MovePlayerItem,
   PerformAction,
   PlayerCharacter,
   Room,
 } from "../generated-api";
-import { ExitRoomView } from "./actions/ExitRoomView";
+import {
+  AttackNpcView,
+  CastSpellOnPlayerView,
+  ExitRoomView,
+  MovePlayerItemView,
+} from "./actions";
 
 export interface ActionProps {
   room: Room;
   action: PerformAction;
   player: PlayerCharacter;
 }
-
-const renderAttackNpc = (room: Room, action: PerformAction): ReactElement => {
-  const args = action.args! as AttackNpc;
-
-  const npc = room.npc_positions.find(
-    (npcPosition) => npcPosition.npc.identifier.id === args.npc_id,
-  )?.npc;
-
-  return (
-    <div>
-      <p>Attack {npc?.character?.species}</p>
-    </div>
-  );
-};
-
-const renderMoveItem = (
-  action: PerformAction,
-  player: PlayerCharacter,
-): ReactElement => {
-  const args = action.args as MovePlayerItem;
-  const item = player.character.inventory!.equipment.find(
-    (characterItem) => characterItem.item.identifier.id === args.item_id,
-  );
-
-  if (!item) {
-    return <></>;
-  }
-
-  const equipText = args.put_at_the_ready ? "Equip" : "Unequip";
-
-  return (
-    <div>
-      {equipText} {item.item.item_type} to {args.location_tag}
-    </div>
-  );
-};
 
 const renderInspectFixture = (
   action: PerformAction,
@@ -112,11 +79,9 @@ export const Action: FunctionComponent<ActionProps> = ({
 
   switch (name) {
     case "attack_npc":
-      child = renderAttackNpc(room, action);
-      break;
+      return <AttackNpcView args={action.args!} room={room} />;
     case "move_player_item":
-      child = renderMoveItem(action, player);
-      break;
+      return <MovePlayerItemView args={action.args!} player={player} />;
     case "exit_room":
       return <ExitRoomView args={action.args!} room={room} />;
     case "inspect_fixture":
@@ -128,6 +93,8 @@ export const Action: FunctionComponent<ActionProps> = ({
     case "look_at_npc":
       child = renderLookAtNpc(action, room);
       break;
+    case "cast_spell_on_player":
+      return <CastSpellOnPlayerView args={action.args!} player={player} />;
     default:
       child = <div>{name}</div>;
       break;
