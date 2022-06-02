@@ -153,7 +153,7 @@ pub fn game_actions(game: &Game, _username: &str) -> Vec<PerformAction> {
                 args: Some(serde_json::to_value(&cast_spell_on_player).unwrap()),
             }),
             Action::UseItemOnPlayer(use_item_on_player) => Some(PerformAction {
-                name: ActionName::CastSpellOnPlayer,
+                name: ActionName::UseItemOnPlayer,
                 description: "Use an item on yourself".to_string(),
                 link: get_api_link(&format!("game/{}/use_item_on_player", &game_id)),
                 http_action: "POST".to_string(),
