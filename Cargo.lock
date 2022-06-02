@@ -1768,7 +1768,7 @@ checksum = "dcf81ac59edc17cc8697ff311e8f5ef2d99fcbd9817b34cec66f90b6c3dfd987"
 [[package]]
 name = "underworld_core"
 version = "0.5.0"
-source = "git+https://github.com/derrickp/underworld_core?rev=e2bf705eeb5ee206acec0d58089eb98f701632f4#e2bf705eeb5ee206acec0d58089eb98f701632f4"
+source = "git+https://github.com/derrickp/underworld_core?rev=a59b23e5fe026f0083d2a227d209b2b5dbaf8bdd#a59b23e5fe026f0083d2a227d209b2b5dbaf8bdd"
 dependencies = [
  "chrono",
  "enum-iterator",
