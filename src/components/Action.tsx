@@ -2,9 +2,6 @@ import styles from "./Action.module.css";
 
 import { FunctionComponent, ReactElement } from "react";
 import {
-  InspectFixture,
-  LookAtFixture,
-  LookAtNpc,
   PerformAction,
   PlayerCharacter,
   Room,
@@ -15,6 +12,13 @@ import {
   ExitRoomView,
   MovePlayerItemView,
 } from "./actions";
+import { LootNpcView } from "./actions/LootNpcView";
+import { InspectFixtureView } from "./actions/InspectFixtureView";
+import { InspectNpcView } from "./actions/InspectNpcView";
+import { UseItemOnPlayerView } from "./actions/UseItemOnPlayerView";
+import { LootFixtureView } from "./actions/LootFixtureView";
+import { LookAtFixtureView } from "./actions/LookAtFixtureView";
+import { LookAtNpcView } from "./actions/LookAtNpcView";
 
 export interface ActionProps {
   room: Room;
@@ -22,59 +26,12 @@ export interface ActionProps {
   player: PlayerCharacter;
 }
 
-const renderInspectFixture = (
-  action: PerformAction,
-  room: Room,
-): ReactElement => {
-  const args = action.args as InspectFixture;
-  const fixture = room.fixture_positions
-    .flatMap((fp) => fp.fixtures)
-    .find((f) => f.identifier.id === args.fixture_id);
-
-  if (!fixture) {
-    return <></>;
-  }
-
-  return <div>Inspect {fixture.fixture_type}</div>;
-};
-
-const renderLookAtFixture = (
-  action: PerformAction,
-  room: Room,
-): ReactElement => {
-  const args = action.args as LookAtFixture;
-  const fixture = room.fixture_positions
-    .flatMap((fp) => fp.fixtures)
-    .find((f) => f.identifier.id === args.fixture_id);
-
-  if (!fixture) {
-    return <></>;
-  }
-
-  return <div>Look at {fixture.fixture_type}</div>;
-};
-
-const renderLookAtNpc = (action: PerformAction, room: Room): ReactElement => {
-  const args = action.args as LookAtNpc;
-
-  const npc = room.npc_positions
-    .map((npcPosition) => npcPosition.npc)
-    .find((npc) => npc.identifier.id === args.npc_id);
-
-  if (!npc) {
-    return <></>;
-  }
-
-  return <div>Look at {npc.character.species}</div>;
-};
-
 export const Action: FunctionComponent<ActionProps> = ({
   room,
   action,
   player,
 }) => {
   const name = action.name!;
-
   let child: ReactElement;
 
   switch (name) {
@@ -85,16 +42,21 @@ export const Action: FunctionComponent<ActionProps> = ({
     case "exit_room":
       return <ExitRoomView args={action.args!} room={room} />;
     case "inspect_fixture":
-      child = renderInspectFixture(action, room);
-      break;
+      return <InspectFixtureView args={action.args!} room={room} />;
     case "look_at_fixture":
-      child = renderLookAtFixture(action, room);
-      break;
+      return <LookAtFixtureView args={action.args!} room={room} />;
     case "look_at_npc":
-      child = renderLookAtNpc(action, room);
-      break;
+      return <LookAtNpcView args={action.args!} room={room} />;
     case "cast_spell_on_player":
       return <CastSpellOnPlayerView args={action.args!} player={player} />;
+    case "loot_npc":
+      return <LootNpcView args={action.args!} room={room} />;
+    case "inspect_npc":
+      return <InspectNpcView args={action.args!} room={room} />;
+    case "use_item_on_player":
+      return <UseItemOnPlayerView args={action.args!} player={player} />;
+    case "loot_fixture":
+      return <LootFixtureView args={action.args!} room={room} />;
     default:
       child = <div>{name}</div>;
       break;
