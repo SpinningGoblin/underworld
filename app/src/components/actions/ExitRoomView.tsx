@@ -1,4 +1,4 @@
-import styles from "./ExitRoomView.module.css";
+import styles from "./styles.module.css";
 
 import { FunctionComponent } from "react";
 import { ExitRoom, Room } from "../../generated-api";
@@ -24,7 +24,7 @@ export const ExitRoomView: FunctionComponent<ExitRoomViewProps> = ({
   };
 
   return (
-    <button onClick={onClick} className={styles.exitRoom}>
+    <button onClick={onClick} className={styles.actionButton}>
       <b>Exit room</b> by <b>{exit.exit_type}</b>
     </button>
   );
