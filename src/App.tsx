@@ -4,7 +4,12 @@ import "./App.css";
 import { getUsername, setUsername } from "./api/username";
 import { generateGame, getGameIds } from "./api/game";
 import { setCurrentGameId } from "./api/current-game";
-import { PerformAction, PlayerCharacter, Room } from "./generated-api";
+import {
+  GameEvent,
+  PerformAction,
+  PlayerCharacter,
+  Room,
+} from "./generated-api";
 import {
   ActionPerformed,
   getCurrentActions,
@@ -14,6 +19,7 @@ import {
 } from "./api/actions";
 import { Action } from "./components/Action";
 import { generatePlayer, getCurrentPlayer } from "./api/player";
+import { GameEventView } from "./components/GameEventView";
 
 export const App = () => {
   const [user, setUser] = useState<string | undefined>(getUsername());
@@ -22,6 +28,7 @@ export const App = () => {
   const [room, setRoom] = useState<Room | undefined>();
   const [actions, setActions] = useState<Array<PerformAction>>([]);
   const [player, setPlayer] = useState<PlayerCharacter | undefined>();
+  const [events, setEvents] = useState<Array<GameEvent>>([]);
 
   const onClickGetGameIds = async () => {
     setGameIds(await getGameIds());
@@ -51,7 +58,12 @@ export const App = () => {
       if (actionPerformed.room) {
         setRoom(actionPerformed.room);
       }
+      if (actionPerformed.player) {
+        setPlayer(actionPerformed.player);
+      }
       setActions(actionPerformed.actions);
+
+      setEvents((existing) => [...existing, ...actionPerformed.events]);
 
       for (const event of actionPerformed.events) {
         if (event.name === "player_killed") {
@@ -92,13 +104,17 @@ export const App = () => {
 
   const options = [<option key="empty" value=""></option>];
 
-  gameIds.forEach((id) =>
-    options.push(
-      <option key={id} value={id}>
-        {id}
-      </option>,
-    ),
-  );
+  console.log(events);
+
+  gameIds
+    .sort((a, b) => a.localeCompare(b))
+    .forEach((id) =>
+      options.push(
+        <option key={id} value={id}>
+          {id}
+        </option>,
+      ),
+    );
 
   return (
     <div className="App">
@@ -119,8 +135,10 @@ export const App = () => {
           <button className="generate-button" onClick={onClickGeneratePlayer}>
             Generate Player
           </button>
+          <button className="generate-button" onClick={onClickGetGameIds}>
+            Get Game IDs
+          </button>
         </div>
-        <button onClick={onClickGetGameIds}>Get Game IDs</button>
         <div className="game-ids">
           {gameIds.length > 0 && (
             <select
@@ -138,12 +156,17 @@ export const App = () => {
             </select>
           )}
         </div>
-        {player && room && (
+        {room && (
           <div className="room">
-            <span className="room-id">{room?.identifier?.id}</span>
-            <div className="actions-list">
-              {actions.length > 0 &&
-                actions.map((action, index) => (
+            <span className="room-id">{`${room.descriptors.join(" ")} ${room.room_type}`}</span>
+          </div>
+        )}
+        {player && room && (
+          <div className="actions-list">
+            {actions.length > 0 &&
+              actions
+                .sort((a, b) => a.name!.localeCompare(b.name!))
+                .map((action, index) => (
                   <Action
                     key={`action_${index}`}
                     room={room}
@@ -151,7 +174,13 @@ export const App = () => {
                     player={player}
                   />
                 ))}
-            </div>
+          </div>
+        )}
+        {events.length > 0 && (
+          <div className="events-list">
+            {events.map((event, index) => (
+              <GameEventView key={index} event={event} />
+            ))}
           </div>
         )}
       </div>
