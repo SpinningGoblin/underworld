@@ -54,6 +54,9 @@ export const App = () => {
       setActions(actionPerformed.actions);
 
       for (const event of actionPerformed.events) {
+        if (event.name === "player_killed") {
+          alert("You Died!");
+        }
         console.log(event);
       }
     };
