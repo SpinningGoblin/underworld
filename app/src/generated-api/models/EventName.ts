@@ -31,7 +31,6 @@ export const EventName = {
     NpcHit: 'npc_hit',
     NpcKilled: 'npc_killed',
     NpcMissed: 'npc_missed',
-    NpcNameDiscovered: 'npc_name_discovered',
     NpcPackedDiscovered: 'npc_packed_discovered',
     NpcViewed: 'npc_viewed',
     NpcWeaponReadied: 'npc_weapon_readied',

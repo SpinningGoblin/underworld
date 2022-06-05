@@ -14,6 +14,12 @@
 
 import { exists, mapValues } from '../runtime';
 import {
+    GameEvent,
+    GameEventFromJSON,
+    GameEventFromJSONTyped,
+    GameEventToJSON,
+} from './GameEvent';
+import {
     PerformAction,
     PerformActionFromJSON,
     PerformActionFromJSONTyped,
@@ -37,12 +43,6 @@ export interface NpcInspected {
      * @type {boolean}
      * @memberof NpcInspected
      */
-    name_discovered: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof NpcInspected
-     */
     packed_items_discovered: boolean;
     /**
      * 
@@ -56,6 +56,12 @@ export interface NpcInspected {
      * @memberof NpcInspected
      */
     actions: Array<PerformAction>;
+    /**
+     * 
+     * @type {Array<GameEvent>}
+     * @memberof NpcInspected
+     */
+    events: Array<GameEvent>;
 }
 
 export function NpcInspectedFromJSON(json: any): NpcInspected {
@@ -69,10 +75,10 @@ export function NpcInspectedFromJSONTyped(json: any, ignoreDiscriminator: boolea
     return {
         
         'health_discovered': json['health_discovered'],
-        'name_discovered': json['name_discovered'],
         'packed_items_discovered': json['packed_items_discovered'],
         'hidden_items_discovered': json['hidden_items_discovered'],
         'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
+        'events': ((json['events'] as Array<any>).map(GameEventFromJSON)),
     };
 }
 
@@ -86,10 +92,10 @@ export function NpcInspectedToJSON(value?: NpcInspected | null): any {
     return {
         
         'health_discovered': value.health_discovered,
-        'name_discovered': value.name_discovered,
         'packed_items_discovered': value.packed_items_discovered,
         'hidden_items_discovered': value.hidden_items_discovered,
         'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
+        'events': ((value.events as Array<any>).map(GameEventToJSON)),
     };
 }
 

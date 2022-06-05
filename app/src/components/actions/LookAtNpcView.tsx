@@ -15,7 +15,7 @@ export const LookAtNpcView: FunctionComponent<LookAtNpcViewProps> = ({
 }) => {
   const npc = room.npc_positions
     .map((npcPosition) => npcPosition.npc)
-    .find((npc) => npc.identifier.id === args.npc_id);
+    .find((npc) => npc.id === args.npc_id);
 
   if (!npc) {
     return <div>NPC not found in room</div>;

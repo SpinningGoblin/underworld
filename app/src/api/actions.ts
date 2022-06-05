@@ -115,9 +115,17 @@ export const performAttackNpc = async (args: AttackNpc): Promise<void> => {
     attackNpc: args,
   });
 
+  const playerApi = getPlayerApi();
+  const [room, player] = await Promise.all([
+    getCurrentRoom(),
+    playerApi.getCurrentPc({ underworldUsername: username }),
+  ]);
+
   notifyListeners({
     actions,
     events,
+    player,
+    room,
   });
 };
 
@@ -174,32 +182,12 @@ export const performInspectFixture = async (
     inspectFixture: args,
   });
 
-  const events: Array<GameEvent> = [];
-
-  if (response.can_be_opened_discovered) {
-    events.push({
-      name: "fixture_can_be_opened_discovered",
-    });
-  }
-  if (response.contained_items_discovered) {
-    events.push({
-      name: "fixture_contained_discovered",
-    });
-  }
-  if (response.has_hidden_discovered) {
-    events.push({
-      name: "fixture_has_hidden_discovered",
-    });
-  }
-  if (response.hidden_items_discovered) {
-    events.push({
-      name: "fixture_hidden_items_discovered",
-    });
-  }
+  const room = await getCurrentRoom();
 
   notifyListeners({
     actions: response.actions,
-    events,
+    events: response.events,
+    room,
   });
 };
 
@@ -231,31 +219,17 @@ export const performInspectNpc = async (args: InspectNpc): Promise<void> => {
     inspectNpc: args,
   });
 
-  const events: Array<GameEvent> = [];
-  if (response.health_discovered) {
-    events.push({
-      name: "npc_health_discovered",
-    });
-  }
-  if (response.hidden_items_discovered) {
-    events.push({
-      name: "npc_hidden_discovered",
-    });
-  }
-  if (response.packed_items_discovered) {
-    events.push({
-      name: "npc_packed_discovered",
-    });
-  }
-  if (response.name_discovered) {
-    events.push({
-      name: "npc_name_discovered",
-    });
-  }
+  const playerApi = getPlayerApi();
+  const [room, player] = await Promise.all([
+    getCurrentRoom(),
+    playerApi.getCurrentPc({ underworldUsername: username }),
+  ]);
 
   notifyListeners({
     actions: response.actions,
-    events,
+    events: response.events,
+    room,
+    player,
   });
 };
 
@@ -269,12 +243,17 @@ export const performLootNpc = async (args: LootNpc): Promise<void> => {
   });
 
   const playerApi = getPlayerApi();
-  const player = await playerApi.getCurrentPc({ underworldUsername: username });
+
+  const [room, player] = await Promise.all([
+    getCurrentRoom(),
+    playerApi.getCurrentPc({ underworldUsername: username }),
+  ]);
 
   notifyListeners({
     actions,
     events,
     player,
+    room,
   });
 };
 
@@ -288,12 +267,16 @@ export const performLootFixture = async (args: LootFixture): Promise<void> => {
   });
 
   const playerApi = getPlayerApi();
-  const player = await playerApi.getCurrentPc({ underworldUsername: username });
+  const [room, player] = await Promise.all([
+    getCurrentRoom(),
+    playerApi.getCurrentPc({ underworldUsername: username }),
+  ]);
 
   notifyListeners({
     actions,
     events,
     player,
+    room,
   });
 };
 

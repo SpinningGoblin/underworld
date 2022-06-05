@@ -29,52 +29,52 @@ import {
 /**
  * 
  * @export
- * @interface EffectsView
+ * @interface Effects
  */
-export interface EffectsView {
+export interface Effects {
     /**
      * 
      * @type {Defense}
-     * @memberof EffectsView
+     * @memberof Effects
      */
     shield_aura?: Defense;
     /**
      * 
      * @type {boolean}
-     * @memberof EffectsView
+     * @memberof Effects
      */
     knows_has_shield_aura: boolean;
     /**
      * 
      * @type {Attack}
-     * @memberof EffectsView
+     * @memberof Effects
      */
     retribution_aura?: Attack;
     /**
      * 
      * @type {boolean}
-     * @memberof EffectsView
+     * @memberof Effects
      */
     knows_has_retribution_aura: boolean;
     /**
      * 
      * @type {boolean}
-     * @memberof EffectsView
+     * @memberof Effects
      */
     resurrection_aura: boolean;
     /**
      * 
      * @type {boolean}
-     * @memberof EffectsView
+     * @memberof Effects
      */
     knows_has_resurrection_aura: boolean;
 }
 
-export function EffectsViewFromJSON(json: any): EffectsView {
-    return EffectsViewFromJSONTyped(json, false);
+export function EffectsFromJSON(json: any): Effects {
+    return EffectsFromJSONTyped(json, false);
 }
 
-export function EffectsViewFromJSONTyped(json: any, ignoreDiscriminator: boolean): EffectsView {
+export function EffectsFromJSONTyped(json: any, ignoreDiscriminator: boolean): Effects {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -89,7 +89,7 @@ export function EffectsViewFromJSONTyped(json: any, ignoreDiscriminator: boolean
     };
 }
 
-export function EffectsViewToJSON(value?: EffectsView | null): any {
+export function EffectsToJSON(value?: Effects | null): any {
     if (value === undefined) {
         return undefined;
     }

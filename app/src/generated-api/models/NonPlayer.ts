@@ -19,12 +19,6 @@ import {
     CharacterFromJSONTyped,
     CharacterToJSON,
 } from './Character';
-import {
-    Identifier,
-    IdentifierFromJSON,
-    IdentifierFromJSONTyped,
-    IdentifierToJSON,
-} from './Identifier';
 
 /**
  * 
@@ -40,10 +34,16 @@ export interface NonPlayer {
     character: Character;
     /**
      * 
-     * @type {Identifier}
+     * @type {string}
      * @memberof NonPlayer
      */
-    identifier: Identifier;
+    id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NonPlayer
+     */
+    name?: string;
 }
 
 export function NonPlayerFromJSON(json: any): NonPlayer {
@@ -57,7 +57,8 @@ export function NonPlayerFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     return {
         
         'character': CharacterFromJSON(json['character']),
-        'identifier': IdentifierFromJSON(json['identifier']),
+        'id': json['id'],
+        'name': !exists(json, 'name') ? undefined : json['name'],
     };
 }
 
@@ -71,7 +72,8 @@ export function NonPlayerToJSON(value?: NonPlayer | null): any {
     return {
         
         'character': CharacterToJSON(value.character),
-        'identifier': IdentifierToJSON(value.identifier),
+        'id': value.id,
+        'name': value.name,
     };
 }
 

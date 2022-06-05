@@ -1,0 +1,25 @@
+.player {
+  max-width: 50%;
+  min-height: 200px;
+  background-color: floralwhite;
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid gray;
+}
+
+.description {
+  font-style: normal;
+}
+
+.health {
+  font-weight: 600;
+  color: green;
+}
+
+.low-health {
+  color: red;
+}
+
+.inventory {
+  margin-top: 2px;
+}

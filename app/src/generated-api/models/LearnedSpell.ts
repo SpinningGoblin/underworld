@@ -14,12 +14,6 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    Identifier,
-    IdentifierFromJSON,
-    IdentifierFromJSONTyped,
-    IdentifierToJSON,
-} from './Identifier';
-import {
     Spell,
     SpellFromJSON,
     SpellFromJSONTyped,
@@ -34,10 +28,10 @@ import {
 export interface LearnedSpell {
     /**
      * 
-     * @type {Identifier}
+     * @type {string}
      * @memberof LearnedSpell
      */
-    identifier: Identifier;
+    id: string;
     /**
      * 
      * @type {Spell}
@@ -62,7 +56,7 @@ export function LearnedSpellFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'identifier': IdentifierFromJSON(json['identifier']),
+        'id': json['id'],
         'spell': SpellFromJSON(json['spell']),
         'learned_at': json['learned_at'],
     };
@@ -77,7 +71,7 @@ export function LearnedSpellToJSON(value?: LearnedSpell | null): any {
     }
     return {
         
-        'identifier': IdentifierToJSON(value.identifier),
+        'id': value.id,
         'spell': SpellToJSON(value.spell),
         'learned_at': value.learned_at,
     };

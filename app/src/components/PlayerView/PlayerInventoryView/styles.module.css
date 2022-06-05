@@ -1,0 +1,39 @@
+.inventory {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+.title {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.equipment {
+  padding-top: 4px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.item-name {
+  font-style: normal;
+}
+
+.item {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: lightgray;
+  border-radius: 6px;
+  gap: 2px;
+}
+
+.equip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 2px;
+}

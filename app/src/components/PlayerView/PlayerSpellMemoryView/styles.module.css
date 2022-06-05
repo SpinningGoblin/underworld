@@ -1,0 +1,37 @@
+.spell-memory {
+  display: flex;
+  flex-direction: column;
+}
+
+.spell-name {
+  font-style: normal;
+}
+
+.spell {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: lightgray;
+  border-radius: 6px;
+  gap: 2px;
+}
+
+.uses {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 2px;
+}
+
+.title {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.spell-list {
+  padding-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

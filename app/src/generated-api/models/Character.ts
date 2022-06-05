@@ -14,11 +14,11 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    EffectsView,
-    EffectsViewFromJSON,
-    EffectsViewFromJSONTyped,
-    EffectsViewToJSON,
-} from './EffectsView';
+    Effects,
+    EffectsFromJSON,
+    EffectsFromJSONTyped,
+    EffectsToJSON,
+} from './Effects';
 import {
     Inventory,
     InventoryFromJSON,
@@ -67,25 +67,13 @@ export interface Character {
      * @type {Species}
      * @memberof Character
      */
-    species?: Species;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Character
-     */
-    species_known: boolean;
+    species: Species;
     /**
      * 
      * @type {LifeModifier}
      * @memberof Character
      */
     life_modifier?: LifeModifier;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Character
-     */
-    life_modifier_known: boolean;
     /**
      * 
      * @type {Inventory}
@@ -100,10 +88,10 @@ export interface Character {
     inventory_known: boolean;
     /**
      * 
-     * @type {EffectsView}
+     * @type {Effects}
      * @memberof Character
      */
-    current_effects?: EffectsView;
+    current_effects?: Effects;
     /**
      * 
      * @type {boolean}
@@ -135,13 +123,11 @@ export function CharacterFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     return {
         
         'stats': StatsFromJSON(json['stats']),
-        'species': !exists(json, 'species') ? undefined : SpeciesFromJSON(json['species']),
-        'species_known': json['species_known'],
+        'species': SpeciesFromJSON(json['species']),
         'life_modifier': !exists(json, 'life_modifier') ? undefined : LifeModifierFromJSON(json['life_modifier']),
-        'life_modifier_known': json['life_modifier_known'],
         'inventory': !exists(json, 'inventory') ? undefined : InventoryFromJSON(json['inventory']),
         'inventory_known': json['inventory_known'],
-        'current_effects': !exists(json, 'current_effects') ? undefined : EffectsViewFromJSON(json['current_effects']),
+        'current_effects': !exists(json, 'current_effects') ? undefined : EffectsFromJSON(json['current_effects']),
         'current_effects_known': json['current_effects_known'],
         'spell_memory': !exists(json, 'spell_memory') ? undefined : SpellMemoryFromJSON(json['spell_memory']),
         'spell_memory_known': json['spell_memory_known'],
@@ -159,12 +145,10 @@ export function CharacterToJSON(value?: Character | null): any {
         
         'stats': StatsToJSON(value.stats),
         'species': SpeciesToJSON(value.species),
-        'species_known': value.species_known,
         'life_modifier': LifeModifierToJSON(value.life_modifier),
-        'life_modifier_known': value.life_modifier_known,
         'inventory': InventoryToJSON(value.inventory),
         'inventory_known': value.inventory_known,
-        'current_effects': EffectsViewToJSON(value.current_effects),
+        'current_effects': EffectsToJSON(value.current_effects),
         'current_effects_known': value.current_effects_known,
         'spell_memory': SpellMemoryToJSON(value.spell_memory),
         'spell_memory_known': value.spell_memory_known,

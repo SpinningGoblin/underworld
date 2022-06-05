@@ -14,8 +14,8 @@ export const LookAtFixtureView: FunctionComponent<LookAtFixtureViewProps> = ({
   room,
 }) => {
   const fixture = room.fixture_positions
-    .flatMap((f) => f.fixtures)
-    .find((fixture) => fixture.identifier.id === args.fixture_id);
+    .map((f) => f.fixture)
+    .find((fixture) => fixture.id === args.fixture_id);
 
   if (!fixture) {
     return <div>Fixture not found in room...</div>;

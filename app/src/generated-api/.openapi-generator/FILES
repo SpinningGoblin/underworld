@@ -1,3 +1,4 @@
+.openapi-generator-ignore
 apis/GameActionsApi.ts
 apis/GamesApi.ts
 apis/NpcsApi.ts
@@ -15,7 +16,7 @@ models/ConsumableEffect.ts
 models/ConsumableEffectName.ts
 models/Defense.ts
 models/Dimensions.ts
-models/EffectsView.ts
+models/Effects.ts
 models/EquipLocationTag.ts
 models/EventName.ts
 models/Exit.ts
@@ -37,7 +38,6 @@ models/GeneratedNpc.ts
 models/GeneratedPlayerCharacter.ts
 models/GroupDescriptor.ts
 models/Health.ts
-models/Identifier.ts
 models/InspectFixture.ts
 models/InspectNpc.ts
 models/Inventory.ts

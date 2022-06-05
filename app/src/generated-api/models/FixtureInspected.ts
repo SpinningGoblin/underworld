@@ -14,6 +14,12 @@
 
 import { exists, mapValues } from '../runtime';
 import {
+    GameEvent,
+    GameEventFromJSON,
+    GameEventFromJSONTyped,
+    GameEventToJSON,
+} from './GameEvent';
+import {
     PerformAction,
     PerformActionFromJSON,
     PerformActionFromJSONTyped,
@@ -56,6 +62,12 @@ export interface FixtureInspected {
      * @memberof FixtureInspected
      */
     actions: Array<PerformAction>;
+    /**
+     * 
+     * @type {Array<GameEvent>}
+     * @memberof FixtureInspected
+     */
+    events: Array<GameEvent>;
 }
 
 export function FixtureInspectedFromJSON(json: any): FixtureInspected {
@@ -73,6 +85,7 @@ export function FixtureInspectedFromJSONTyped(json: any, ignoreDiscriminator: bo
         'hidden_items_discovered': json['hidden_items_discovered'],
         'contained_items_discovered': json['contained_items_discovered'],
         'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
+        'events': ((json['events'] as Array<any>).map(GameEventFromJSON)),
     };
 }
 
@@ -90,6 +103,7 @@ export function FixtureInspectedToJSON(value?: FixtureInspected | null): any {
         'hidden_items_discovered': value.hidden_items_discovered,
         'contained_items_discovered': value.contained_items_discovered,
         'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
+        'events': ((value.events as Array<any>).map(GameEventToJSON)),
     };
 }
 

@@ -1,0 +1,13 @@
+.exit {
+  background-color: lightgrey;
+  max-width: 100%;
+  border-radius: 6px;
+}
+
+.description {
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
