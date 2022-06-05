@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import goblin from "./images/goblin_big_hat.svg";
 import "./App.css";
 import { getUsername, setUsername } from "./api/username";
@@ -17,9 +17,12 @@ import {
   listenActionPerformed,
   removeActionPerformedListener,
 } from "./api/actions";
-import { Action } from "./components/Action";
 import { generatePlayer, getCurrentPlayer } from "./api/player";
 import { GameEventView } from "./components/GameEventView";
+import { RoomView } from "./components/RoomView";
+import { PlayerView } from "./components/PlayerView";
+import { NpcPositionView } from "./components/NpcPositionView";
+import { FixturePositionView } from "./components/FixturePositionView";
 
 export const App = () => {
   const [user, setUser] = useState<string | undefined>(getUsername());
@@ -29,6 +32,7 @@ export const App = () => {
   const [actions, setActions] = useState<Array<PerformAction>>([]);
   const [player, setPlayer] = useState<PlayerCharacter | undefined>();
   const [events, setEvents] = useState<Array<GameEvent>>([]);
+  const firstPlayerLoadDone = useRef<boolean>(false);
 
   const onClickGetGameIds = async () => {
     setGameIds(await getGameIds());
@@ -54,6 +58,15 @@ export const App = () => {
   };
 
   useEffect(() => {
+    const username = getUsername();
+    if (username && !firstPlayerLoadDone.current) {
+      getCurrentPlayer()
+        .then(setPlayer)
+        .finally(() => (firstPlayerLoadDone.current = true));
+    }
+  }, []);
+
+  useEffect(() => {
     const callback = (actionPerformed: ActionPerformed) => {
       if (actionPerformed.room) {
         setRoom(actionPerformed.room);
@@ -63,7 +76,10 @@ export const App = () => {
       }
       setActions(actionPerformed.actions);
 
-      setEvents((existing) => [...existing, ...actionPerformed.events]);
+      setEvents((existing) => [
+        ...actionPerformed.events.reverse(),
+        ...existing,
+      ]);
 
       for (const event of actionPerformed.events) {
         if (event.name === "player_killed") {
@@ -116,71 +132,116 @@ export const App = () => {
       ),
     );
 
+  const username = getUsername();
+
+  const npcText = (room: Room): string => {
+    if (!room.npc_positions.length) {
+      return "There are no other creatures in the room.";
+    }
+
+    const creatureText =
+      room.npc_positions.length === 1
+        ? "is 1 creature"
+        : `are ${room.npc_positions.length} creatures`;
+
+    return `There ${creatureText} in the room with you.`;
+  };
+
+  const fixtureText = (room: Room): string => {
+    if (!room.fixture_positions.length) {
+      return "There is nothing else interesting in the room.";
+    }
+
+    const itemText =
+      room.fixture_positions.length === 1
+        ? "is 1 item"
+        : `are ${room.fixture_positions.length} items`;
+
+    return `There ${itemText} in the room with you.`;
+  };
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={goblin} className="App-logo" alt="logo" />
         <p>Underworld Server</p>
       </header>
-      <div>
+      <div className="body">
         <div className="basics">
           <input
+            className="name-input"
             value={user || ""}
             onChange={(event) => setUser(event.target.value)}
           />
-          <button className="generate-button" onClick={onClickGenerateGame}>
-            Generate Game
-          </button>
-
-          <button className="generate-button" onClick={onClickGeneratePlayer}>
-            Generate Player
-          </button>
-          <button className="generate-button" onClick={onClickGetGameIds}>
-            Get Game IDs
-          </button>
-        </div>
-        <div className="game-ids">
-          {gameIds.length > 0 && (
-            <select
-              className="game-id-select"
-              value={gameId || ""}
-              onChange={(event) => {
-                if (event.currentTarget.value) {
-                  setGameId(event.currentTarget.value);
-                } else {
-                  setGameId(undefined);
-                }
-              }}
-            >
-              {options}
-            </select>
+          {!!username && (
+            <button className="generate-button" onClick={onClickGeneratePlayer}>
+              Generate Player
+            </button>
           )}
+          {player && (
+            <button className="generate-button" onClick={onClickGenerateGame}>
+              Generate Game
+            </button>
+          )}
+          {player && (
+            <button className="generate-button" onClick={onClickGetGameIds}>
+              Get Game IDs
+            </button>
+          )}
+          <div className="game-ids">
+            {gameIds.length > 0 && (
+              <select
+                className="game-id-select"
+                value={gameId || ""}
+                onChange={(event) => {
+                  if (event.currentTarget.value) {
+                    setGameId(event.currentTarget.value);
+                  } else {
+                    setGameId(undefined);
+                  }
+                }}
+              >
+                {options}
+              </select>
+            )}
+          </div>
         </div>
-        {room && (
-          <div className="room">
-            <span className="room-id">{`${room.descriptors.join(" ")} ${room.room_type}`}</span>
-          </div>
-        )}
-        {player && room && (
-          <div className="actions-list">
-            {actions.length > 0 &&
-              actions
-                .sort((a, b) => a.name!.localeCompare(b.name!))
-                .map((action, index) => (
-                  <Action
-                    key={`action_${index}`}
-                    room={room}
-                    action={action}
-                    player={player}
-                  />
-                ))}
-          </div>
-        )}
         {events.length > 0 && (
           <div className="events-list">
             {events.map((event, index) => (
               <GameEventView key={index} event={event} />
             ))}
+          </div>
+        )}
+        <div className="room-and-player">
+          {room && <RoomView room={room} actions={actions} />}
+          {player && <PlayerView player={player} actions={actions} />}
+        </div>
+        {player && room && (
+          <div className="npcs">
+            <div className="npc-text">{npcText(room)}</div>
+            <div className="npc-list">
+              {room.npc_positions.map((npcPosition) => (
+                <NpcPositionView
+                  key={npcPosition.npc.id}
+                  npcPosition={npcPosition}
+                  actions={actions}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+        {player && room && (
+          <div className="fixtures">
+            <div className="fixture-text">{fixtureText(room)}</div>
+            <div className="fixture-list">
+              {room.fixture_positions.map((fixturePosition) => (
+                <FixturePositionView
+                  key={fixturePosition.fixture.id}
+                  fixturePosition={fixturePosition}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>

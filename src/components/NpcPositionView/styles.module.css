@@ -1,0 +1,24 @@
+.npc-position {
+  min-height: 200px;
+  background-color: floralwhite;
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid gray;
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+}
+
+.label {
+  font-style: italic;
+}
+
+.basic-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 6px;
+}
+
+.inventory {
+  margin-top: 10px;
+}

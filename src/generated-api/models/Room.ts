@@ -38,12 +38,6 @@ import {
     FlavourTextToJSON,
 } from './FlavourText';
 import {
-    Identifier,
-    IdentifierFromJSON,
-    IdentifierFromJSONTyped,
-    IdentifierToJSON,
-} from './Identifier';
-import {
     NpcPosition,
     NpcPositionFromJSON,
     NpcPositionFromJSONTyped,
@@ -70,10 +64,16 @@ import {
 export interface Room {
     /**
      * 
-     * @type {Identifier}
+     * @type {string}
      * @memberof Room
      */
-    identifier: Identifier;
+    id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Room
+     */
+    name?: string;
     /**
      * 
      * @type {Array<RoomDescriptor>}
@@ -128,7 +128,8 @@ export function RoomFromJSONTyped(json: any, ignoreDiscriminator: boolean): Room
     }
     return {
         
-        'identifier': IdentifierFromJSON(json['identifier']),
+        'id': json['id'],
+        'name': !exists(json, 'name') ? undefined : json['name'],
         'descriptors': ((json['descriptors'] as Array<any>).map(RoomDescriptorFromJSON)),
         'room_type': RoomTypeFromJSON(json['room_type']),
         'fixture_positions': ((json['fixture_positions'] as Array<any>).map(FixturePositionFromJSON)),
@@ -148,7 +149,8 @@ export function RoomToJSON(value?: Room | null): any {
     }
     return {
         
-        'identifier': IdentifierToJSON(value.identifier),
+        'id': value.id,
+        'name': value.name,
         'descriptors': ((value.descriptors as Array<any>).map(RoomDescriptorToJSON)),
         'room_type': RoomTypeToJSON(value.room_type),
         'fixture_positions': ((value.fixture_positions as Array<any>).map(FixturePositionToJSON)),

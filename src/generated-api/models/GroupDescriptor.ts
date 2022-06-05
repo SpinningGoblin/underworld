@@ -19,12 +19,8 @@
  */
 export const GroupDescriptor = {
     A: 'a',
-    AFew: 'a_few',
-    AGangOf: 'a_gang_of',
-    AGroupOf: 'a_group_of',
     ALone: 'a_lone',
-    ASingle: 'a_single',
-    Some: 'some'
+    ASingle: 'a_single'
 } as const;
 export type GroupDescriptor = typeof GroupDescriptor[keyof typeof GroupDescriptor];
 

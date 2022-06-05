@@ -26,12 +26,6 @@ import {
     ExitTypeToJSON,
 } from './ExitType';
 import {
-    Identifier,
-    IdentifierFromJSON,
-    IdentifierFromJSONTyped,
-    IdentifierToJSON,
-} from './Identifier';
-import {
     Material,
     MaterialFromJSON,
     MaterialFromJSONTyped,
@@ -52,10 +46,16 @@ import {
 export interface Exit {
     /**
      * 
-     * @type {Identifier}
+     * @type {string}
      * @memberof Exit
      */
-    identifier: Identifier;
+    id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Exit
+     */
+    name?: string;
     /**
      * 
      * @type {ExitType}
@@ -80,6 +80,12 @@ export interface Exit {
      * @memberof Exit
      */
     size?: Size;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Exit
+     */
+    has_visited_connected_room: boolean;
 }
 
 export function ExitFromJSON(json: any): Exit {
@@ -92,11 +98,13 @@ export function ExitFromJSONTyped(json: any, ignoreDiscriminator: boolean): Exit
     }
     return {
         
-        'identifier': IdentifierFromJSON(json['identifier']),
+        'id': json['id'],
+        'name': !exists(json, 'name') ? undefined : json['name'],
         'exit_type': ExitTypeFromJSON(json['exit_type']),
         'material': !exists(json, 'material') ? undefined : MaterialFromJSON(json['material']),
         'descriptors': ((json['descriptors'] as Array<any>).map(ExitDescriptorFromJSON)),
         'size': !exists(json, 'size') ? undefined : SizeFromJSON(json['size']),
+        'has_visited_connected_room': json['has_visited_connected_room'],
     };
 }
 
@@ -109,11 +117,13 @@ export function ExitToJSON(value?: Exit | null): any {
     }
     return {
         
-        'identifier': IdentifierToJSON(value.identifier),
+        'id': value.id,
+        'name': value.name,
         'exit_type': ExitTypeToJSON(value.exit_type),
         'material': MaterialToJSON(value.material),
         'descriptors': ((value.descriptors as Array<any>).map(ExitDescriptorToJSON)),
         'size': SizeToJSON(value.size),
+        'has_visited_connected_room': value.has_visited_connected_room,
     };
 }
 

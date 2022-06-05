@@ -1,0 +1,8 @@
+.effects {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  text-decoration: underline;
+}

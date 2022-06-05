@@ -33,12 +33,6 @@ export interface InspectNpc {
      */
     discover_health: boolean;
     /**
-     * Attempt to discover the NPC's name.
-     * @type {boolean}
-     * @memberof InspectNpc
-     */
-    discover_name: boolean;
-    /**
      * Attempt to discover the items the NPC has packed away.
      * @type {boolean}
      * @memberof InspectNpc
@@ -64,7 +58,6 @@ export function InspectNpcFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'npc_id': json['npc_id'],
         'discover_health': json['discover_health'],
-        'discover_name': json['discover_name'],
         'discover_packed_items': json['discover_packed_items'],
         'discover_hidden_items': json['discover_hidden_items'],
     };
@@ -81,7 +74,6 @@ export function InspectNpcToJSON(value?: InspectNpc | null): any {
         
         'npc_id': value.npc_id,
         'discover_health': value.discover_health,
-        'discover_name': value.discover_name,
         'discover_packed_items': value.discover_packed_items,
         'discover_hidden_items': value.discover_hidden_items,
     };

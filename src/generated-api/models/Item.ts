@@ -32,12 +32,6 @@ import {
     DefenseToJSON,
 } from './Defense';
 import {
-    Identifier,
-    IdentifierFromJSON,
-    IdentifierFromJSONTyped,
-    IdentifierToJSON,
-} from './Identifier';
-import {
     ItemDescriptor,
     ItemDescriptorFromJSON,
     ItemDescriptorFromJSONTyped,
@@ -70,10 +64,16 @@ import {
 export interface Item {
     /**
      * 
-     * @type {Identifier}
+     * @type {string}
      * @memberof Item
      */
-    identifier: Identifier;
+    id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    name?: string;
     /**
      * 
      * @type {ItemType}
@@ -158,7 +158,8 @@ export function ItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): Item
     }
     return {
         
-        'identifier': IdentifierFromJSON(json['identifier']),
+        'id': json['id'],
+        'name': !exists(json, 'name') ? undefined : json['name'],
         'item_type': ItemTypeFromJSON(json['item_type']),
         'tags': ((json['tags'] as Array<any>).map(TagFromJSON)),
         'descriptors': ((json['descriptors'] as Array<any>).map(ItemDescriptorFromJSON)),
@@ -183,7 +184,8 @@ export function ItemToJSON(value?: Item | null): any {
     }
     return {
         
-        'identifier': IdentifierToJSON(value.identifier),
+        'id': value.id,
+        'name': value.name,
         'item_type': ItemTypeToJSON(value.item_type),
         'tags': ((value.tags as Array<any>).map(TagToJSON)),
         'descriptors': ((value.descriptors as Array<any>).map(ItemDescriptorToJSON)),

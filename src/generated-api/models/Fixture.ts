@@ -26,12 +26,6 @@ import {
     FixtureTypeToJSON,
 } from './FixtureType';
 import {
-    Identifier,
-    IdentifierFromJSON,
-    IdentifierFromJSONTyped,
-    IdentifierToJSON,
-} from './Identifier';
-import {
     ItemDescriptor,
     ItemDescriptorFromJSON,
     ItemDescriptorFromJSONTyped,
@@ -58,10 +52,16 @@ import {
 export interface Fixture {
     /**
      * 
-     * @type {Identifier}
+     * @type {string}
      * @memberof Fixture
      */
-    identifier: Identifier;
+    id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Fixture
+     */
+    name?: string;
     /**
      * 
      * @type {FixtureType}
@@ -152,7 +152,8 @@ export function FixtureFromJSONTyped(json: any, ignoreDiscriminator: boolean): F
     }
     return {
         
-        'identifier': IdentifierFromJSON(json['identifier']),
+        'id': json['id'],
+        'name': !exists(json, 'name') ? undefined : json['name'],
         'fixture_type': FixtureTypeFromJSON(json['fixture_type']),
         'material': !exists(json, 'material') ? undefined : MaterialFromJSON(json['material']),
         'size': SizeFromJSON(json['size']),
@@ -178,7 +179,8 @@ export function FixtureToJSON(value?: Fixture | null): any {
     }
     return {
         
-        'identifier': IdentifierToJSON(value.identifier),
+        'id': value.id,
+        'name': value.name,
         'fixture_type': FixtureTypeToJSON(value.fixture_type),
         'material': MaterialToJSON(value.material),
         'size': SizeToJSON(value.size),

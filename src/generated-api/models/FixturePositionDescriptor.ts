@@ -18,11 +18,7 @@
  * @export
  */
 export const FixturePositionDescriptor = {
-    AreAlongOneSide: 'are_along_one_side',
-    AreInTheCorner: 'are_in_the_corner',
     IsInTheCorner: 'is_in_the_corner',
-    AreScatteredAboutTheRoom: 'are_scattered_about_the_room',
-    SitAlongOneSide: 'sit_along_one_side',
     SitsAlongOneSide: 'sits_along_one_side',
     StandsInTheCorner: 'stands_in_the_corner',
     CrackedAndBrokenOnTheGround: 'cracked_and_broken_on_the_ground'

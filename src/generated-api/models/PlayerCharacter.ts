@@ -19,12 +19,6 @@ import {
     CharacterFromJSONTyped,
     CharacterToJSON,
 } from './Character';
-import {
-    Identifier,
-    IdentifierFromJSON,
-    IdentifierFromJSONTyped,
-    IdentifierToJSON,
-} from './Identifier';
 
 /**
  * 
@@ -40,10 +34,16 @@ export interface PlayerCharacter {
     character: Character;
     /**
      * 
-     * @type {Identifier}
+     * @type {string}
      * @memberof PlayerCharacter
      */
-    identifier: Identifier;
+    id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PlayerCharacter
+     */
+    name?: string;
 }
 
 export function PlayerCharacterFromJSON(json: any): PlayerCharacter {
@@ -57,7 +57,8 @@ export function PlayerCharacterFromJSONTyped(json: any, ignoreDiscriminator: boo
     return {
         
         'character': CharacterFromJSON(json['character']),
-        'identifier': IdentifierFromJSON(json['identifier']),
+        'id': json['id'],
+        'name': !exists(json, 'name') ? undefined : json['name'],
     };
 }
 
@@ -71,7 +72,8 @@ export function PlayerCharacterToJSON(value?: PlayerCharacter | null): any {
     return {
         
         'character': CharacterToJSON(value.character),
-        'identifier': IdentifierToJSON(value.identifier),
+        'id': value.id,
+        'name': value.name,
     };
 }
 

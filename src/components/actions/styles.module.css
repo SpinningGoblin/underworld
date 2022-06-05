@@ -1,6 +1,39 @@
 .actionButton {
   background-color: lightsteelblue;
-  padding: 10px;
-  border-radius: 12px;
-  height: 50px;
+  padding: 5px;
+  border-radius: 6px;
+}
+
+.cast-spell {
+  background-color: lightsteelblue;
+  padding: 5px;
+  border-radius: 6px;
+}
+
+.move-button {
+  background-color: lightsteelblue;
+  padding: 5px;
+  border-radius: 6px;
+  min-width: 60px;
+}
+
+.inspect-button {
+  background-color: lightsteelblue;
+  padding: 5px;
+  border-radius: 6px;
+  min-width: 60px;
+}
+
+.attack-button {
+  background-color: lightsteelblue;
+  padding: 5px;
+  border-radius: 6px;
+  min-width: 60px;
+}
+
+.loot-button {
+  background-color: lightsteelblue;
+  padding: 5px;
+  border-radius: 6px;
+  min-width: 60px;
 }

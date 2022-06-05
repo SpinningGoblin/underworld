@@ -1,0 +1,32 @@
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: baseline;
+}
+
+.item-name {
+  font-style: normal;
+}
+
+.item {
+  padding: 10px;
+  display: flex;
+  align-items: flex-start;
+  background-color: lightgray;
+  border-radius: 6px;
+  gap: 6px;
+  align-items: center;
+}
+
+.loot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 2px;
+}
+
+.equipped-text {
+  text-decoration: underline;
+  margin-bottom: 4px;
+}

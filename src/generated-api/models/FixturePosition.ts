@@ -46,16 +46,16 @@ export interface FixturePosition {
     group_descriptor?: GroupDescriptor;
     /**
      * 
-     * @type {Array<Fixture>}
+     * @type {Fixture}
      * @memberof FixturePosition
      */
-    fixtures: Array<Fixture>;
+    fixture: Fixture;
     /**
      * 
-     * @type {Array<FixturePositionDescriptor>}
+     * @type {FixturePositionDescriptor}
      * @memberof FixturePosition
      */
-    position_descriptors: Array<FixturePositionDescriptor>;
+    position_descriptor?: FixturePositionDescriptor;
 }
 
 export function FixturePositionFromJSON(json: any): FixturePosition {
@@ -69,8 +69,8 @@ export function FixturePositionFromJSONTyped(json: any, ignoreDiscriminator: boo
     return {
         
         'group_descriptor': !exists(json, 'group_descriptor') ? undefined : GroupDescriptorFromJSON(json['group_descriptor']),
-        'fixtures': ((json['fixtures'] as Array<any>).map(FixtureFromJSON)),
-        'position_descriptors': ((json['position_descriptors'] as Array<any>).map(FixturePositionDescriptorFromJSON)),
+        'fixture': FixtureFromJSON(json['fixture']),
+        'position_descriptor': !exists(json, 'position_descriptor') ? undefined : FixturePositionDescriptorFromJSON(json['position_descriptor']),
     };
 }
 
@@ -84,8 +84,8 @@ export function FixturePositionToJSON(value?: FixturePosition | null): any {
     return {
         
         'group_descriptor': GroupDescriptorToJSON(value.group_descriptor),
-        'fixtures': ((value.fixtures as Array<any>).map(FixtureToJSON)),
-        'position_descriptors': ((value.position_descriptors as Array<any>).map(FixturePositionDescriptorToJSON)),
+        'fixture': FixtureToJSON(value.fixture),
+        'position_descriptor': FixturePositionDescriptorToJSON(value.position_descriptor),
     };
 }
 

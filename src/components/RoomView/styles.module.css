@@ -1,0 +1,24 @@
+.room {
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid grey;
+  background-color: floralwhite;
+  max-width: 50%;
+}
+
+.description {
+  font-size: large;
+  font-weight: 900;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.exits {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exit-title {
+  max-width: 100%;
+}
