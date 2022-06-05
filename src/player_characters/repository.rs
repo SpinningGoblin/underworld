@@ -22,7 +22,7 @@ pub async fn save(
     username: &str,
     player_character: &PlayerCharacter,
 ) -> Result<(), Box<dyn Error>> {
-    let pc_id = player_character.identifier.id.to_string();
+    let pc_id = player_character.id.to_string();
     let serialized = serde_json::to_value(&player_character).unwrap();
 
     let query = r#"
@@ -79,7 +79,7 @@ pub async fn set_current(
     username: &str,
     player_character: &PlayerCharacter,
 ) -> Result<(), Box<dyn Error>> {
-    let pc_id = player_character.identifier.id.to_string();
+    let pc_id = player_character.id.to_string();
     let query = r#"
         insert into current_player_characters (username, pc_id)
         values ($1, $2)

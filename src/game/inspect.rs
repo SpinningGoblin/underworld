@@ -11,16 +11,16 @@ use underworld_core::{
 
 use crate::{
     actions::{game_actions, PerformAction},
-    error::{GameNotFoundError, NoPlayerCharacterSetError},
+    error::{GameNotFoundError, NoPlayerCharacterSetError}, event::GameEvent,
 };
 
 #[derive(Object, Serialize)]
 pub struct NpcInspected {
     pub health_discovered: bool,
-    pub name_discovered: bool,
     pub packed_items_discovered: bool,
     pub hidden_items_discovered: bool,
     pub actions: Vec<PerformAction>,
+    pub events: Vec<GameEvent>,
 }
 
 pub async fn inspect_npc(
@@ -50,12 +50,14 @@ pub async fn inspect_npc(
         .await
         .unwrap();
 
+    let game_events: Vec<GameEvent> = events.iter().cloned().map(GameEvent::from).collect();
+
     let mut npc_inspected = NpcInspected {
         health_discovered: false,
-        name_discovered: false,
         packed_items_discovered: false,
         hidden_items_discovered: false,
         actions: game_actions(&game, &username),
+        events: game_events,
     };
 
     for event in events {
@@ -65,9 +67,6 @@ pub async fn inspect_npc(
             }
             Event::NpcHiddenDiscovered(_) => {
                 npc_inspected.hidden_items_discovered = true;
-            }
-            Event::NpcNameDiscovered(_) => {
-                npc_inspected.name_discovered = true;
             }
             Event::NpcPackedDiscovered(_) => {
                 npc_inspected.packed_items_discovered = true;
@@ -86,6 +85,7 @@ pub struct FixtureInspected {
     pub hidden_items_discovered: bool,
     pub contained_items_discovered: bool,
     pub actions: Vec<PerformAction>,
+    pub events: Vec<GameEvent>,
 }
 
 pub async fn inspect_fixture(
@@ -115,6 +115,7 @@ pub async fn inspect_fixture(
 
     super::repository::save(transaction, &username, &game.state).await?;
     crate::player_characters::repository::save(transaction, &username, &game.player).await?;
+    let game_events: Vec<GameEvent> = events.iter().cloned().map(GameEvent::from).collect();
 
     let mut fixture_inspected = FixtureInspected {
         actions: game_actions(&game, &username),
@@ -122,6 +123,7 @@ pub async fn inspect_fixture(
         has_hidden_discovered: false,
         hidden_items_discovered: false,
         contained_items_discovered: false,
+        events: game_events,
     };
 
     for event in events {

@@ -42,7 +42,7 @@ pub async fn save(
             update set game_state = $3
     "#;
     let serialized = serde_json::to_value(&game_state).unwrap();
-    let game_state_id = game_state.identifier.id.to_string();
+    let game_state_id = game_state.id.to_string();
 
     sqlx::query(query)
         .bind(&username)

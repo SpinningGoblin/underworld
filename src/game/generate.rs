@@ -34,7 +34,7 @@ pub async fn generate_game(
         None => return Err(Box::new(NoPlayerCharacterSetError)),
     };
 
-    let game_id = game_state.identifier.id.to_string();
+    let game_id = game_state.id.to_string();
     let game = Game {
         state: game_state,
         player,

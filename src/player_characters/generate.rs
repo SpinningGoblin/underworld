@@ -52,8 +52,8 @@ pub async fn generate_player_character(
     }
 
     GeneratedPlayerCharacter {
-        actions: player_character_actions(&username, &player_character.identifier.id.to_string()),
-        player_character_id: player_character.identifier.id.to_string(),
+        actions: player_character_actions(&username, &player_character.id.to_string()),
+        player_character_id: player_character.id.to_string(),
         set_as_current,
     }
 }

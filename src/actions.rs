@@ -63,7 +63,7 @@ pub fn player_character_actions(_username: &str, player_character_id: &str) -> V
 }
 
 pub fn game_actions(game: &Game, _username: &str) -> Vec<PerformAction> {
-    let game_id = game.state.identifier.id.to_string();
+    let game_id = game.state.id.to_string();
     game.current_actions()
         .into_iter()
         .filter_map(|action| match action {

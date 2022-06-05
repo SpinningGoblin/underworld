@@ -26,7 +26,6 @@ pub enum EventName {
     NpcHit,
     NpcKilled,
     NpcMissed,
-    NpcNameDiscovered,
     NpcPackedDiscovered,
     NpcViewed,
     NpcWeaponReadied,
@@ -112,10 +111,6 @@ impl From<Event> for GameEvent {
             },
             Event::NpcHiddenDiscovered(it) => GameEvent {
                 name: EventName::NpcHiddenDiscovered,
-                data: Some(serde_json::to_value(&it).unwrap()),
-            },
-            Event::NpcNameDiscovered(it) => GameEvent {
-                name: EventName::NpcNameDiscovered,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
             Event::NpcPackedDiscovered(it) => GameEvent {
