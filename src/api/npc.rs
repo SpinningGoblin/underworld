@@ -16,8 +16,6 @@ struct GenerateCharacter {
 #[derive(Serialize, Object, Deserialize)]
 struct GeneratedNpc {
     pub non_player: NonPlayerView,
-    pub inventory_description: String,
-    pub species_description: String,
 }
 
 #[derive(ApiResponse)]
@@ -49,8 +47,6 @@ impl UnderworldNpcApi {
         let view = non_player::view(&non_player, &character_args, true);
 
         let generated = GeneratedNpc {
-            inventory_description: view.character.describe_inventory(""),
-            species_description: view.character.describe_species(),
             non_player: view,
         };
 

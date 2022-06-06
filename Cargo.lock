@@ -1773,7 +1773,7 @@ checksum = "dcf81ac59edc17cc8697ff311e8f5ef2d99fcbd9817b34cec66f90b6c3dfd987"
 [[package]]
 name = "underworld_core"
 version = "0.5.0"
-source = "git+https://github.com/derrickp/underworld_core?rev=0c5bb58a8f0dece2bcbcce8e4aad54ede63ac7fb#0c5bb58a8f0dece2bcbcce8e4aad54ede63ac7fb"
+source = "git+https://github.com/derrickp/underworld_core?rev=ff01436d76c4df889249194a164a0734c73233c5#ff01436d76c4df889249194a164a0734c73233c5"
 dependencies = [
  "chrono",
  "poem-openapi",
