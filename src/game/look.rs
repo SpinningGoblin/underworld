@@ -1,11 +1,6 @@
-use std::error::Error;
-
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
-    actions::{
-        action::Action, look_at_fixture::LookAtFixture,
-        look_at_npc::LookAtNpc,
-    },
+    actions::{action::Action, look_at_fixture::LookAtFixture, look_at_npc::LookAtNpc},
     components::{
         fixtures::fixture::FixtureView, non_player::NonPlayerView, rooms::room_view::RoomView,
     },
@@ -13,16 +8,16 @@ use underworld_core::{
     game::Game,
 };
 
-use crate::error::{GameNotFoundError, GeneralError, NoPlayerCharacterSetError};
+use crate::error::GameError;
 
 pub async fn look_at_room(
     transaction: &mut Transaction<'_, Postgres>,
     username: &str,
     game_id: &str,
-) -> Result<RoomView, Box<dyn Error>> {
+) -> Result<RoomView, GameError> {
     let state = match super::repository::by_id(transaction, &username, &game_id).await? {
         Some(it) => it,
-        None => return Err(Box::new(GameNotFoundError)),
+        None => return Err(GameError::GameNotFoundError),
     };
 
     Ok(state.view_current_room())
@@ -33,13 +28,13 @@ pub async fn look_at_npc(
     username: &str,
     game_id: &str,
     args: &LookAtNpc,
-) -> Result<NonPlayerView, Box<dyn Error>> {
+) -> Result<NonPlayerView, GameError> {
     let state = match super::repository::by_id(transaction, &username, &game_id)
         .await
         .unwrap()
     {
         Some(it) => it,
-        None => return Err(Box::new(GameNotFoundError)),
+        None => return Err(GameError::GameNotFoundError),
     };
 
     let player = match crate::player_characters::repository::current(transaction, &username)
@@ -47,7 +42,7 @@ pub async fn look_at_npc(
         .unwrap()
     {
         Some(it) => it,
-        None => return Err(Box::new(NoPlayerCharacterSetError)),
+        None => return Err(GameError::NoPlayerCharacterSetError),
     };
 
     let mut game = Game { state, player };
@@ -59,7 +54,7 @@ pub async fn look_at_npc(
         _ => None,
     }) {
         Some(npc_viewed) => Ok(npc_viewed.npc_view.clone()),
-        None => Err(Box::new(GeneralError("look_at_npc_failed".to_string()))),
+        None => Err(GameError::GeneralError("look_at_npc_failed".to_string())),
     }
 }
 
@@ -68,13 +63,13 @@ pub async fn look_at_fixture(
     username: &str,
     game_id: &str,
     args: &LookAtFixture,
-) -> Result<FixtureView, Box<dyn Error>> {
+) -> Result<FixtureView, GameError> {
     let state = match super::repository::by_id(transaction, &username, &game_id)
         .await
         .unwrap()
     {
         Some(it) => it,
-        None => return Err(Box::new(GameNotFoundError)),
+        None => return Err(GameError::GameNotFoundError),
     };
 
     let player = match crate::player_characters::repository::current(transaction, &username)
@@ -82,7 +77,7 @@ pub async fn look_at_fixture(
         .unwrap()
     {
         Some(it) => it,
-        None => return Err(Box::new(NoPlayerCharacterSetError)),
+        None => return Err(GameError::NoPlayerCharacterSetError),
     };
 
     let mut game = Game { state, player };
@@ -94,6 +89,8 @@ pub async fn look_at_fixture(
         _ => None,
     }) {
         Some(fixture_viewed) => Ok(fixture_viewed.fixture_view.clone()),
-        None => Err(Box::new(GeneralError("look_at_fixture_failed".to_string()))),
+        None => Err(GameError::GeneralError(
+            "look_at_fixture_failed".to_string(),
+        )),
     }
 }

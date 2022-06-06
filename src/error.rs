@@ -1,71 +1,73 @@
-use std::{error::Error, fmt::Display};
-
 use poem::error::ResponseError;
+use underworld_core::errors::{
+    ExitNotFoundError, FixtureNotFoundError, InvalidIdError, ItemNotDirectlyUsableError,
+    ItemNotFoundError, NpcNotFoundError, PlayerIsDeadError, SpellNotFoundError,
+    TooManyWeaponsEquippedError,
+};
 
-#[derive(Debug)]
-pub struct GeneralError(pub String);
+#[derive(Debug, thiserror::Error, strum_macros::Display)]
+pub enum GameError {
+    ExitNotFoundError(ExitNotFoundError),
+    FixtureNotFoundError(FixtureNotFoundError),
+    InvalidIdError(InvalidIdError),
+    ItemNotDirectlyUsableError(ItemNotDirectlyUsableError),
+    ItemNotFoundError(ItemNotFoundError),
+    NpcNotFoundError(NpcNotFoundError),
+    PlayerIsDeadError(PlayerIsDeadError),
+    SpellNotFoundError(SpellNotFoundError),
+    TooManyWeaponsEquippedError(TooManyWeaponsEquippedError),
+    GeneralError(String),
+    NoPlayerCharacterSetError,
+    UnknownPlayerCharacterError,
+    GameNotFoundError,
+}
 
-impl Display for GeneralError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "GeneralError:{}", self.0)
+impl From<underworld_core::errors::Error> for GameError {
+    fn from(error: underworld_core::errors::Error) -> Self {
+        match error {
+            underworld_core::errors::Error::ExitNotFoundError(it) => {
+                GameError::ExitNotFoundError(it)
+            }
+            underworld_core::errors::Error::FixtureNotFoundError(it) => {
+                GameError::FixtureNotFoundError(it)
+            }
+            underworld_core::errors::Error::InvalidIdError(it) => GameError::InvalidIdError(it),
+            underworld_core::errors::Error::ItemNotDirectlyUsableError(it) => {
+                GameError::ItemNotDirectlyUsableError(it)
+            }
+            underworld_core::errors::Error::ItemNotFoundError(it) => {
+                GameError::ItemNotFoundError(it)
+            }
+            underworld_core::errors::Error::NpcNotFoundError(it) => GameError::NpcNotFoundError(it),
+            underworld_core::errors::Error::PlayerIsDeadError(it) => {
+                GameError::PlayerIsDeadError(it)
+            }
+            underworld_core::errors::Error::SpellNotFoundError(it) => {
+                GameError::SpellNotFoundError(it)
+            }
+            underworld_core::errors::Error::TooManyWeaponsEquippedError(it) => {
+                GameError::TooManyWeaponsEquippedError(it)
+            }
+        }
     }
 }
 
-impl Error for GeneralError {}
-
-impl ResponseError for GeneralError {
+impl ResponseError for GameError {
     fn status(&self) -> poem::http::StatusCode {
-        poem::http::StatusCode::BAD_REQUEST
-    }
-}
-
-#[derive(Debug)]
-pub struct NoPlayerCharacterSetError;
-
-impl Display for NoPlayerCharacterSetError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "NoPlayerCharacterSet")
-    }
-}
-
-impl Error for NoPlayerCharacterSetError {}
-
-impl ResponseError for NoPlayerCharacterSetError {
-    fn status(&self) -> poem::http::StatusCode {
-        poem::http::StatusCode::BAD_REQUEST
-    }
-}
-
-#[derive(Debug)]
-pub struct UnknownPlayerCharacterError;
-
-impl Display for UnknownPlayerCharacterError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "UnknownPlayerCharacter")
-    }
-}
-
-impl Error for UnknownPlayerCharacterError {}
-
-impl ResponseError for UnknownPlayerCharacterError {
-    fn status(&self) -> poem::http::StatusCode {
-        poem::http::StatusCode::NOT_FOUND
-    }
-}
-
-#[derive(Debug)]
-pub struct GameNotFoundError;
-
-impl Display for GameNotFoundError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "GameNotFound")
-    }
-}
-
-impl Error for GameNotFoundError {}
-
-impl ResponseError for GameNotFoundError {
-    fn status(&self) -> poem::http::StatusCode {
-        poem::http::StatusCode::NOT_FOUND
+        match self {
+            GameError::ExitNotFoundError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::FixtureNotFoundError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::InvalidIdError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::ItemNotDirectlyUsableError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::ItemNotFoundError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::NpcNotFoundError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::PlayerIsDeadError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::SpellNotFoundError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::TooManyWeaponsEquippedError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::GeneralError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::NoPlayerCharacterSetError => poem::http::StatusCode::BAD_REQUEST,
+            GameError::UnknownPlayerCharacterError => poem::http::StatusCode::NOT_FOUND,
+            GameError::GameNotFoundError => poem::http::StatusCode::NOT_FOUND,
+        }
     }
 }

@@ -1,5 +1,3 @@
-use std::error::Error;
-
 use poem_openapi::Object;
 use serde::Serialize;
 use sqlx::{Postgres, Transaction};
@@ -10,7 +8,7 @@ use underworld_core::{
 
 use crate::{
     actions::{game_actions, PerformAction},
-    error::{GameNotFoundError, NoPlayerCharacterSetError},
+    error::GameError,
     event::GameEvent,
 };
 
@@ -28,16 +26,16 @@ pub async fn attack_npc(
     username: &str,
     game_id: &str,
     args: &AttackNpc,
-) -> Result<NpcAttacked, Box<dyn Error>> {
+) -> Result<NpcAttacked, GameError> {
     let player_character =
         match crate::player_characters::repository::current(transaction, &username).await? {
             Some(it) => it,
-            None => return Err(Box::new(NoPlayerCharacterSetError)),
+            None => return Err(GameError::NoPlayerCharacterSetError),
         };
 
     let state = match super::repository::by_id(transaction, &username, &game_id).await? {
         Some(it) => it,
-        None => return Err(Box::new(GameNotFoundError)),
+        None => return Err(GameError::GameNotFoundError),
     };
 
     let mut game = Game {
@@ -45,9 +43,7 @@ pub async fn attack_npc(
         state,
     };
 
-    let events = game
-        .handle_action(&Action::AttackNpc(args.to_owned()))
-        .unwrap();
+    let events = game.handle_action(&Action::AttackNpc(args.to_owned()))?;
     super::repository::save(transaction, &username, &game.state).await?;
     crate::player_characters::repository::save(transaction, &username, &game.player).await?;
 

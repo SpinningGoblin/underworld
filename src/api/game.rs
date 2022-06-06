@@ -37,7 +37,7 @@ impl UnderworldGameApi {
         #[oai(name = "underworld-username")] username: Header<String>,
     ) -> Result<GenerateGameResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let generated_result = generate_game(&mut transaction, &username).await.unwrap();
+        let generated_result = generate_game(&mut transaction, &username).await?;
         transaction.commit().await.unwrap();
 
         Ok(GenerateGameResponse::GameGenerated(Json(generated_result)))

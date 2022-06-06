@@ -1,14 +1,14 @@
-use std::error::Error;
-
 use serde_json::Value;
 use sqlx::{postgres::PgRow, Postgres, Row, Transaction};
 use underworld_core::components::games::game_state::GameState;
+
+use crate::error::GameError;
 
 pub async fn by_id(
     transaction: &mut Transaction<'_, Postgres>,
     username: &str,
     game_state_id: &str,
-) -> Result<Option<GameState>, Box<dyn Error>> {
+) -> Result<Option<GameState>, GameError> {
     let query = r#"
         select game_state from game_states
         where username = $1 and game_state_id = $2
@@ -18,7 +18,8 @@ pub async fn by_id(
         .bind(&username)
         .bind(&game_state_id)
         .fetch_optional(transaction)
-        .await?;
+        .await
+        .unwrap();
 
     match row {
         Some(value) => {
@@ -33,7 +34,7 @@ pub async fn save(
     transaction: &mut Transaction<'_, Postgres>,
     username: &str,
     game_state: &GameState,
-) -> Result<(), Box<dyn Error>> {
+) -> Result<(), GameError> {
     let query = r#"
         insert into game_states (username, game_state_id, game_state)
         values ($1, $2, $3)
@@ -49,7 +50,8 @@ pub async fn save(
         .bind(&game_state_id)
         .bind(&serialized)
         .execute(transaction)
-        .await?;
+        .await
+        .unwrap();
 
     Ok(())
 }
@@ -57,13 +59,14 @@ pub async fn save(
 pub async fn ids(
     transaction: &mut Transaction<'_, Postgres>,
     username: &str,
-) -> Result<Vec<String>, Box<dyn Error>> {
+) -> Result<Vec<String>, GameError> {
     let rows: Vec<String> =
         sqlx::query("select game_state_id from game_states where username = $1")
             .bind(&username)
             .map(|row: PgRow| row.try_get("game_state_id").unwrap())
             .fetch_all(transaction)
-            .await?;
+            .await
+            .unwrap();
 
     Ok(rows)
 }

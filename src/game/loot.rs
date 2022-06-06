@@ -1,5 +1,3 @@
-use std::error::Error;
-
 use poem_openapi::Object;
 use serde::Serialize;
 use sqlx::{Postgres, Transaction};
@@ -10,7 +8,7 @@ use underworld_core::{
 
 use crate::{
     actions::{game_actions, PerformAction},
-    error::{GameNotFoundError, NoPlayerCharacterSetError},
+    error::GameError,
     event::GameEvent,
 };
 
@@ -25,16 +23,16 @@ pub async fn loot_npc(
     username: &str,
     game_id: &str,
     args: &LootNpc,
-) -> Result<NpcLooted, Box<dyn Error>> {
+) -> Result<NpcLooted, GameError> {
     let player = match crate::player_characters::repository::current(transaction, &username).await?
     {
         Some(it) => it,
-        None => return Err(Box::new(NoPlayerCharacterSetError)),
+        None => return Err(GameError::NoPlayerCharacterSetError),
     };
 
     let state = match super::repository::by_id(transaction, &username, &game_id).await? {
         Some(it) => it,
-        None => return Err(Box::new(GameNotFoundError)),
+        None => return Err(GameError::GameNotFoundError),
     };
 
     let mut game = Game { state, player };
@@ -63,16 +61,16 @@ pub async fn loot_fixture(
     username: &str,
     game_id: &str,
     args: &LootFixture,
-) -> Result<FixtureLooted, Box<dyn Error>> {
+) -> Result<FixtureLooted, GameError> {
     let player = match crate::player_characters::repository::current(transaction, &username).await?
     {
         Some(it) => it,
-        None => return Err(Box::new(NoPlayerCharacterSetError)),
+        None => return Err(GameError::NoPlayerCharacterSetError),
     };
 
     let state = match super::repository::by_id(transaction, &username, &game_id).await? {
         Some(it) => it,
-        None => return Err(Box::new(GameNotFoundError)),
+        None => return Err(GameError::GameNotFoundError),
     };
 
     let mut game = Game { state, player };

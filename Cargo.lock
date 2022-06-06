@@ -1773,7 +1773,6 @@ checksum = "dcf81ac59edc17cc8697ff311e8f5ef2d99fcbd9817b34cec66f90b6c3dfd987"
 [[package]]
 name = "underworld_core"
 version = "0.5.0"
-source = "git+https://github.com/derrickp/underworld_core?rev=ad3ca039bb6b9cd57144b75abc9aa065da03bf4a#ad3ca039bb6b9cd57144b75abc9aa065da03bf4a"
 dependencies = [
  "chrono",
  "poem-openapi",
@@ -1781,6 +1780,7 @@ dependencies = [
  "serde",
  "strum",
  "strum_macros",
+ "thiserror",
  "uuid",
 ]
 
@@ -1794,6 +1794,9 @@ dependencies = [
  "serde",
  "serde_json",
  "sqlx",
+ "strum",
+ "strum_macros",
+ "thiserror",
  "tokio",
  "underworld_core",
 ]

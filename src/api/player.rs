@@ -111,9 +111,8 @@ impl UnderworldPlayerApi {
         #[oai(name = "underworld-username")] username: Header<String>,
     ) -> Result<PlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let player_character_result = get_current_player_character(&mut transaction, &username)
-            .await
-            .unwrap();
+        let player_character_result =
+            get_current_player_character(&mut transaction, &username).await?;
         transaction.commit().await.unwrap();
         Ok(PlayerCharacterResponse::PlayerCharacter(Json(
             player::check(player_character_result),
@@ -133,9 +132,7 @@ impl UnderworldPlayerApi {
         id: Path<String>,
     ) -> Result<SetCurrentPlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        set_current_player_character(&mut transaction, &username, &id)
-            .await
-            .unwrap();
+        set_current_player_character(&mut transaction, &username, &id).await?;
         transaction.commit().await.unwrap();
         Ok(SetCurrentPlayerCharacterResponse::PlayerCharacterSet(
             PlainText("Good to go".to_string()),

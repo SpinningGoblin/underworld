@@ -23,8 +23,6 @@ pub enum EventName {
     ItemTakenFromNpc,
     NpcHealthDiscovered,
     NpcHiddenDiscovered,
-    NpcHit,
-    NpcKilled,
     NpcMissed,
     NpcPackedDiscovered,
     NpcViewed,
@@ -34,10 +32,12 @@ pub enum EventName {
     PlayerGainsShieldAura,
     PlayerHealed,
     PlayerHit,
+    PlayerHitNpc,
     PlayerItemMoved,
     PlayerItemRemoved,
     PlayerItemUsed,
     PlayerKilled,
+    PlayerKilledNpc,
     PlayerMissed,
     PlayerResurrected,
     PlayerRetributionAuraDissipated,
@@ -52,12 +52,12 @@ pub enum EventName {
 impl From<Event> for GameEvent {
     fn from(event: Event) -> Self {
         match event {
-            Event::NpcHit(it) => GameEvent {
-                name: EventName::NpcHit,
+            Event::PlayerHitNpc(it) => GameEvent {
+                name: EventName::PlayerHitNpc,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
-            Event::NpcKilled(it) => GameEvent {
-                name: EventName::NpcKilled,
+            Event::PlayerKilledNpc(it) => GameEvent {
+                name: EventName::PlayerKilledNpc,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
             Event::NpcMissed(it) => GameEvent {
