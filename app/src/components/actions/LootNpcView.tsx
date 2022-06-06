@@ -8,11 +8,9 @@ export interface LootNpcViewProps {
   args: LootNpc;
 }
 
-export const LootNpcView: FunctionComponent<LootNpcViewProps> = ({
-  args,
-}) => {
+export const LootNpcView: FunctionComponent<LootNpcViewProps> = ({ args }) => {
   const onClick = () => {
-    performLootNpc(args).catch((e) => console.error(e));
+    performLootNpc(args);
   };
 
   return (

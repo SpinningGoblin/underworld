@@ -12,7 +12,7 @@ export const CastSpellOnPlayerView: FunctionComponent<
   CastSpellOnPlayerViewProps
 > = ({ args }) => {
   const onClick = () => {
-    performCastSpellOnPlayer(args).catch((e) => console.error(e));
+    performCastSpellOnPlayer(args);
   };
 
   return (

@@ -12,7 +12,7 @@ export const AttackNpcView: FunctionComponent<AttackNpcViewProps> = ({
   args,
 }) => {
   const onClick = () => {
-    performAttackNpc(args).catch((e) => console.error(e));
+    performAttackNpc(args);
   };
 
   return (

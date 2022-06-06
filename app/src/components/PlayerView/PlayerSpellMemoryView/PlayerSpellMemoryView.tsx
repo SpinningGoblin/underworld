@@ -37,7 +37,9 @@ export const PlayerSpellMemoryView: FunctionComponent<
 > = ({ spellMemory, actions }) => (
   <div className={styles["spell-memory"]}>
     <div className={styles.title}>Spell Memory</div>
-    {(spellMemory.spells || []).length === 0 && <span>No spells in memory</span>}
+    {(spellMemory.spells || []).length === 0 && (
+      <span>No spells in memory</span>
+    )}
     <div className={styles["spell-list"]}>
       {(spellMemory.spells || []).map((learnedSpell) => {
         const action = actions.find(

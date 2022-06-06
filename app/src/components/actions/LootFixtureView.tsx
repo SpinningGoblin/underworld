@@ -12,7 +12,7 @@ export const LootFixtureView: FunctionComponent<LootFixtureViewProps> = ({
   args,
 }) => {
   const onClick = () => {
-    performLootFixture(args).catch((e) => console.error(e));
+    performLootFixture(args);
   };
 
   return (

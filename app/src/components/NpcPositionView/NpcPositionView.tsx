@@ -107,6 +107,20 @@ export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
       (action.args as LootNpc).npc_id === npcPosition.npc.id,
   );
 
+  const renderInventory = () => {
+    if (!npcPosition.npc.character.inventory) {
+      return <></>;
+    }
+
+    return (
+      <NpcInventoryView
+        inventory={npcPosition.npc.character.inventory}
+        canLoot={hasLootActions}
+        npcId={npcPosition.npc.id}
+      />
+    );
+  };
+
   return (
     <div className={styles["npc-position"]}>
       <div>
@@ -127,14 +141,9 @@ export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
         <AttackNpcView args={attackArgs} />
       </div>
       <div className={styles.inventory}>
-        {!npcPosition.npc.character.inventory_known && "You do not know their inventory."}
-        {npcPosition.npc.character.inventory_known && npcPosition.npc.character.inventory && (
-          <NpcInventoryView
-            inventory={npcPosition.npc.character.inventory}
-            canLoot={hasLootActions}
-            npcId={npcPosition.npc.id}
-          />
-        )}
+        {!npcPosition.npc.character.inventory_known &&
+          "You do not know their inventory."}
+        {npcPosition.npc.character.inventory_known && renderInventory()}
       </div>
     </div>
   );

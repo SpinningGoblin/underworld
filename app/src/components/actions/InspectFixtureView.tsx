@@ -12,7 +12,7 @@ export const InspectFixtureView: FunctionComponent<InspectFixtureViewProps> = ({
   args,
 }) => {
   const onClick = () => {
-    performInspectFixture(args).catch((e) => console.error(e));
+    performInspectFixture(args);
   };
 
   return (

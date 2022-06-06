@@ -15,7 +15,9 @@ import {
   getCurrentActions,
   getCurrentRoom,
   listenActionPerformed,
+  listenError,
   removeActionPerformedListener,
+  removeErrorListener,
 } from "./api/actions";
 import { generatePlayer, getCurrentPlayer } from "./api/player";
 import { GameEventView } from "./components/GameEventView";
@@ -67,6 +69,18 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
+    const callback = (error: string) => {
+      console.error(error);
+      if (error === "PlayerIsDeadError") {
+        alert("You can't do that with a dead character.");
+      }
+    };
+    listenError(callback);
+
+    return () => removeErrorListener(callback);
+  }, []);
+
+  useEffect(() => {
     const callback = (actionPerformed: ActionPerformed) => {
       if (actionPerformed.room) {
         setRoom(actionPerformed.room);
@@ -76,10 +90,7 @@ export const App = () => {
       }
       setActions(actionPerformed.actions);
 
-      setEvents((existing) => [
-        ...actionPerformed.events,
-        ...existing,
-      ]);
+      setEvents((existing) => [...actionPerformed.events, ...existing]);
 
       for (const event of actionPerformed.events) {
         if (event.name === "player_killed") {
@@ -90,7 +101,7 @@ export const App = () => {
     listenActionPerformed(callback);
 
     return () => removeActionPerformedListener(callback);
-  });
+  }, []);
 
   useEffect(() => {
     if (user) {

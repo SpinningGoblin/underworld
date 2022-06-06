@@ -12,7 +12,7 @@ export const ExitRoomView: FunctionComponent<ExitRoomViewProps> = ({
   args,
 }) => {
   const onClick = () => {
-    performExitRoom(args).catch((e) => console.error(e));
+    performExitRoom(args);
   };
 
   return (
