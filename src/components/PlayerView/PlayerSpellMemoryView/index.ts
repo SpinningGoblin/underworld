@@ -1,1 +1,4 @@
-export { PlayerSpellMemoryView, type PlayerSpellMemoryViewProps } from "./PlayerSpellMemoryView";
+export {
+  PlayerSpellMemoryView,
+  type PlayerSpellMemoryViewProps,
+} from "./PlayerSpellMemoryView";

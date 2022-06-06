@@ -37,11 +37,7 @@ const ItemView: FunctionComponent<ItemViewProps> = ({
         itemTypeText(item.item_type),
       ].join(" ")}
     </div>
-    {canLoot && (
-      <LootNpcView
-        args={{ npc_id: npcId, item_ids: [item.id] }}
-      />
-    )}
+    {canLoot && <LootNpcView args={{ npc_id: npcId, item_ids: [item.id] }} />}
   </div>
 );
 
@@ -62,12 +58,22 @@ export const NpcInventoryView: FunctionComponent<NpcInventoryViewProps> = ({
       <div className={styles["equipped-text"]}>Equipped Items</div>
       {equippedItems.length === 0 && "They have nothing equipped"}
       {equippedItems.map((characterItem, index) => (
-        <ItemView key={index} item={characterItem.item} npcId={npcId} canLoot={canLoot} />
+        <ItemView
+          key={index}
+          item={characterItem.item}
+          npcId={npcId}
+          canLoot={canLoot}
+        />
       ))}
       <div className={styles["equipped-text"]}>Unequipped Items</div>
       {unequippedItems.length === 0 && "They have nothing packed away"}
       {unequippedItems.map((characterItem, index) => (
-        <ItemView key={index} item={characterItem.item} npcId={npcId} canLoot={canLoot} />
+        <ItemView
+          key={index}
+          item={characterItem.item}
+          npcId={npcId}
+          canLoot={canLoot}
+        />
       ))}
     </div>
   );

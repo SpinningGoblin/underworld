@@ -4,4 +4,7 @@ export {
   type CastSpellOnPlayerViewProps,
 } from "./CastSpellOnPlayerView";
 export { ExitRoomView, type ExitRoomViewProps } from "./ExitRoomView";
-export { MovePlayerItemView, type MovePlayerItemViewProps } from "./MovePlayerItemView";
+export {
+  MovePlayerItemView,
+  type MovePlayerItemViewProps,
+} from "./MovePlayerItemView";

@@ -114,7 +114,9 @@ export const FixturePositionView: FunctionComponent<
       <div className={styles.items}>
         {!fixturePosition.fixture.knows_contained_items &&
           "You do not know what items it holds."}
-        {fixturePosition.fixture.knows_contained_items && items.length === 0 && "It holds no items"}
+        {fixturePosition.fixture.knows_contained_items &&
+          items.length === 0 &&
+          "It holds no items"}
         {fixturePosition.fixture.knows_contained_items &&
           items.length > 0 &&
           items.map((item, index) => (

@@ -28,8 +28,6 @@ export const EventName = {
     ItemTakenFromNpc: 'item_taken_from_npc',
     NpcHealthDiscovered: 'npc_health_discovered',
     NpcHiddenDiscovered: 'npc_hidden_discovered',
-    NpcHit: 'npc_hit',
-    NpcKilled: 'npc_killed',
     NpcMissed: 'npc_missed',
     NpcPackedDiscovered: 'npc_packed_discovered',
     NpcViewed: 'npc_viewed',
@@ -39,10 +37,12 @@ export const EventName = {
     PlayerGainsShieldAura: 'player_gains_shield_aura',
     PlayerHealed: 'player_healed',
     PlayerHit: 'player_hit',
+    PlayerHitNpc: 'player_hit_npc',
     PlayerItemMoved: 'player_item_moved',
     PlayerItemRemoved: 'player_item_removed',
     PlayerItemUsed: 'player_item_used',
     PlayerKilled: 'player_killed',
+    PlayerKilledNpc: 'player_killed_npc',
     PlayerMissed: 'player_missed',
     PlayerResurrected: 'player_resurrected',
     PlayerRetributionAuraDissipated: 'player_retribution_aura_dissipated',
@@ -51,8 +51,7 @@ export const EventName = {
     PlayerSpellUsed: 'player_spell_used',
     RoomExited: 'room_exited',
     RoomFirstSeen: 'room_first_seen',
-    RoomGenerated: 'room_generated',
-    RoomViewed: 'room_viewed'
+    RoomGenerated: 'room_generated'
 } as const;
 export type EventName = typeof EventName[keyof typeof EventName];
 

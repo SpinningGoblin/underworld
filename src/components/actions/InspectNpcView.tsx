@@ -12,7 +12,7 @@ export const InspectNpcView: FunctionComponent<InspectNpcViewProps> = ({
   args,
 }) => {
   const onClick = () => {
-    performInspectNpc(args).catch((e) => console.error(e));
+    performInspectNpc(args);
   };
 
   return (

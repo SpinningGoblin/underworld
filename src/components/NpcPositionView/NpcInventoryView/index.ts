@@ -1,1 +1,4 @@
-export { NpcInventoryView, type NpcInventoryViewProps } from "./NpcInventoryView";
+export {
+  NpcInventoryView,
+  type NpcInventoryViewProps,
+} from "./NpcInventoryView";

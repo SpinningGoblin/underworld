@@ -19,7 +19,7 @@ export const MovePlayerItemView: FunctionComponent<MovePlayerItemViewProps> = ({
   args,
 }) => {
   const onClick = () => {
-    performMovePlayerItem(args).catch((e) => console.error(e));
+    performMovePlayerItem(args);
   };
 
   return (

@@ -12,6 +12,7 @@ import {
   MovePlayerItem,
   PerformAction,
   PlayerCharacter,
+  ResponseError,
   Room,
   UseItemOnPlayer,
 } from "../generated-api";
@@ -65,9 +66,33 @@ export const removeActionPerformedListener = (
   }
 };
 
+export type ErrorCallback = (error: string) => void;
+
+const errorListeners: Array<ErrorCallback> = [];
+
+export const listenError = (callback: ErrorCallback) => {
+  if (!errorListeners.includes(callback)) {
+    errorListeners.push(callback);
+  }
+};
+
+export const removeErrorListener = (callback: ErrorCallback) => {
+  const index = errorListeners.indexOf(callback);
+
+  if (index >= 0) {
+    errorListeners.splice(index, 1);
+  }
+};
+
 const notifyListeners = (actionPerformed: ActionPerformed) => {
   for (const listener of listeners) {
     listener(actionPerformed);
+  }
+};
+
+const notifyError = (error: string) => {
+  for (const listener of errorListeners) {
+    listener(error);
   }
 };
 
@@ -87,253 +112,368 @@ export const getCurrentActions = async (): Promise<Array<PerformAction>> => {
 };
 
 export const performExitRoom = async (args: ExitRoom): Promise<void> => {
-  const { username, gameId } = getBasicParams();
-  const api = getGameActionsApi();
-  const { actions, events } = await api.exitRoom({
-    underworldUsername: username,
-    gameId,
-    exitRoom: args,
-  });
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
+    const { actions, events } = await api.exitRoom({
+      underworldUsername: username,
+      gameId,
+      exitRoom: args,
+    });
 
-  const room = await getCurrentRoom();
+    const room = await getCurrentRoom();
 
-  const actionPerformed: ActionPerformed = {
-    actions,
-    events,
-    room,
-  };
+    const actionPerformed: ActionPerformed = {
+      actions,
+      events,
+      room,
+    };
 
-  notifyListeners(actionPerformed);
+    notifyListeners(actionPerformed);
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
 };
 
 export const performAttackNpc = async (args: AttackNpc): Promise<void> => {
-  const { username, gameId } = getBasicParams();
-  const api = getGameActionsApi();
-  const { actions, events } = await api.attackNpc({
-    underworldUsername: username,
-    gameId,
-    attackNpc: args,
-  });
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
+    const { actions, events } = await api.attackNpc({
+      underworldUsername: username,
+      gameId,
+      attackNpc: args,
+    });
 
-  const playerApi = getPlayerApi();
-  const [room, player] = await Promise.all([
-    getCurrentRoom(),
-    playerApi.getCurrentPc({ underworldUsername: username }),
-  ]);
+    const playerApi = getPlayerApi();
+    const [room, player] = await Promise.all([
+      getCurrentRoom(),
+      playerApi.getCurrentPc({ underworldUsername: username }),
+    ]);
 
-  notifyListeners({
-    actions,
-    events,
-    player,
-    room,
-  });
+    notifyListeners({
+      actions,
+      events,
+      player,
+      room,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
 };
 
 export const performCastSpellOnPlayer = async (
   args: CastSpellOnPlayer,
 ): Promise<void> => {
-  const { username, gameId } = getBasicParams();
-  const api = getGameActionsApi();
-  const { actions, events } = await api.castSpellOnPlayer({
-    underworldUsername: username,
-    gameId,
-    castSpellOnPlayer: args,
-  });
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
+    const { actions, events } = await api.castSpellOnPlayer({
+      underworldUsername: username,
+      gameId,
+      castSpellOnPlayer: args,
+    });
 
-  const playerApi = getPlayerApi();
-  const player = await playerApi.getCurrentPc({ underworldUsername: username });
+    const playerApi = getPlayerApi();
+    const player = await playerApi.getCurrentPc({
+      underworldUsername: username,
+    });
 
-  notifyListeners({
-    actions,
-    events,
-    player,
-  });
+    notifyListeners({
+      actions,
+      events,
+      player,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
 };
 
 export const performUseItemOnPlayer = async (
   args: UseItemOnPlayer,
 ): Promise<void> => {
-  const { username, gameId } = getBasicParams();
-  const api = getGameActionsApi();
-  const { actions, events } = await api.useItemOnPlayer({
-    underworldUsername: username,
-    gameId,
-    useItemOnPlayer: args,
-  });
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
+    const { actions, events } = await api.useItemOnPlayer({
+      underworldUsername: username,
+      gameId,
+      useItemOnPlayer: args,
+    });
 
-  const playerApi = getPlayerApi();
-  const player = await playerApi.getCurrentPc({ underworldUsername: username });
+    const playerApi = getPlayerApi();
+    const player = await playerApi.getCurrentPc({
+      underworldUsername: username,
+    });
 
-  notifyListeners({
-    actions,
-    events,
-    player,
-  });
+    notifyListeners({
+      actions,
+      events,
+      player,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
 };
 
 export const performInspectFixture = async (
   args: InspectFixture,
 ): Promise<void> => {
-  const { username, gameId } = getBasicParams();
-  const api = getGameActionsApi();
-  const response = await api.inspectFixture({
-    underworldUsername: username,
-    gameId,
-    inspectFixture: args,
-  });
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
+    const response = await api.inspectFixture({
+      underworldUsername: username,
+      gameId,
+      inspectFixture: args,
+    });
 
-  const room = await getCurrentRoom();
+    const room = await getCurrentRoom();
 
-  notifyListeners({
-    actions: response.actions,
-    events: response.events,
-    room,
-  });
+    notifyListeners({
+      actions: response.actions,
+      events: response.events,
+      room,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
 };
 
 export const performMovePlayerItem = async (
   args: MovePlayerItem,
 ): Promise<void> => {
-  const { username, gameId } = getBasicParams();
-  const api = getGameActionsApi();
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
 
-  const { actions, events } = await api.movePlayerItem({
-    underworldUsername: username,
-    gameId,
-    movePlayerItem: args,
-  });
+    const { actions, events } = await api.movePlayerItem({
+      underworldUsername: username,
+      gameId,
+      movePlayerItem: args,
+    });
 
-  const playerApi = getPlayerApi();
-  const [room, player] = await Promise.all([
-    getCurrentRoom(),
-    playerApi.getCurrentPc({ underworldUsername: username }),
-  ]);
+    const playerApi = getPlayerApi();
+    const [room, player] = await Promise.all([
+      getCurrentRoom(),
+      playerApi.getCurrentPc({ underworldUsername: username }),
+    ]);
 
-  notifyListeners({
-    actions,
-    events,
-    room,
-    player,
-  });
+    notifyListeners({
+      actions,
+      events,
+      room,
+      player,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      console.log("getting response");
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
 };
 
 export const performInspectNpc = async (args: InspectNpc): Promise<void> => {
-  const { username, gameId } = getBasicParams();
-  const api = getGameActionsApi();
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
 
-  const response = await api.inspectNpc({
-    underworldUsername: username,
-    gameId,
-    inspectNpc: args,
-  });
+    const response = await api.inspectNpc({
+      underworldUsername: username,
+      gameId,
+      inspectNpc: args,
+    });
 
-  const playerApi = getPlayerApi();
-  const [room, player] = await Promise.all([
-    getCurrentRoom(),
-    playerApi.getCurrentPc({ underworldUsername: username }),
-  ]);
+    const playerApi = getPlayerApi();
+    const [room, player] = await Promise.all([
+      getCurrentRoom(),
+      playerApi.getCurrentPc({ underworldUsername: username }),
+    ]);
 
-  notifyListeners({
-    actions: response.actions,
-    events: response.events,
-    room,
-    player,
-  });
+    notifyListeners({
+      actions: response.actions,
+      events: response.events,
+      room,
+      player,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
 };
 
 export const performLootNpc = async (args: LootNpc): Promise<void> => {
-  const { username, gameId } = getBasicParams();
-  const api = getGameActionsApi();
-  const { actions, events } = await api.lootNpc({
-    underworldUsername: username,
-    gameId,
-    lootNpc: args,
-  });
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
+    const { actions, events } = await api.lootNpc({
+      underworldUsername: username,
+      gameId,
+      lootNpc: args,
+    });
 
-  const playerApi = getPlayerApi();
+    const playerApi = getPlayerApi();
 
-  const [room, player] = await Promise.all([
-    getCurrentRoom(),
-    playerApi.getCurrentPc({ underworldUsername: username }),
-  ]);
+    const [room, player] = await Promise.all([
+      getCurrentRoom(),
+      playerApi.getCurrentPc({ underworldUsername: username }),
+    ]);
 
-  notifyListeners({
-    actions,
-    events,
-    player,
-    room,
-  });
+    notifyListeners({
+      actions,
+      events,
+      player,
+      room,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
 };
 
 export const performLootFixture = async (args: LootFixture): Promise<void> => {
-  const { username, gameId } = getBasicParams();
-  const api = getGameActionsApi();
-  const { actions, events } = await api.lootFixture({
-    underworldUsername: username,
-    gameId,
-    lootFixture: args,
-  });
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
+    const { actions, events } = await api.lootFixture({
+      underworldUsername: username,
+      gameId,
+      lootFixture: args,
+    });
 
-  const playerApi = getPlayerApi();
-  const [room, player] = await Promise.all([
-    getCurrentRoom(),
-    playerApi.getCurrentPc({ underworldUsername: username }),
-  ]);
+    const playerApi = getPlayerApi();
+    const [room, player] = await Promise.all([
+      getCurrentRoom(),
+      playerApi.getCurrentPc({ underworldUsername: username }),
+    ]);
 
-  notifyListeners({
-    actions,
-    events,
-    player,
-    room,
-  });
+    notifyListeners({
+      actions,
+      events,
+      player,
+      room,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
 };
 
 export const performLookAtNpc = async (args: LookAtNpc): Promise<void> => {
-  const { username, gameId } = getBasicParams();
-  const api = getGameActionsApi();
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
 
-  const response = await api.lookAtNpc({
-    underworldUsername: username,
-    gameId,
-    lookAtNpc: args,
-  });
+    const response = await api.lookAtNpc({
+      underworldUsername: username,
+      gameId,
+      lookAtNpc: args,
+    });
 
-  const actions = await getCurrentActions();
-  const events: Array<GameEvent> = [
-    {
-      name: "npc_viewed",
-      data: response,
-    },
-  ];
+    const actions = await getCurrentActions();
+    const events: Array<GameEvent> = [
+      {
+        name: "npc_viewed",
+        data: response,
+      },
+    ];
 
-  notifyListeners({
-    actions,
-    events,
-  });
+    notifyListeners({
+      actions,
+      events,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
 };
 
 export const performLookAtFixture = async (
   args: LookAtFixture,
 ): Promise<void> => {
-  const { username, gameId } = getBasicParams();
-  const api = getGameActionsApi();
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
 
-  const response = await api.lookAtFixture({
-    underworldUsername: username,
-    gameId,
-    lookAtFixture: args,
-  });
+    const response = await api.lookAtFixture({
+      underworldUsername: username,
+      gameId,
+      lookAtFixture: args,
+    });
 
-  const actions = await getCurrentActions();
-  const events: Array<GameEvent> = [
-    {
-      name: "fixture_viewed",
-      data: response,
-    },
-  ];
+    const actions = await getCurrentActions();
+    const events: Array<GameEvent> = [
+      {
+        name: "fixture_viewed",
+        data: response,
+      },
+    ];
 
-  notifyListeners({
-    actions,
-    events,
-  });
+    notifyListeners({
+      actions,
+      events,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
 };

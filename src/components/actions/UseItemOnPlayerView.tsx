@@ -12,7 +12,7 @@ export const UseItemOnPlayerView: FunctionComponent<
   UseItemOnPlayerViewProps
 > = ({ args }) => {
   const onClick = () => {
-    performUseItemOnPlayer(args).catch((e) => console.error(e));
+    performUseItemOnPlayer(args);
   };
 
   return (

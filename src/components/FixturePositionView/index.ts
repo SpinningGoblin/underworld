@@ -1,1 +1,4 @@
-export { FixturePositionView, type FixturePositionViewProps } from "./FixturePositionView";
+export {
+  FixturePositionView,
+  type FixturePositionViewProps,
+} from "./FixturePositionView";
