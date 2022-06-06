@@ -77,7 +77,7 @@ export const App = () => {
       setActions(actionPerformed.actions);
 
       setEvents((existing) => [
-        ...actionPerformed.events.reverse(),
+        ...actionPerformed.events,
         ...existing,
       ]);
 
@@ -85,7 +85,6 @@ export const App = () => {
         if (event.name === "player_killed") {
           alert("You Died!");
         }
-        console.log(event);
       }
     };
     listenActionPerformed(callback);
@@ -119,8 +118,6 @@ export const App = () => {
   }, [gameId]);
 
   const options = [<option key="empty" value=""></option>];
-
-  console.log(events);
 
   gameIds
     .sort((a, b) => a.localeCompare(b))

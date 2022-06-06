@@ -17,6 +17,12 @@
   gap: 6px;
 }
 
+.item-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .item-name {
   font-style: normal;
 }

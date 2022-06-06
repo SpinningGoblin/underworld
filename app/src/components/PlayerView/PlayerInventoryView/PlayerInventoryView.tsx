@@ -99,9 +99,7 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
       )}
       {useActions.length > 0 && characterItem.item.consumable && (
         <div className={styles.equip}>
-          <span>
-            {effectText(characterItem.item.consumable)}
-          </span>
+          <span>{effectText(characterItem.item.consumable)}</span>
           {useActions.map((action, index) => (
             <UseItemOnPlayerView key={index} args={action.args} />
           ))}
@@ -134,24 +132,49 @@ const actionForItem = (
 
 export const PlayerInventoryView: FunctionComponent<
   PlayerInventoryViewProps
-> = ({ inventory, actions }) => (
-  <div className={styles.inventory}>
-    <span className={styles.title}>Inventory</span>
-    <div className={styles.equipment}>
-      {inventory.equipment.length > 0 &&
-        inventory.equipment.map((characterItem) => {
-          const itemActions = actions.filter((action) =>
-            actionForItem(action, characterItem),
-          );
+> = ({ inventory, actions }) => {
+  const equippedItems = inventory.equipment.filter((c) => c.at_the_ready);
+  const unequippedItems = inventory.equipment.filter((c) => !c.at_the_ready);
 
-          return (
-            <CharacterItemView
-              key={characterItem.item.id}
-              itemActions={itemActions}
-              characterItem={characterItem}
-            />
-          );
-        })}
+  return (
+    <div className={styles.inventory}>
+      <span className={styles.title}>Inventory</span>
+      <div className={styles.equipment}>
+        <div className={styles["item-group"]}>
+          <span>Equipped Items</span>
+          {equippedItems.length > 0 &&
+            equippedItems.map((characterItem) => {
+              const itemActions = actions.filter((action) =>
+                actionForItem(action, characterItem),
+              );
+
+              return (
+                <CharacterItemView
+                  key={characterItem.item.id}
+                  itemActions={itemActions}
+                  characterItem={characterItem}
+                />
+              );
+            })}
+        </div>
+        <div className={styles["item-group"]}>
+          <span>Unequipped Items</span>
+          {unequippedItems.length > 0 &&
+            unequippedItems.map((characterItem) => {
+              const itemActions = actions.filter((action) =>
+                actionForItem(action, characterItem),
+              );
+
+              return (
+                <CharacterItemView
+                  key={characterItem.item.id}
+                  itemActions={itemActions}
+                  characterItem={characterItem}
+                />
+              );
+            })}
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};

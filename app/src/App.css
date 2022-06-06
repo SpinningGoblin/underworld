@@ -3,6 +3,7 @@
   min-height: 100vh;
   height: 100vh;
   background-color: #282c34;
+  width: 100vw;
 }
 
 button {
@@ -29,9 +30,9 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(10px + 3vmin);
   color: white;
-  padding: 20px;
+  padding: 5px;
 }
 
 .game-ids {
@@ -45,7 +46,6 @@ button {
 }
 
 .game-id-select {
-  max-width: 35%;
   padding: 2px;
 }
 
@@ -63,6 +63,7 @@ button {
 .basics {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 12px;
   align-items: center;
@@ -120,7 +121,6 @@ button {
   padding: 16px;
   border: 1px solid gray;
   background-color: floralwhite;
-  max-width: 400px;
 }
 
 .npc-list {
@@ -138,7 +138,6 @@ button {
   padding: 16px;
   border: 1px solid gray;
   background-color: floralwhite;
-  max-width: 400px;
 }
 
 .fixture-list {

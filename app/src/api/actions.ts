@@ -203,9 +203,17 @@ export const performMovePlayerItem = async (
     movePlayerItem: args,
   });
 
+  const playerApi = getPlayerApi();
+  const [room, player] = await Promise.all([
+    getCurrentRoom(),
+    playerApi.getCurrentPc({ underworldUsername: username }),
+  ]);
+
   notifyListeners({
     actions,
     events,
+    room,
+    player,
   });
 };
 
