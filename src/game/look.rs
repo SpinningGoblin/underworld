@@ -3,7 +3,7 @@ use std::error::Error;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{
-        action::Action, look_at_current_room::LookAtCurrentRoom, look_at_fixture::LookAtFixture,
+        action::Action, look_at_fixture::LookAtFixture,
         look_at_npc::LookAtNpc,
     },
     components::{
@@ -25,24 +25,7 @@ pub async fn look_at_room(
         None => return Err(Box::new(GameNotFoundError)),
     };
 
-    let player = match crate::player_characters::repository::current(transaction, &username).await?
-    {
-        Some(it) => it,
-        None => return Err(Box::new(NoPlayerCharacterSetError)),
-    };
-
-    let mut game = Game { state, player };
-
-    let action = Action::LookAtCurrentRoom(LookAtCurrentRoom);
-    let events = game.handle_action(&action)?;
-
-    match events.iter().find_map(|event| match event {
-        Event::RoomViewed(it) => Some(it),
-        _ => None,
-    }) {
-        Some(room_viewed) => Ok(room_viewed.view.clone()),
-        None => Err(Box::new(GeneralError("room_view_failed".to_string()))),
-    }
+    Ok(state.view_current_room())
 }
 
 pub async fn look_at_npc(

@@ -47,7 +47,6 @@ pub enum EventName {
     RoomExited,
     RoomFirstSeen,
     RoomGenerated,
-    RoomViewed,
 }
 
 impl From<Event> for GameEvent {
@@ -135,10 +134,6 @@ impl From<Event> for GameEvent {
             },
             Event::FixtureViewed(it) => GameEvent {
                 name: EventName::FixtureViewed,
-                data: Some(serde_json::to_value(&it).unwrap()),
-            },
-            Event::RoomViewed(it) => GameEvent {
-                name: EventName::RoomViewed,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
             Event::RoomFirstSeen(it) => GameEvent {

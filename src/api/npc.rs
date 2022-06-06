@@ -46,9 +46,7 @@ impl UnderworldNpcApi {
         };
         let view = non_player::view(&non_player, &character_args, true);
 
-        let generated = GeneratedNpc {
-            non_player: view,
-        };
+        let generated = GeneratedNpc { non_player: view };
 
         Ok(CharacterGeneratedResponse::CharacterGenerated(Json(
             generated,

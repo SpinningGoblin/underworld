@@ -11,7 +11,8 @@ use underworld_core::{
 
 use crate::{
     actions::{game_actions, PerformAction},
-    error::{GameNotFoundError, NoPlayerCharacterSetError}, event::GameEvent,
+    error::{GameNotFoundError, NoPlayerCharacterSetError},
+    event::GameEvent,
 };
 
 #[derive(Object, Serialize)]

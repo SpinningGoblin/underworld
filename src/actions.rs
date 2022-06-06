@@ -64,16 +64,19 @@ pub fn player_character_actions(_username: &str, player_character_id: &str) -> V
 
 pub fn game_actions(game: &Game, _username: &str) -> Vec<PerformAction> {
     let game_id = game.state.id.to_string();
-    game.current_actions()
+
+    let view_actions = vec![PerformAction {
+        name: ActionName::LookAtRoom,
+        description: "Look at current room".to_string(),
+        link: get_api_link(&format!("game/{}/look_around_room", &game_id)),
+        http_action: "POST".to_string(),
+        args: None,
+    }];
+
+    let game_actions = game
+        .current_actions()
         .into_iter()
         .filter_map(|action| match action {
-            Action::LookAtCurrentRoom(_) => Some(PerformAction {
-                name: ActionName::LookAtRoom,
-                description: "Look at current room".to_string(),
-                link: get_api_link(&format!("game/{}/look_around_room", &game_id)),
-                http_action: "POST".to_string(),
-                args: None,
-            }),
             Action::AttackNpc(it) => Some(PerformAction {
                 name: ActionName::AttackNpc,
                 description: "Attack an NPC in the room.".to_string(),
@@ -159,6 +162,7 @@ pub fn game_actions(game: &Game, _username: &str) -> Vec<PerformAction> {
                 http_action: "POST".to_string(),
                 args: Some(serde_json::to_value(&use_item_on_player).unwrap()),
             }),
-        })
-        .collect()
+        });
+
+    game_actions.chain(view_actions.into_iter()).collect()
 }
