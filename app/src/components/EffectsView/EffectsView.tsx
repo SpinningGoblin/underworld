@@ -11,7 +11,7 @@ export const EffectsView: FunctionComponent<EffectsViewProps> = ({
   effects,
 }) => (
   <div className={styles.effects}>
-    <div className={styles.title}>Current Effects</div>
+    <div className="title">Current Effects</div>
     {!effects.resurrection_aura &&
       !effects.retribution_aura &&
       !effects.shield_aura && <span>No current effects</span>}

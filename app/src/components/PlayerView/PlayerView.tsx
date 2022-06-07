@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import { PerformAction, PlayerCharacter } from "../../generated-api";
 import { EffectsView } from "../EffectsView";
 import { PlayerInventoryView } from "./PlayerInventoryView";
@@ -15,6 +15,7 @@ export const PlayerView: FunctionComponent<PlayerViewProps> = ({
   player,
   actions,
 }) => {
+  const [collapsed, setCollapsed] = useState<boolean>(true);
   const description = `You are a ${player.character.stats.height} ${player.character.species}`;
 
   const healthClasses = [
@@ -22,22 +23,40 @@ export const PlayerView: FunctionComponent<PlayerViewProps> = ({
     player.character.stats.health!.current < 5 ? styles["low-health"] : "",
   ].join(" ");
 
+  const collapseText = collapsed
+    ? "Show full character info"
+    : "Hide full character info";
+
   return (
     <div className={styles.player}>
-      <div className={styles.description}>{description}</div>
-      <div className={healthClasses}>{`Health - Current: ${
-        player.character.stats.health!.current
-      } Max: ${player.character.stats.health!.max}`}</div>
-      <EffectsView effects={player.character.current_effects!} />
-      {actions.length > 0 && (
-        <PlayerSpellMemoryView spellMemory={player.character.spell_memory!} />
-      )}
-      {actions.length > 0 && player.character.inventory && (
-        <PlayerInventoryView
-          inventory={player.character.inventory}
-          actions={actions}
-        />
-      )}
+      <div className={styles.details}>
+        <div className={styles.description}>{description}</div>
+        <div className={healthClasses}>{`Health - Current: ${
+          player.character.stats.health!.current
+        } Max: ${player.character.stats.health!.max}`}</div>
+        <EffectsView effects={player.character.current_effects!} />
+        {!collapsed && (
+          <>
+            {actions.length > 0 && (
+              <PlayerSpellMemoryView
+                spellMemory={player.character.spell_memory!}
+              />
+            )}
+            {actions.length > 0 && player.character.inventory && (
+              <PlayerInventoryView
+                inventory={player.character.inventory}
+                actions={actions}
+              />
+            )}
+          </>
+        )}
+        <button
+          className={styles.collapse}
+          onClick={() => setCollapsed((current) => !current)}
+        >
+          {collapseText}
+        </button>
+      </div>
     </div>
   );
 };

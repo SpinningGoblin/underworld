@@ -13,8 +13,6 @@
   padding: 10px;
   display: flex;
   align-items: flex-start;
-  background-color: lightgray;
-  border-radius: 6px;
   gap: 6px;
   align-items: center;
 }

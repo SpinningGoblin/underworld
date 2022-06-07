@@ -1,0 +1,16 @@
+.npcs {
+  margin-top: 10px;
+}
+
+.npc-text {
+  padding: 16px;
+  border: 1px solid gray;
+  color: floralwhite;
+}
+
+.npc-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  gap: 2px;
+}

@@ -68,33 +68,38 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
   );
 
   return (
-    <div className={styles.item}>
+    <div className={[styles.item, "action-card"].join(" ")}>
       <div className={styles["item-name"]}>
         {[
           ...characterItem.item.descriptors.map(descriptorText),
+          characterItem.item.material ? characterItem.item.material : "",
           itemTypeText(characterItem.item.item_type),
         ].join(" ")}
       </div>
       {equipActions.length > 0 && (
         <div className={styles.equip}>
           <span>Equip to </span>
-          {equipActions.map((action, index) => (
-            <MovePlayerItemView
-              key={index}
-              args={action.args! as MovePlayerItem}
-            />
-          ))}
+          <div className={styles.actions}>
+            {equipActions.map((action, index) => (
+              <MovePlayerItemView
+                key={index}
+                args={action.args! as MovePlayerItem}
+              />
+            ))}
+          </div>
         </div>
       )}
       {unequipActions.length > 0 && (
         <div className={styles.equip}>
           <span>Unequip to </span>
-          {unequipActions.map((action, index) => (
-            <MovePlayerItemView
-              key={index}
-              args={action.args! as MovePlayerItem}
-            />
-          ))}
+          <div className={styles.actions}>
+            {unequipActions.map((action, index) => (
+              <MovePlayerItemView
+                key={index}
+                args={action.args! as MovePlayerItem}
+              />
+            ))}
+          </div>
         </div>
       )}
       {useActions.length > 0 && characterItem.item.consumable && (
@@ -138,41 +143,45 @@ export const PlayerInventoryView: FunctionComponent<
 
   return (
     <div className={styles.inventory}>
-      <span className={styles.title}>Inventory</span>
+      <span className="title">Inventory</span>
       <div className={styles.equipment}>
         <div className={styles["item-group"]}>
-          <span>Equipped Items</span>
-          {equippedItems.length > 0 &&
-            equippedItems.map((characterItem) => {
-              const itemActions = actions.filter((action) =>
-                actionForItem(action, characterItem),
-              );
+          <span className="title">Equipped Items</span>
+          <div className={styles["item-list"]}>
+            {equippedItems.length > 0 &&
+              equippedItems.map((characterItem) => {
+                const itemActions = actions.filter((action) =>
+                  actionForItem(action, characterItem),
+                );
 
-              return (
-                <CharacterItemView
-                  key={characterItem.item.id}
-                  itemActions={itemActions}
-                  characterItem={characterItem}
-                />
-              );
-            })}
+                return (
+                  <CharacterItemView
+                    key={characterItem.item.id}
+                    itemActions={itemActions}
+                    characterItem={characterItem}
+                  />
+                );
+              })}
+          </div>
         </div>
         <div className={styles["item-group"]}>
-          <span>Unequipped Items</span>
-          {unequippedItems.length > 0 &&
-            unequippedItems.map((characterItem) => {
-              const itemActions = actions.filter((action) =>
-                actionForItem(action, characterItem),
-              );
+          <span className="title">Unequipped Items</span>
+          <div className={styles["item-list"]}>
+            {unequippedItems.length > 0 &&
+              unequippedItems.map((characterItem) => {
+                const itemActions = actions.filter((action) =>
+                  actionForItem(action, characterItem),
+                );
 
-              return (
-                <CharacterItemView
-                  key={characterItem.item.id}
-                  itemActions={itemActions}
-                  characterItem={characterItem}
-                />
-              );
-            })}
+                return (
+                  <CharacterItemView
+                    key={characterItem.item.id}
+                    itemActions={itemActions}
+                    characterItem={characterItem}
+                  />
+                );
+              })}
+          </div>
         </div>
       </div>
     </div>

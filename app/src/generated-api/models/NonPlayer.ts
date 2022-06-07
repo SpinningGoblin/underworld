@@ -34,6 +34,12 @@ export interface NonPlayer {
     character: Character;
     /**
      * 
+     * @type {boolean}
+     * @memberof NonPlayer
+     */
+    can_be_looted: boolean;
+    /**
+     * 
      * @type {string}
      * @memberof NonPlayer
      */
@@ -57,6 +63,7 @@ export function NonPlayerFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     return {
         
         'character': CharacterFromJSON(json['character']),
+        'can_be_looted': json['can_be_looted'],
         'id': json['id'],
         'name': !exists(json, 'name') ? undefined : json['name'],
     };
@@ -72,6 +79,7 @@ export function NonPlayerToJSON(value?: NonPlayer | null): any {
     return {
         
         'character': CharacterToJSON(value.character),
+        'can_be_looted': value.can_be_looted,
         'id': value.id,
         'name': value.name,
     };

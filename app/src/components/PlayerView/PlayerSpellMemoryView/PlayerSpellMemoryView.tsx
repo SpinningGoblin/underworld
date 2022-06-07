@@ -17,7 +17,7 @@ const PlayerSpellView: FunctionComponent<PlayerSpellViewProps> = ({
   spell,
   castArgs,
 }) => (
-  <div className={styles.spell}>
+  <div className={[styles.spell, "action-card"].join(" ")}>
     <div className={styles["spell-name"]}>{spell.name}</div>
     <div className={styles.uses}>
       <span>{spell.uses} uses remain</span>
@@ -30,7 +30,7 @@ export const PlayerSpellMemoryView: FunctionComponent<
   PlayerSpellMemoryViewProps
 > = ({ spellMemory }) => (
   <div className={styles["spell-memory"]}>
-    <div className={styles.title}>Spell Memory</div>
+    <div className="title">Spell Memory</div>
     {(spellMemory.spells || []).length === 0 && (
       <span>No spells in memory</span>
     )}

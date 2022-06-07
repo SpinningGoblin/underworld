@@ -1,9 +1,9 @@
 .player {
-  min-height: 200px;
-  background-color: floralwhite;
+  color: floralwhite;
   padding: 16px;
   border-radius: 6px;
   border: 1px solid gray;
+  position: relative;
 }
 
 .description {
@@ -21,4 +21,10 @@
 
 .inventory {
   margin-top: 2px;
+}
+
+.collapse {
+  position: absolute;
+  top: 5vmin;
+  right: 10px;
 }
