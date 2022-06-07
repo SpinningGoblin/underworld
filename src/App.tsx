@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import goblin from "./images/goblin_big_hat.svg";
 import "./App.css";
-import { getUsername, setUsername } from "./api/username";
+import { getUsername } from "./api/username";
 import { generateGame, getGameIds } from "./api/game";
 import { setCurrentGameId } from "./api/current-game";
 import {
@@ -23,17 +23,16 @@ import { generatePlayer, getCurrentPlayer } from "./api/player";
 import { GameEventView } from "./components/GameEventView";
 import { RoomView } from "./components/RoomView";
 import { PlayerView } from "./components/PlayerView";
-import { NpcPositionView } from "./components/NpcPositionView";
-import { FixturePositionView } from "./components/FixturePositionView";
+import { GetReadyScreen } from "./components/GetReadyScreen";
 
 export const App = () => {
-  const [user, setUser] = useState<string | undefined>(getUsername());
   const [gameIds, setGameIds] = useState<Array<string>>([]);
   const [gameId, setGameId] = useState<string | undefined>();
   const [room, setRoom] = useState<Room | undefined>();
   const [actions, setActions] = useState<Array<PerformAction>>([]);
   const [player, setPlayer] = useState<PlayerCharacter | undefined>();
   const [events, setEvents] = useState<Array<GameEvent>>([]);
+  const [ready, setReady] = useState<boolean>(false);
   const firstPlayerLoadDone = useRef<boolean>(false);
 
   const onClickGetGameIds = async () => {
@@ -60,13 +59,12 @@ export const App = () => {
   };
 
   useEffect(() => {
-    const username = getUsername();
-    if (username && !firstPlayerLoadDone.current) {
+    if (ready && !firstPlayerLoadDone.current) {
       getCurrentPlayer()
         .then(setPlayer)
         .finally(() => (firstPlayerLoadDone.current = true));
     }
-  }, []);
+  }, [ready]);
 
   useEffect(() => {
     const callback = (error: string) => {
@@ -104,12 +102,6 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
-    if (user) {
-      setUsername(user);
-    }
-  }, [user]);
-
-  useEffect(() => {
     if (gameId) {
       setCurrentGameId(gameId);
       Promise.all([
@@ -140,60 +132,31 @@ export const App = () => {
       ),
     );
 
-  const username = getUsername();
-
-  const npcText = (room: Room): string => {
-    if (!room.npc_positions.length) {
-      return "There are no other creatures in the room.";
+  const renderBody = () => {
+    if (!ready) {
+      return <GetReadyScreen onReadyClicked={() => setReady(true)} />;
     }
 
-    const creatureText =
-      room.npc_positions.length === 1
-        ? "is 1 creature"
-        : `are ${room.npc_positions.length} creatures`;
+    const allowGeneratePlayer =
+      !player || player.character.stats.health!.current === 0;
 
-    return `There ${creatureText} in the room with you.`;
-  };
-
-  const fixtureText = (room: Room): string => {
-    if (!room.fixture_positions.length) {
-      return "There is nothing else interesting in the room.";
-    }
-
-    const itemText =
-      room.fixture_positions.length === 1
-        ? "is 1 item"
-        : `are ${room.fixture_positions.length} items`;
-
-    return `There ${itemText} in the room with you.`;
-  };
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={goblin} className="App-logo" alt="logo" />
-        <p>Underworld Server</p>
-      </header>
-      <div className="body">
+    return (
+      <>
         <div className="basics">
-          <input
-            className="name-input"
-            value={user || ""}
-            onChange={(event) => setUser(event.target.value)}
-          />
-          {!!username && (
+          <span className="username">User: {getUsername()}</span>
+          {allowGeneratePlayer && (
             <button className="generate-button" onClick={onClickGeneratePlayer}>
-              Generate Player
+              Generate new player character
             </button>
           )}
           {player && (
             <button className="generate-button" onClick={onClickGenerateGame}>
-              Generate Game
+              Generate a new game
             </button>
           )}
-          {player && (
+          {player && gameIds.length === 0 && (
             <button className="generate-button" onClick={onClickGetGameIds}>
-              Get Game IDs
+              Get game IDs
             </button>
           )}
           <div className="game-ids">
@@ -213,46 +176,30 @@ export const App = () => {
               </select>
             )}
           </div>
-        </div>
-        {events.length > 0 && (
-          <div className="events-list">
-            {events.map((event, index) => (
-              <GameEventView key={index} event={event} />
-            ))}
-          </div>
-        )}
-        <div className="room-and-player">
-          {room && <RoomView room={room} actions={actions} />}
-          {player && <PlayerView player={player} actions={actions} />}
-        </div>
-        {player && room && (
-          <div className="npcs">
-            <div className="npc-text">{npcText(room)}</div>
-            <div className="npc-list">
-              {room.npc_positions.map((npcPosition) => (
-                <NpcPositionView
-                  key={npcPosition.npc.id}
-                  npcPosition={npcPosition}
-                  actions={actions}
-                />
+          {events.length > 0 && (
+            <div className="events-list">
+              <span className="title events-title">Game Events</span>
+              {events.map((event, index) => (
+                <GameEventView key={index} event={event} />
               ))}
             </div>
-          </div>
+          )}
+        </div>
+        {player && room && <PlayerView player={player} actions={actions} />}
+        {room && player && (
+          <RoomView room={room} actions={actions} player={player} />
         )}
-        {player && room && (
-          <div className="fixtures">
-            <div className="fixture-text">{fixtureText(room)}</div>
-            <div className="fixture-list">
-              {room.fixture_positions.map((fixturePosition) => (
-                <FixturePositionView
-                  key={fixturePosition.fixture.id}
-                  fixturePosition={fixturePosition}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      </>
+    );
+  };
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={goblin} className="App-logo" alt="logo" />
+        <p>Underworld Server</p>
+      </header>
+      <div className="body">{renderBody()}</div>
     </div>
   );
 };

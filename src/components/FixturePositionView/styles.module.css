@@ -1,6 +1,6 @@
 .fixture-position {
   min-height: 200px;
-  background-color: floralwhite;
+  color: floralwhite;
   padding: 16px;
   border-radius: 6px;
   border: 1px solid gray;
@@ -35,8 +35,6 @@
   padding: 10px;
   display: flex;
   align-items: flex-start;
-  background-color: lightgray;
-  border-radius: 6px;
   gap: 6px;
   align-items: center;
 }

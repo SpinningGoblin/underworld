@@ -1,26 +1,26 @@
 import { FunctionComponent } from "react";
-import { Exit, ExitType, PerformAction } from "../../generated-api";
+import { Exit, ExitRoom, ExitType } from "../../generated-api";
 import { ExitRoomView } from "../actions";
 
 import styles from "./styles.module.css";
 
 export interface ExitViewProps {
   exit: Exit;
-  exitAction?: PerformAction;
+  exitArgs?: ExitRoom;
 }
 
 const typeText = (exitType: ExitType): string => exitType.replaceAll("_", " ");
 
 export const ExitView: FunctionComponent<ExitViewProps> = ({
   exit,
-  exitAction,
+  exitArgs,
 }) => (
-  <div className={styles.exit}>
+  <div className="action-card">
     <span className={styles.description}>
       {`${[...exit.descriptors, typeText(exit.exit_type)].join(" ")} ${
         exit.has_visited_connected_room ? "(Traveled before)" : "(Never seen)"
       }`}
-      {exitAction && <ExitRoomView args={exitAction.args!} />}
+      {exitArgs && <ExitRoomView args={exitArgs} />}
     </span>
   </div>
 );

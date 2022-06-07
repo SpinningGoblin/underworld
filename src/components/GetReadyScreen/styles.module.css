@@ -1,0 +1,22 @@
+.input {
+  max-height: 40px;
+  padding: 2px;
+}
+
+.ready {
+  background-color: lightsteelblue;
+  padding: 5px;
+  border-radius: 6px;
+  margin-left: 10px;
+}
+
+.ready:disabled {
+  background-color: darkgrey;
+}
+
+.container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

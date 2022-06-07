@@ -52,7 +52,7 @@ interface ItemViewProps {
 }
 
 const ItemView: FunctionComponent<ItemViewProps> = ({ item, fixtureId }) => (
-  <div className={styles.item}>
+  <div className={[styles.item, "action-card"].join(" ")}>
     <div className={styles["item-name"]}>
       {[
         ...item.descriptors.map(descriptorText),
@@ -130,10 +130,14 @@ export const FixturePositionView: FunctionComponent<
       <div className={styles.items}>
         {!fixturePosition.fixture.knows_if_hidden_compartment &&
           "You do not know if there is a hidden compartment."}
-        {fixturePosition.fixture.knows_if_hidden_compartment &&
-          renderHiddenCompartment(
-            fixturePosition.fixture.items.filter((i) => i.is_hidden),
-          )}
+        {fixturePosition.fixture.knows_if_hidden_compartment && (
+          <>
+            <span className="title">Hidden Compartment</span>
+            {renderHiddenCompartment(
+              fixturePosition.fixture.items.filter((i) => i.is_hidden),
+            )}
+          </>
+        )}
       </div>
     </div>
   );

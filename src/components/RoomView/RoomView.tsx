@@ -3,15 +3,19 @@ import {
   ExitRoom,
   FlavourText,
   PerformAction,
+  PlayerCharacter,
   Room,
 } from "../../generated-api";
 import { ExitView } from "../ExitView/ExitView";
+import { FixturePositionsView } from "../FixturePositionsView";
+import { NpcPositionsView } from "../NpcPositionsView";
 
 import styles from "./styles.module.css";
 
 export interface RoomViewProps {
   room: Room;
   actions: Array<PerformAction>;
+  player: PlayerCharacter;
 }
 
 const flavourText = (flavour: FlavourText): string => {
@@ -60,27 +64,25 @@ const description = (room: Room): string => {
 
 export const RoomView: FunctionComponent<RoomViewProps> = ({
   room,
-  actions,
+  player,
 }) => (
   <div className={styles.room}>
-    <span className={styles.description}>{`You are in a ${description(
-      room,
-    )}`}</span>
+    <span className={styles.description}>
+      {`You are in a ${description(room)} `}
+      {`You see ${room.exits.length} exits you can jump through.`}
+    </span>
     {room.exits.length > 0 && (
       <div className={styles.exits}>
-        <span
-          className={styles["exit-title"]}
-        >{`You see ${room.exits.length} exits you can jump through.`}</span>
         {room.exits.map((exit) => {
-          const exitAction = actions.find(
-            (action) =>
-              action.name === "exit_room" &&
-              (action.args! as ExitRoom).exit_id === exit.id,
-          );
+          const exitArgs: ExitRoom = {
+            exit_id: exit.id,
+          };
 
-          return <ExitView key={exit.id} exit={exit} exitAction={exitAction} />;
+          return <ExitView key={exit.id} exit={exit} exitArgs={exitArgs} />;
         })}
       </div>
     )}
+    <NpcPositionsView room={room} player={player} />
+    <FixturePositionsView room={room} />
   </div>
 );

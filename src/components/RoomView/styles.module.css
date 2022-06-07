@@ -2,13 +2,16 @@
   padding: 16px;
   border-radius: 6px;
   border: 1px solid grey;
-  background-color: floralwhite;
+  color: floralwhite;
 }
 
 .description {
   margin-bottom: 10px;
   display: block;
   text-align: left;
+  padding: 16px;
+  border: 1px solid gray;
+  color: floralwhite;
 }
 
 .exits {

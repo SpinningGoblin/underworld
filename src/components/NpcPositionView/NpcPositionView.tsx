@@ -2,9 +2,7 @@ import { FunctionComponent } from "react";
 import {
   AttackNpc,
   InspectNpc,
-  LootNpc,
   NpcPosition,
-  PerformAction,
 } from "../../generated-api";
 import { AttackNpcView } from "../actions";
 import { InspectNpcView } from "../actions/InspectNpcView";
@@ -14,7 +12,6 @@ import styles from "./styles.module.css";
 
 export interface NpcPositionViewProps {
   npcPosition: NpcPosition;
-  actions: Array<PerformAction>;
 }
 
 const nameText = (npcPosition: NpcPosition): string =>
@@ -88,7 +85,6 @@ const positionText = (npcPosition: NpcPosition): string => {
 
 export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
   npcPosition,
-  actions,
 }) => {
   const inspectArgs: InspectNpc = {
     npc_id: npcPosition.npc.id,
@@ -101,12 +97,6 @@ export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
     npc_id: npcPosition.npc.id,
   };
 
-  const hasLootActions = actions.some(
-    (action) =>
-      action.name === "loot_npc" &&
-      (action.args as LootNpc).npc_id === npcPosition.npc.id,
-  );
-
   const renderInventory = () => {
     if (!npcPosition.npc.character.inventory) {
       return <></>;
@@ -115,7 +105,7 @@ export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
     return (
       <NpcInventoryView
         inventory={npcPosition.npc.character.inventory}
-        canLoot={hasLootActions}
+        canLoot={npcPosition.npc.can_be_looted}
         npcId={npcPosition.npc.id}
       />
     );
