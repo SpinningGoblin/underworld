@@ -1,40 +1,34 @@
 import { FunctionComponent } from "react";
-import {
-  CastSpellOnPlayer,
-  PerformAction,
-  Spell,
-  SpellMemory,
-} from "../../../generated-api";
+import { CastSpellOnPlayer, Spell, SpellMemory } from "../../../generated-api";
 import { CastSpellOnPlayerView } from "../../actions";
 
 import styles from "./styles.module.css";
 
 export interface PlayerSpellMemoryViewProps {
   spellMemory: SpellMemory;
-  actions: Array<PerformAction>;
 }
 
 interface PlayerSpellViewProps {
   spell: Spell;
-  castAction?: PerformAction;
+  castArgs?: CastSpellOnPlayer;
 }
 
 const PlayerSpellView: FunctionComponent<PlayerSpellViewProps> = ({
   spell,
-  castAction,
+  castArgs,
 }) => (
   <div className={styles.spell}>
     <div className={styles["spell-name"]}>{spell.name}</div>
     <div className={styles.uses}>
       <span>{spell.uses} uses remain</span>
-      {castAction && <CastSpellOnPlayerView args={castAction.args!} />}
+      {castArgs && <CastSpellOnPlayerView args={castArgs} />}
     </div>
   </div>
 );
 
 export const PlayerSpellMemoryView: FunctionComponent<
   PlayerSpellMemoryViewProps
-> = ({ spellMemory, actions }) => (
+> = ({ spellMemory }) => (
   <div className={styles["spell-memory"]}>
     <div className={styles.title}>Spell Memory</div>
     {(spellMemory.spells || []).length === 0 && (
@@ -42,17 +36,16 @@ export const PlayerSpellMemoryView: FunctionComponent<
     )}
     <div className={styles["spell-list"]}>
       {(spellMemory.spells || []).map((learnedSpell) => {
-        const action = actions.find(
-          (action) =>
-            action.name === "cast_spell_on_player" &&
-            (action.args! as CastSpellOnPlayer).spell_id === learnedSpell.id,
-        );
+        const args: CastSpellOnPlayer | undefined =
+          learnedSpell.spell.spell_type !== "attack"
+            ? { spell_id: learnedSpell.id }
+            : undefined;
 
         return (
           <PlayerSpellView
             key={learnedSpell.id}
             spell={learnedSpell.spell}
-            castAction={action}
+            castArgs={args}
           />
         );
       })}

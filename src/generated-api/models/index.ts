@@ -68,6 +68,7 @@ export * from './Spell';
 export * from './SpellCast';
 export * from './SpellMemory';
 export * from './SpellName';
+export * from './SpellType';
 export * from './Stats';
 export * from './Tag';
 export * from './UseItemOnPlayer';
