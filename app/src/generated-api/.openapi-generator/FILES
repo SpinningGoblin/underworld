@@ -73,6 +73,7 @@ models/Spell.ts
 models/SpellCast.ts
 models/SpellMemory.ts
 models/SpellName.ts
+models/SpellType.ts
 models/Stats.ts
 models/Tag.ts
 models/UseItemOnPlayer.ts

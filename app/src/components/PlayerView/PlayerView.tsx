@@ -30,10 +30,7 @@ export const PlayerView: FunctionComponent<PlayerViewProps> = ({
       } Max: ${player.character.stats.health!.max}`}</div>
       <EffectsView effects={player.character.current_effects!} />
       {actions.length > 0 && (
-        <PlayerSpellMemoryView
-          spellMemory={player.character.spell_memory!}
-          actions={actions}
-        />
+        <PlayerSpellMemoryView spellMemory={player.character.spell_memory!} />
       )}
       {actions.length > 0 && player.character.inventory && (
         <PlayerInventoryView

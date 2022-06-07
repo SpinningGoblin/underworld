@@ -31,6 +31,12 @@ import {
     SpellNameFromJSONTyped,
     SpellNameToJSON,
 } from './SpellName';
+import {
+    SpellType,
+    SpellTypeFromJSON,
+    SpellTypeFromJSONTyped,
+    SpellTypeToJSON,
+} from './SpellType';
 
 /**
  * 
@@ -80,6 +86,12 @@ export interface Spell {
      * @memberof Spell
      */
     knows_uses: boolean;
+    /**
+     * 
+     * @type {SpellType}
+     * @memberof Spell
+     */
+    spell_type: SpellType;
 }
 
 export function SpellFromJSON(json: any): Spell {
@@ -99,6 +111,7 @@ export function SpellFromJSONTyped(json: any, ignoreDiscriminator: boolean): Spe
         'knows_defense': json['knows_defense'],
         'uses': json['uses'],
         'knows_uses': json['knows_uses'],
+        'spell_type': SpellTypeFromJSON(json['spell_type']),
     };
 }
 
@@ -118,6 +131,7 @@ export function SpellToJSON(value?: Spell | null): any {
         'knows_defense': value.knows_defense,
         'uses': value.uses,
         'knows_uses': value.knows_uses,
+        'spell_type': SpellTypeToJSON(value.spell_type),
     };
 }
 
