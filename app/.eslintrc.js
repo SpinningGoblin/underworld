@@ -29,6 +29,7 @@ module.exports = {
     "comma-dangle": ["error", "always-multiline"],
     "@typescript-eslint/no-non-null-assertion": "off",
     "arrow-body-style": ["error", "as-needed"],
+    "multiline-ternary": ["error", "always-multiline"],
   },
   ignorePatterns: ["src/generated-api/**/*.*", "*.svg", "*.css"],
 };
