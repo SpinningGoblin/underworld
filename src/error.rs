@@ -1,21 +1,17 @@
 use poem::error::ResponseError;
-use underworld_core::errors::{
-    ExitNotFoundError, FixtureNotFoundError, InvalidIdError, ItemNotDirectlyUsableError,
-    ItemNotFoundError, NpcNotFoundError, PlayerIsDeadError, SpellNotFoundError,
-    TooManyWeaponsEquippedError,
-};
 
 #[derive(Debug, thiserror::Error, strum_macros::Display)]
 pub enum GameError {
-    ExitNotFoundError(ExitNotFoundError),
-    FixtureNotFoundError(FixtureNotFoundError),
-    InvalidIdError(InvalidIdError),
-    ItemNotDirectlyUsableError(ItemNotDirectlyUsableError),
-    ItemNotFoundError(ItemNotFoundError),
-    NpcNotFoundError(NpcNotFoundError),
-    PlayerIsDeadError(PlayerIsDeadError),
-    SpellNotFoundError(SpellNotFoundError),
-    TooManyWeaponsEquippedError(TooManyWeaponsEquippedError),
+    ExitNotFoundError(String),
+    FixtureNotFoundError(String),
+    InvalidIdError(String),
+    ItemNotDirectlyUsableError(String),
+    ItemNotFoundError(String),
+    NpcNotFoundError(String),
+    PlayerIsDeadError,
+    SpellNotFoundError(String),
+    TooManyWeaponsEquippedError,
+    TooManyWearablesEquippedError,
     GeneralError(String),
     NoPlayerCharacterSetError,
     UnknownPlayerCharacterError,
@@ -39,14 +35,15 @@ impl From<underworld_core::errors::Error> for GameError {
                 GameError::ItemNotFoundError(it)
             }
             underworld_core::errors::Error::NpcNotFoundError(it) => GameError::NpcNotFoundError(it),
-            underworld_core::errors::Error::PlayerIsDeadError(it) => {
-                GameError::PlayerIsDeadError(it)
-            }
+            underworld_core::errors::Error::PlayerIsDeadError => GameError::PlayerIsDeadError,
             underworld_core::errors::Error::SpellNotFoundError(it) => {
                 GameError::SpellNotFoundError(it)
             }
-            underworld_core::errors::Error::TooManyWeaponsEquippedError(it) => {
-                GameError::TooManyWeaponsEquippedError(it)
+            underworld_core::errors::Error::TooManyWeaponsEquippedError => {
+                GameError::TooManyWeaponsEquippedError
+            }
+            underworld_core::errors::Error::TooManyWearablesEquippedError => {
+                GameError::TooManyWearablesEquippedError
             }
         }
     }
@@ -61,9 +58,10 @@ impl ResponseError for GameError {
             GameError::ItemNotDirectlyUsableError(_) => poem::http::StatusCode::BAD_REQUEST,
             GameError::ItemNotFoundError(_) => poem::http::StatusCode::BAD_REQUEST,
             GameError::NpcNotFoundError(_) => poem::http::StatusCode::BAD_REQUEST,
-            GameError::PlayerIsDeadError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::PlayerIsDeadError => poem::http::StatusCode::BAD_REQUEST,
             GameError::SpellNotFoundError(_) => poem::http::StatusCode::BAD_REQUEST,
-            GameError::TooManyWeaponsEquippedError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::TooManyWeaponsEquippedError => poem::http::StatusCode::BAD_REQUEST,
+            GameError::TooManyWearablesEquippedError => poem::http::StatusCode::BAD_REQUEST,
             GameError::GeneralError(_) => poem::http::StatusCode::BAD_REQUEST,
             GameError::NoPlayerCharacterSetError => poem::http::StatusCode::BAD_REQUEST,
             GameError::UnknownPlayerCharacterError => poem::http::StatusCode::NOT_FOUND,
