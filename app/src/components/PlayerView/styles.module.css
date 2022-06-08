@@ -1,7 +1,6 @@
 .player {
   color: floralwhite;
   padding: 16px;
-  border-radius: 6px;
   border: 1px solid gray;
   position: relative;
 }
@@ -27,4 +26,8 @@
   position: absolute;
   top: 5vmin;
   right: 10px;
+}
+
+.showing {
+  transform: rotate(180deg);
 }

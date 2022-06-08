@@ -64,8 +64,8 @@ button {
 
 .generate-button {
   background-color: lightsteelblue;
+  color: black;
   padding: 5px;
-  border-radius: 6px;
 }
 
 .events-list {
@@ -111,8 +111,7 @@ button {
 }
 
 .action-card {
-  color: lightgray;
-  border-radius: 6px;
+  color: floralwhite;
   border: 0.5px solid lightgray;
 }
 
@@ -125,4 +124,9 @@ button {
   color: floralwhite;
   margin-bottom: 6px;
   display: block;
+}
+
+.events-container {
+  border: 0.5px solid lightgray;
+  padding: 6px;
 }

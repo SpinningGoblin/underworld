@@ -3,6 +3,7 @@ import { PerformAction, PlayerCharacter } from "../../generated-api";
 import { EffectsView } from "../EffectsView";
 import { PlayerInventoryView } from "./PlayerInventoryView";
 import { PlayerSpellMemoryView } from "./PlayerSpellMemoryView";
+import chevron from "../../images/chevron.svg";
 
 import styles from "./styles.module.css";
 
@@ -23,9 +24,7 @@ export const PlayerView: FunctionComponent<PlayerViewProps> = ({
     player.character.stats.health!.current < 5 ? styles["low-health"] : "",
   ].join(" ");
 
-  const collapseText = collapsed
-    ? "Show full character info"
-    : "Hide full character info";
+  const collapsedClass = collapsed ? "" : styles.showing;
 
   return (
     <div className={styles.player}>
@@ -54,7 +53,12 @@ export const PlayerView: FunctionComponent<PlayerViewProps> = ({
           className={styles.collapse}
           onClick={() => setCollapsed((current) => !current)}
         >
-          {collapseText}
+          <img
+            className={collapsedClass}
+            src={chevron}
+            alt="chevron"
+            height={25}
+          />
         </button>
       </div>
     </div>
