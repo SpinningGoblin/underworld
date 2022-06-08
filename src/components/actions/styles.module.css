@@ -1,33 +1,38 @@
 .actionButton {
   background-color: lightsteelblue;
+  color: black;
   padding: 5px;
-  border-radius: 6px;
+}
+
+.exit-button {
+  border: 1px solid black;
+  background-color: floralwhite;
 }
 
 .cast-spell {
   background-color: lightsteelblue;
+  color: black;
   padding: 5px;
-  border-radius: 6px;
 }
 
 .move-button {
   background-color: lightsteelblue;
+  color: black;
   padding: 5px;
-  border-radius: 6px;
   min-width: 60px;
 }
 
 .inspect-button {
   background-color: lightsteelblue;
+  color: black;
   padding: 5px;
-  border-radius: 6px;
   min-width: 60px;
 }
 
 .attack-button {
   background-color: lightsteelblue;
+  color: black;
   padding: 5px;
-  border-radius: 6px;
   min-width: 60px;
 }
 
@@ -38,7 +43,7 @@
 
 .loot-button {
   background-color: lightsteelblue;
+  color: black;
   padding: 5px;
-  border-radius: 6px;
   min-width: 60px;
 }

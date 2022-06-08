@@ -60,8 +60,12 @@ export const App = () => {
 
   useEffect(() => {
     if (ready && !firstPlayerLoadDone.current) {
-      getCurrentPlayer()
-        .then(setPlayer)
+      Promise.all([getCurrentPlayer(), getGameIds()])
+        .then(([pl, ids]) => {
+          setPlayer(pl);
+          setGameIds(ids);
+        })
+        .catch((e) => console.error(e))
         .finally(() => (firstPlayerLoadDone.current = true));
     }
   }, [ready]);
@@ -176,14 +180,14 @@ export const App = () => {
               </select>
             )}
           </div>
-          {events.length > 0 && (
+          <div className="events-container">
+            <span className="title events-title">Game Events</span>
             <div className="events-list">
-              <span className="title events-title">Game Events</span>
               {events.map((event, index) => (
                 <GameEventView key={index} event={event} />
               ))}
             </div>
-          )}
+          </div>
         </div>
         {player && room && <PlayerView player={player} actions={actions} />}
         {room && player && (
