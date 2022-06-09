@@ -2,6 +2,7 @@ import { FunctionComponent, ReactElement } from "react";
 import {
   FixtureItem,
   FixturePosition,
+  FixtureType,
   InspectFixture,
   Item,
   ItemDescriptor,
@@ -20,12 +21,24 @@ const itemTypeText = (itemType: ItemType): string => itemType.replace("_", " ");
 const descriptorText = (descriptor: ItemDescriptor): string =>
   descriptor.replace("_", " ");
 
+const fixtureTypeText = (fixtureType: FixtureType): string => {
+  switch (fixtureType) {
+    case "statue_tentacled_monstrosity":
+      return "statue of a tentacled monstrosity";
+    case "statue_warrior":
+      return "statue of an unknown warrior";
+    default:
+      return fixtureType.replaceAll("_", " ");
+  }
+};
+
 const descriptionText = (fixturePosition: FixturePosition): string =>
   [
     ...fixturePosition.fixture.descriptors.map((text) =>
       text.replaceAll("_", " "),
     ),
-    fixturePosition.fixture.fixture_type.replaceAll("_", " "),
+    fixturePosition.fixture.material ? fixturePosition.fixture.material : "",
+    fixtureTypeText(fixturePosition.fixture.fixture_type),
   ].join(" ");
 
 const positionText = (fixturePosition: FixturePosition): string => {
