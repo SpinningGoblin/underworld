@@ -1,7 +1,7 @@
 .room {
   padding: 16px;
-  border: 1px solid grey;
-  color: floralwhite;
+  border: 1px solid #aaaaaa;
+  color: #9bbc0f;
 }
 
 .description {
@@ -10,7 +10,7 @@
   text-align: left;
   padding: 16px;
   border: 1px solid gray;
-  color: floralwhite;
+  color: #9bbc0f;
 }
 
 .exits {

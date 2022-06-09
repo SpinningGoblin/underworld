@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: 2px;
   align-items: baseline;
+  color: #9bbc0f
 }
 
 .item-name {
@@ -15,6 +16,7 @@
   align-items: flex-start;
   gap: 6px;
   align-items: center;
+  color: #9bbc0f
 }
 
 .loot {

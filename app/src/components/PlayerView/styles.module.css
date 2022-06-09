@@ -1,7 +1,7 @@
 .player {
-  color: floralwhite;
+  color: #9bbc0f;
   padding: 16px;
-  border: 1px solid gray;
+  border: 1px solid #aaaaaa;
   position: relative;
 }
 
@@ -10,12 +10,12 @@
 }
 
 .health {
-  font-weight: 600;
-  color: green;
+  font-weight: 500;
+  color: #9bbc0f;
 }
 
 .low-health {
-  color: red;
+  color: 	#E10600;
 }
 
 .inventory {

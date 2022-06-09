@@ -1,49 +1,49 @@
 .actionButton {
-  background-color: lightsteelblue;
-  color: black;
+  background-color: #9bbc0f;
+  color: #0f380f;
   padding: 5px;
 }
 
 .exit-button {
-  border: 1px solid black;
-  background-color: floralwhite;
+  border: 1px solid #aaaaaa;
+  background-color: #9bbc0f;
 }
 
 .cast-spell {
-  background-color: lightsteelblue;
-  color: black;
+  background-color: #9bbc0f;
+  color: #0f380f;
   padding: 5px;
 }
 
 .move-button {
-  background-color: lightsteelblue;
-  color: black;
+  background-color: #9bbc0f;
+  color: #0f380f;
   padding: 5px;
   min-width: 60px;
 }
 
 .inspect-button {
-  background-color: lightsteelblue;
-  color: black;
+  background-color: #9bbc0f;
+  color: #0f380f;
   padding: 5px;
   min-width: 60px;
 }
 
 .attack-button {
-  background-color: lightsteelblue;
-  color: black;
+  background-color: #9bbc0f;
+  color: #0f380f;
   padding: 5px;
   min-width: 60px;
 }
 
 .attack-button:hover {
   background-color: darkred;
-  color: floralwhite;
+  color: #9bbc0f;
 }
 
 .loot-button {
-  background-color: lightsteelblue;
-  color: black;
+  background-color: #9bbc0f;
+  color: #0f380f;
   padding: 5px;
   min-width: 60px;
 }

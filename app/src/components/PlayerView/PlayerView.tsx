@@ -30,9 +30,9 @@ export const PlayerView: FunctionComponent<PlayerViewProps> = ({
     <div className={styles.player}>
       <div className={styles.details}>
         <div className={styles.description}>{description}</div>
-        <div className={healthClasses}>{`Health - Current: ${
+        <div className={healthClasses}>{`Health ${
           player.character.stats.health!.current
-        } Max: ${player.character.stats.health!.max}`}</div>
+        } / ${player.character.stats.health!.max}`}</div>
         <EffectsView effects={player.character.current_effects!} />
         {!collapsed && (
           <>
