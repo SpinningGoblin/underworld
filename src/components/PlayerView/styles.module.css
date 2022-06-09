@@ -26,6 +26,12 @@
   position: absolute;
   top: 5vmin;
   right: 10px;
+  background: #9bbc0f;
+  border: none;
+}
+
+.collapse svg {
+  fill: #0f380f;
 }
 
 .showing {
