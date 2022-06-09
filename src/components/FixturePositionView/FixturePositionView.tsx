@@ -69,6 +69,7 @@ const ItemView: FunctionComponent<ItemViewProps> = ({ item, fixtureId }) => (
     <div className={styles["item-name"]}>
       {[
         ...item.descriptors.map(descriptorText),
+        item.material ? item.material : "",
         itemTypeText(item.item_type),
       ].join(" ")}
     </div>

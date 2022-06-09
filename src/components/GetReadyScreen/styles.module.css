@@ -1,16 +1,19 @@
 .input {
   max-height: 40px;
   padding: 2px;
+  background-color: #9bbc0f;
+  color: #0f380f;
 }
 
 .ready {
-  background-color: lightsteelblue;
+  background-color: #9bbc0f;
   padding: 5px;
   margin-left: 10px;
+  color: #0f380f
 }
 
 .ready:disabled {
-  background-color: darkgrey;
+  background-color: #aaaaaa;
 }
 
 .container {

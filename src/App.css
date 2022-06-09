@@ -2,7 +2,7 @@
   text-align: center;
   min-height: 100vh;
   height: 100vh;
-  background-color: #282c34;
+  background-color: #0f380f;
   width: 100vw;
 }
 
@@ -33,6 +33,7 @@ button {
   font-size: calc(10px + 3vmin);
   color: white;
   padding: 5px;
+  color: #9bbc0f
 }
 
 .game-ids {
@@ -41,12 +42,10 @@ button {
   gap: 8px;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
 .game-id-select {
   padding: 2px;
+  background-color: #9bbc0f;
+  color: #0f380f;
 }
 
 .room {
@@ -58,13 +57,14 @@ button {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   align-items: center;
+  margin-left: 10px;
 }
 
 .generate-button {
-  background-color: lightsteelblue;
-  color: black;
+  background-color: #9bbc0f;
+  color: #0f380f;
   padding: 5px;
 }
 
@@ -72,7 +72,7 @@ button {
   overflow-y: auto;
   height: 16vmin;
   padding: 5px;
-  border: 0.5px solid black;
+  border: 0.5px solid #aaaaaa;
 }
 
 @keyframes App-logo-spin {
@@ -102,7 +102,7 @@ button {
 }
 
 .body {
-  background-color: #282c34;
+  background-color: #0f380f;
 }
 
 .title {
@@ -111,22 +111,22 @@ button {
 }
 
 .action-card {
-  color: floralwhite;
-  border: 0.5px solid lightgray;
+  color: #9bbc0f;
+  border: 0.5px solid #aaaaaa;
 }
 
 .username {
   padding: 5px;
-  background-color: floralwhite;
+  background-color: #9bbc0f;
 }
 
 .events-title {
-  color: floralwhite;
+  color: #9bbc0f;
   margin-bottom: 6px;
   display: block;
 }
 
 .events-container {
-  border: 0.5px solid lightgray;
+  border: 0.5px solid #aaaaaa;
   padding: 6px;
 }
