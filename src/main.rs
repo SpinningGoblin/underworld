@@ -46,7 +46,7 @@ async fn main() -> Result<(), std::io::Error> {
             UnderworldGameActionApi,
         ),
         "Underworld",
-        "0.2.0",
+        "0.5.0",
     )
     .server(get_server_url());
 
