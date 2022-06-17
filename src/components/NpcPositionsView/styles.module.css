@@ -5,12 +5,12 @@
 .npc-text {
   padding: 16px;
   border: 1px solid #aaaaaa;
-  color: #0f380f;
+  color: #9bbc0f;
 }
 
 .npc-list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   margin-top: 10px;
   gap: 2px;
 }
