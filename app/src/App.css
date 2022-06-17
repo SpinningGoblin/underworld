@@ -39,6 +39,7 @@ button {
 .game-ids {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 8px;
 }
 
@@ -46,33 +47,17 @@ button {
   padding: 2px;
   background-color: #9bbc0f;
   color: #0f380f;
+  max-width: 50%;
 }
 
 .room {
   margin-top: 8px;
 }
 
-.basics {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 10px;
-  align-items: center;
-  margin-left: 10px;
-}
-
 .generate-button {
   background-color: #9bbc0f;
   color: #0f380f;
   padding: 5px;
-}
-
-.events-list {
-  overflow-y: auto;
-  height: 16vmin;
-  padding: 5px;
-  border: 0.5px solid #aaaaaa;
 }
 
 @keyframes App-logo-spin {
@@ -93,14 +78,6 @@ button {
   font-size: calc(10px + 2vmin);
 }
 
-.room-and-player {
-  display: flex;
-  align-items: flex-start;
-  gap: 2px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-
 .body {
   background-color: #0f380f;
 }
@@ -108,6 +85,7 @@ button {
 .title {
   text-decoration: underline;
   margin-bottom: 2px;
+  color: #9bbc0f;
 }
 
 .action-card {
@@ -120,13 +98,11 @@ button {
   background-color: #9bbc0f;
 }
 
-.events-title {
-  color: #9bbc0f;
-  margin-bottom: 6px;
-  display: block;
-}
-
-.events-container {
-  border: 0.5px solid #aaaaaa;
-  padding: 6px;
+.id-and-generate {
+  display: flex;
+  flex-wrap: wrap;
+  padding-bottom: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
+  gap: 8px;
 }

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import goblin from "./images/goblin_big_hat.svg";
 import "./App.css";
-import { getUsername } from "./api/username";
 import { generateGame, getGameIds } from "./api/game";
 import { setCurrentGameId } from "./api/current-game";
 import {
@@ -20,10 +19,8 @@ import {
   removeErrorListener,
 } from "./api/actions";
 import { generatePlayer, getCurrentPlayer } from "./api/player";
-import { GameEventView } from "./components/GameEventView";
-import { RoomView } from "./components/RoomView";
-import { PlayerView } from "./components/PlayerView";
 import { GetReadyScreen } from "./components/GetReadyScreen";
+import { GameScreen } from "./components/GameScreen";
 
 export const App = () => {
   const [gameIds, setGameIds] = useState<Array<string>>([]);
@@ -92,7 +89,13 @@ export const App = () => {
       }
       setActions(actionPerformed.actions);
 
-      setEvents((existing) => [...actionPerformed.events, ...existing]);
+      const events = actionPerformed.events.slice();
+      events.reverse();
+
+      setEvents((existing) => [
+        ...events,
+        ...existing,
+      ]);
 
       for (const event of actionPerformed.events) {
         if (event.name === "player_killed") {
@@ -136,66 +139,63 @@ export const App = () => {
       ),
     );
 
-  const renderBody = () => {
-    if (!ready) {
-      return <GetReadyScreen onReadyClicked={() => setReady(true)} />;
-    }
+  if (!ready) {
+    return <GetReadyScreen onReadyClicked={() => setReady(true)} />;
+  }
 
-    const allowGeneratePlayer =
-      !player || player.character.stats.health!.current === 0;
+  const allowGeneratePlayer =
+    !player || player.character.stats.health!.current === 0;
 
-    return (
-      <>
-        <div className="basics">
-          <span className="username">User: {getUsername()}</span>
-          {allowGeneratePlayer && (
-            <button className="generate-button" onClick={onClickGeneratePlayer}>
-              Generate new player character
-            </button>
+  const renderGameIds = (openingPage: boolean) => (
+    <>
+      {player && gameIds.length === 0 && (
+        <button className="generate-button" onClick={onClickGetGameIds}>
+          Get game IDs
+        </button>
+      )}
+      <div className="game-ids">
+        <span className="title">Current Game</span>
+        <div className="id-and-generate">
+          {gameIds.length > 0 && (
+            <select
+              className={`game-id-select ${
+                openingPage ? "opening-page-ids" : ""
+              }`}
+              value={gameId || ""}
+              onChange={(event) => {
+                if (event.currentTarget.value) {
+                  setGameId(event.currentTarget.value);
+                } else {
+                  setGameId(undefined);
+                }
+              }}
+            >
+              {options}
+            </select>
           )}
           {player && (
             <button className="generate-button" onClick={onClickGenerateGame}>
-              Generate a new game
+              New Game
             </button>
           )}
-          {player && gameIds.length === 0 && (
-            <button className="generate-button" onClick={onClickGetGameIds}>
-              Get game IDs
-            </button>
-          )}
-          <div className="game-ids">
-            {gameIds.length > 0 && (
-              <select
-                className="game-id-select"
-                value={gameId || ""}
-                onChange={(event) => {
-                  if (event.currentTarget.value) {
-                    setGameId(event.currentTarget.value);
-                  } else {
-                    setGameId(undefined);
-                  }
-                }}
-              >
-                {options}
-              </select>
-            )}
-          </div>
-          <div className="events-container">
-            <span className="title events-title">Game Events</span>
-            <div className="events-list">
-              {events.map((event, index) => (
-                <GameEventView key={index} event={event} />
-              ))}
-            </div>
-          </div>
         </div>
-        {player && room && <PlayerView player={player} actions={actions} />}
-        {room && player && (
-          <RoomView room={room} actions={actions} player={player} />
-        )}
-      </>
+      </div>
+    </>
+  );
+
+  if (room && player) {
+    return (
+      <GameScreen
+        room={room}
+        player={player}
+        events={events}
+        actions={actions}
+        allowGeneratePlayer={allowGeneratePlayer}
+        onClickGeneratePlayer={onClickGeneratePlayer}
+        gameIdSelector={renderGameIds(false)}
+      />
     );
-  };
+  }
 
   return (
     <div className="App">
@@ -203,7 +203,12 @@ export const App = () => {
         <img src={goblin} className="App-logo" alt="logo" />
         <p>Underworld Server</p>
       </header>
-      <div className="body">{renderBody()}</div>
+      <div className="body">
+        <button className="generate-button" onClick={onClickGeneratePlayer}>
+          Generate new player character
+        </button>
+        {renderGameIds(true)}
+      </div>
     </div>
   );
 };
