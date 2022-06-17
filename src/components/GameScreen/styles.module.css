@@ -1,0 +1,44 @@
+.screen {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  background-color: #0f380f;
+  height: 100vh;
+}
+
+.game {
+  overflow-y: auto;
+}
+
+.side {
+  overflow-y: auto;
+}
+
+.logo {
+  height: 8vmin;
+  pointer-events: none;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  font-size: calc(10px + 2.5vmin);
+  padding: 5px;
+  color: #9bbc0f
+}
+
+.events-list {
+  padding: 5px;
+  border: 0.5px solid #aaaaaa;
+}
+
+.events-title {
+  color: #9bbc0f;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.events-container {
+  border: 0.5px solid #aaaaaa;
+  padding: 6px;
+}
