@@ -73,6 +73,8 @@ const nameText = (eventName: EventName): string => {
       return "You saw a room for the first time";
     case "room_generated":
       return "A new room was spawned from the void";
+    case "game_danger_level_increased":
+      return "The world gets more dangerous...";
     default:
       return eventName;
   }
