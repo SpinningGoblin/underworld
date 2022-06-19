@@ -12,5 +12,6 @@
     "**/Thumbs.db": true,
     "**/target": true,
     "app/dist": true
-  }
+  },
+  "rust-analyzer.procMacro.attributes.enable": true
 }
