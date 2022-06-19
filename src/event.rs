@@ -19,6 +19,7 @@ pub enum EventName {
     FixtureHasHiddenDiscovered,
     FixtureHiddenItemsDiscovered,
     FixtureViewed,
+    GameDangerLevelIncreased,
     ItemTakenFromFixture,
     ItemTakenFromNpc,
     NpcHealthDiscovered,
@@ -187,6 +188,10 @@ impl From<Event> for GameEvent {
             Event::PlayerSpellUsed(it) => GameEvent {
                 name: EventName::PlayerSpellUsed,
                 data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::GameDangerLevelIncreased(_) => GameEvent {
+                name: EventName::GameDangerLevelIncreased,
+                data: None,
             },
         }
     }

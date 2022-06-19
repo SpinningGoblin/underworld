@@ -7,13 +7,13 @@ edition = "2021"
 
 [dependencies]
 serde = { version = "1.0.137", features = ["derive"] }
-underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "35e5584a8e2480a25dc9d6a86a925e17b74112c9", features = ["serialization", "openapi"] }
+underworld_core = { git = "https://github.com/derrickp/underworld_core", rev = "d963cc30fdbcc683c5d68d9b8f801b639a86c191", features = ["serialization", "openapi"] }
 serde_json = { version = "1.0.81" }
 rand = "0.8.5"
-poem = { version = "1.3.30", features = ["static-files"] }
-poem-openapi = { version = "2.0.0", features = ["swagger-ui"]}
+poem = { version = "1.3.31", features = ["static-files"] }
+poem-openapi = { version = "2.0.1", features = ["swagger-ui"]}
 tokio = { version = "1.19.2", features = ["rt-multi-thread"] }
-sqlx = { version = "0.5.13", features = [ "runtime-tokio-native-tls" , "postgres" ] }
+sqlx = { version = "0.6.0", features = [ "runtime-tokio-native-tls" , "postgres" ] }
 strum = "0.24"
 strum_macros = "0.24"
 thiserror = "1.0.31"
