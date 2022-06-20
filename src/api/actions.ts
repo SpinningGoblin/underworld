@@ -10,6 +10,8 @@ import {
   LootFixture,
   LootNpc,
   MovePlayerItem,
+  OpenFixture,
+  OpenFixtureHiddenCompartment,
   PerformAction,
   PlayerCharacter,
   ResponseError,
@@ -228,6 +230,66 @@ export const performUseItemOnPlayer = async (
       actions,
       events,
       player,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
+};
+
+export const performOpenFixture = async (
+  args: OpenFixture,
+): Promise<void> => {
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
+    const response = await api.openFixture({
+      underworldUsername: username,
+      gameId,
+      openFixture: args,
+    });
+
+    const room = await getCurrentRoom();
+
+    notifyListeners({
+      actions: response.actions,
+      events: response.events,
+      room,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
+};
+
+export const performOpenFixtureHiddenCompartment = async (
+  args: OpenFixtureHiddenCompartment,
+): Promise<void> => {
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
+    const response = await api.openFixtureHiddenCompartment({
+      underworldUsername: username,
+      gameId,
+      openFixtureHiddenCompartment: args,
+    });
+
+    const room = await getCurrentRoom();
+
+    notifyListeners({
+      actions: response.actions,
+      events: response.events,
+      room,
     });
   } catch (e) {
     if (typeof e === "string") {
