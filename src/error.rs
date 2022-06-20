@@ -3,6 +3,10 @@ use poem::error::ResponseError;
 #[derive(Debug, thiserror::Error, strum_macros::Display)]
 pub enum GameError {
     ExitNotFoundError(String),
+    FixtureCannotBeFound(String),
+    FixtureCannotBeOpened(String),
+    FixtureHasNoHiddenCompartment(String),
+    FixtureHasHiddenCompartmentUnknown(String),
     FixtureNotFoundError(String),
     InvalidIdError(String),
     ItemNotDirectlyUsableError(String),
@@ -45,6 +49,18 @@ impl From<underworld_core::errors::Error> for GameError {
             underworld_core::errors::Error::TooManyWearablesEquippedError => {
                 GameError::TooManyWearablesEquippedError
             }
+            underworld_core::errors::Error::FixtureCannotBeFound(it) => {
+                GameError::FixtureCannotBeFound(it)
+            }
+            underworld_core::errors::Error::FixtureCannotBeOpened(it) => {
+                GameError::FixtureCannotBeOpened(it)
+            }
+            underworld_core::errors::Error::FixtureHasNoHiddenCompartment(it) => {
+                GameError::FixtureHasNoHiddenCompartment(it)
+            }
+            underworld_core::errors::Error::FixtureHasHiddenCompartmentUnknown(it) => {
+                GameError::FixtureHasHiddenCompartmentUnknown(it)
+            }
         }
     }
 }
@@ -66,6 +82,10 @@ impl ResponseError for GameError {
             GameError::NoPlayerCharacterSetError => poem::http::StatusCode::BAD_REQUEST,
             GameError::UnknownPlayerCharacterError => poem::http::StatusCode::NOT_FOUND,
             GameError::GameNotFoundError => poem::http::StatusCode::NOT_FOUND,
+            GameError::FixtureCannotBeFound(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::FixtureCannotBeOpened(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::FixtureHasNoHiddenCompartment(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::FixtureHasHiddenCompartmentUnknown(_) => poem::http::StatusCode::BAD_REQUEST,
         }
     }
 }

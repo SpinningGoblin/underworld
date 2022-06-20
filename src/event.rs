@@ -14,10 +14,9 @@ pub struct GameEvent {
 #[oai(rename_all = "snake_case")]
 pub enum EventName {
     DeadNpcBeaten,
-    FixtureCanBeOpenedDiscovered,
-    FixtureContainedDiscovered,
-    FixtureHasHiddenDiscovered,
-    FixtureHiddenItemsDiscovered,
+    FixtureHasHiddenCompartmentDiscovered,
+    FixtureHiddenCompartmentOpened,
+    FixtureOpened,
     FixtureViewed,
     GameDangerLevelIncreased,
     ItemTakenFromFixture,
@@ -117,20 +116,8 @@ impl From<Event> for GameEvent {
                 name: EventName::NpcPackedDiscovered,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
-            Event::FixtureCanBeOpenedDiscovered(it) => GameEvent {
-                name: EventName::FixtureCanBeOpenedDiscovered,
-                data: Some(serde_json::to_value(&it).unwrap()),
-            },
-            Event::FixtureContainedDiscovered(it) => GameEvent {
-                name: EventName::FixtureContainedDiscovered,
-                data: Some(serde_json::to_value(&it).unwrap()),
-            },
-            Event::FixtureHasHiddenDiscovered(it) => GameEvent {
-                name: EventName::FixtureHasHiddenDiscovered,
-                data: Some(serde_json::to_value(&it).unwrap()),
-            },
-            Event::FixtureHiddenItemsDiscovered(it) => GameEvent {
-                name: EventName::FixtureHiddenItemsDiscovered,
+            Event::FixtureHasHiddenCompartmentDiscovered(it) => GameEvent {
+                name: EventName::FixtureHasHiddenCompartmentDiscovered,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
             Event::FixtureViewed(it) => GameEvent {
@@ -192,6 +179,14 @@ impl From<Event> for GameEvent {
             Event::GameDangerLevelIncreased(_) => GameEvent {
                 name: EventName::GameDangerLevelIncreased,
                 data: None,
+            },
+            Event::FixtureHiddenCompartmentOpened(it) => GameEvent {
+                name: EventName::FixtureHiddenCompartmentOpened,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::FixtureOpened(it) => GameEvent {
+                name: EventName::FixtureOpened,
+                data: Some(serde_json::to_value(&it).unwrap()),
             },
         }
     }

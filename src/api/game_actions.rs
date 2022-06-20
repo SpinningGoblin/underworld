@@ -8,7 +8,8 @@ use sqlx::PgPool;
 use underworld_core::{
     actions::{
         AttackNpc, CastSpellOnPlayer, ExitRoom, InspectFixture, InspectNpc, LookAtFixture,
-        LookAtNpc, LootFixture, LootNpc, MovePlayerItem, UseItemOnPlayer,
+        LookAtNpc, LootFixture, LootNpc, MovePlayerItem, OpenFixture, OpenFixtureHiddenCompartment,
+        UseItemOnPlayer,
     },
     components::{
         fixtures::fixture::FixtureView, non_player::NonPlayerView, rooms::room_view::RoomView,
@@ -25,6 +26,7 @@ use crate::{
         items::{move_player_item, use_item_on_player, ItemMoved, ItemUsed},
         look::{look_at_fixture, look_at_npc, look_at_room},
         loot::{loot_fixture, loot_npc, FixtureLooted, NpcLooted},
+        open::{open_fixture, open_fixture_hidden_compartment, FixtureOpened},
         spells::{cast_spell_on_player, SpellCast},
     },
 };
@@ -71,6 +73,12 @@ enum LootNpcResponse {
 enum LootFixtureResponse {
     #[oai(status = 200)]
     FixtureLooted(Json<FixtureLooted>),
+}
+
+#[derive(ApiResponse)]
+enum FixtureOpenedResponse {
+    #[oai(status = 200)]
+    FixtureOpened(Json<FixtureOpened>),
 }
 
 #[derive(ApiResponse)]
@@ -240,6 +248,43 @@ impl UnderworldGameActionApi {
         transaction.commit().await.unwrap();
 
         Ok(LootFixtureResponse::FixtureLooted(Json(loot_result)))
+    }
+
+    /// Open a fixture.
+    #[oai(path = "/open_fixture", method = "post", operation_id = "open_fixture")]
+    async fn open_fixture(
+        &self,
+        pool: Data<&PgPool>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<OpenFixture>,
+    ) -> Result<FixtureOpenedResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let loot_result = open_fixture(&mut transaction, &username, &game_id, &args).await?;
+        transaction.commit().await.unwrap();
+
+        Ok(FixtureOpenedResponse::FixtureOpened(Json(loot_result)))
+    }
+
+    /// Open hidden compartment of fixture.
+    #[oai(
+        path = "/open_fixture_hidden_compartment",
+        method = "post",
+        operation_id = "open_fixture_hidden_compartment"
+    )]
+    async fn open_fixture_hidden_compartment(
+        &self,
+        pool: Data<&PgPool>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<OpenFixtureHiddenCompartment>,
+    ) -> Result<FixtureOpenedResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let loot_result =
+            open_fixture_hidden_compartment(&mut transaction, &username, &game_id, &args).await?;
+        transaction.commit().await.unwrap();
+
+        Ok(FixtureOpenedResponse::FixtureOpened(Json(loot_result)))
     }
 
     /// Take a closer look at the current room.
