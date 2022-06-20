@@ -29,46 +29,39 @@ import {
 /**
  * 
  * @export
- * @interface FixtureInspected
+ * @interface FixtureOpened
  */
-export interface FixtureInspected {
-    /**
-     * 
-     * @type {boolean}
-     * @memberof FixtureInspected
-     */
-    has_hidden_compartment_discovered: boolean;
-    /**
-     * 
-     * @type {Array<PerformAction>}
-     * @memberof FixtureInspected
-     */
-    actions: Array<PerformAction>;
+export interface FixtureOpened {
     /**
      * 
      * @type {Array<GameEvent>}
-     * @memberof FixtureInspected
+     * @memberof FixtureOpened
      */
     events: Array<GameEvent>;
+    /**
+     * 
+     * @type {Array<PerformAction>}
+     * @memberof FixtureOpened
+     */
+    actions: Array<PerformAction>;
 }
 
-export function FixtureInspectedFromJSON(json: any): FixtureInspected {
-    return FixtureInspectedFromJSONTyped(json, false);
+export function FixtureOpenedFromJSON(json: any): FixtureOpened {
+    return FixtureOpenedFromJSONTyped(json, false);
 }
 
-export function FixtureInspectedFromJSONTyped(json: any, ignoreDiscriminator: boolean): FixtureInspected {
+export function FixtureOpenedFromJSONTyped(json: any, ignoreDiscriminator: boolean): FixtureOpened {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'has_hidden_compartment_discovered': json['has_hidden_compartment_discovered'],
-        'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
         'events': ((json['events'] as Array<any>).map(GameEventFromJSON)),
+        'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
     };
 }
 
-export function FixtureInspectedToJSON(value?: FixtureInspected | null): any {
+export function FixtureOpenedToJSON(value?: FixtureOpened | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -77,9 +70,8 @@ export function FixtureInspectedToJSON(value?: FixtureInspected | null): any {
     }
     return {
         
-        'has_hidden_compartment_discovered': value.has_hidden_compartment_discovered,
-        'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
         'events': ((value.events as Array<any>).map(GameEventToJSON)),
+        'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
     };
 }
 

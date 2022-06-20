@@ -27,6 +27,7 @@ models/Fixture.ts
 models/FixtureInspected.ts
 models/FixtureItem.ts
 models/FixtureLooted.ts
+models/FixtureOpened.ts
 models/FixturePosition.ts
 models/FixturePositionDescriptor.ts
 models/FixtureType.ts
@@ -61,6 +62,8 @@ models/NpcInspected.ts
 models/NpcLooted.ts
 models/NpcPosition.ts
 models/NpcPositionDescriptor.ts
+models/OpenFixture.ts
+models/OpenFixtureHiddenCompartment.ts
 models/PerformAction.ts
 models/PlayerCharacter.ts
 models/Room.ts

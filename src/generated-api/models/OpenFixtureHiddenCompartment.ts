@@ -14,42 +14,34 @@
 
 import { exists, mapValues } from '../runtime';
 /**
- * Inspect an NPC, with a chance to reveal more information
- * than was previously known about the NPC.
+ * 
  * @export
- * @interface InspectFixture
+ * @interface OpenFixtureHiddenCompartment
  */
-export interface InspectFixture {
+export interface OpenFixtureHiddenCompartment {
     /**
      * 
      * @type {string}
-     * @memberof InspectFixture
+     * @memberof OpenFixtureHiddenCompartment
      */
     fixture_id: string;
-    /**
-     * Attempt to discover any hidden compartments and its contents.
-     * @type {boolean}
-     * @memberof InspectFixture
-     */
-    discover_hidden_compartment: boolean;
 }
 
-export function InspectFixtureFromJSON(json: any): InspectFixture {
-    return InspectFixtureFromJSONTyped(json, false);
+export function OpenFixtureHiddenCompartmentFromJSON(json: any): OpenFixtureHiddenCompartment {
+    return OpenFixtureHiddenCompartmentFromJSONTyped(json, false);
 }
 
-export function InspectFixtureFromJSONTyped(json: any, ignoreDiscriminator: boolean): InspectFixture {
+export function OpenFixtureHiddenCompartmentFromJSONTyped(json: any, ignoreDiscriminator: boolean): OpenFixtureHiddenCompartment {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
         'fixture_id': json['fixture_id'],
-        'discover_hidden_compartment': json['discover_hidden_compartment'],
     };
 }
 
-export function InspectFixtureToJSON(value?: InspectFixture | null): any {
+export function OpenFixtureHiddenCompartmentToJSON(value?: OpenFixtureHiddenCompartment | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -59,7 +51,6 @@ export function InspectFixtureToJSON(value?: InspectFixture | null): any {
     return {
         
         'fixture_id': value.fixture_id,
-        'discover_hidden_compartment': value.discover_hidden_compartment,
     };
 }
 

@@ -37,13 +37,19 @@ export interface FixtureItem {
      * @type {boolean}
      * @memberof FixtureItem
      */
-    is_hidden: boolean;
+    is_inside: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof FixtureItem
      */
-    is_hidden_known: boolean;
+    is_in_hidden_compartment?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FixtureItem
+     */
+    is_in_hidden_compartment_known: boolean;
 }
 
 export function FixtureItemFromJSON(json: any): FixtureItem {
@@ -57,8 +63,9 @@ export function FixtureItemFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         
         'item': ItemFromJSON(json['item']),
-        'is_hidden': json['is_hidden'],
-        'is_hidden_known': json['is_hidden_known'],
+        'is_inside': json['is_inside'],
+        'is_in_hidden_compartment': !exists(json, 'is_in_hidden_compartment') ? undefined : json['is_in_hidden_compartment'],
+        'is_in_hidden_compartment_known': json['is_in_hidden_compartment_known'],
     };
 }
 
@@ -72,8 +79,9 @@ export function FixtureItemToJSON(value?: FixtureItem | null): any {
     return {
         
         'item': ItemToJSON(value.item),
-        'is_hidden': value.is_hidden,
-        'is_hidden_known': value.is_hidden_known,
+        'is_inside': value.is_inside,
+        'is_in_hidden_compartment': value.is_in_hidden_compartment,
+        'is_in_hidden_compartment_known': value.is_in_hidden_compartment_known,
     };
 }
 

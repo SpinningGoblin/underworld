@@ -19,10 +19,9 @@
  */
 export const EventName = {
     DeadNpcBeaten: 'dead_npc_beaten',
-    FixtureCanBeOpenedDiscovered: 'fixture_can_be_opened_discovered',
-    FixtureContainedDiscovered: 'fixture_contained_discovered',
-    FixtureHasHiddenDiscovered: 'fixture_has_hidden_discovered',
-    FixtureHiddenItemsDiscovered: 'fixture_hidden_items_discovered',
+    FixtureHasHiddenCompartmentDiscovered: 'fixture_has_hidden_compartment_discovered',
+    FixtureHiddenCompartmentOpened: 'fixture_hidden_compartment_opened',
+    FixtureOpened: 'fixture_opened',
     FixtureViewed: 'fixture_viewed',
     GameDangerLevelIncreased: 'game_danger_level_increased',
     ItemTakenFromFixture: 'item_taken_from_fixture',

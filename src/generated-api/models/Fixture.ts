@@ -97,18 +97,6 @@ export interface Fixture {
      * @type {boolean}
      * @memberof Fixture
      */
-    knows_contained_items: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Fixture
-     */
-    knows_hidden_compartment_items: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Fixture
-     */
     has_hidden_compartment: boolean;
     /**
      * 
@@ -128,12 +116,6 @@ export interface Fixture {
      * @memberof Fixture
      */
     can_be_opened: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Fixture
-     */
-    knows_if_can_be_opened: boolean;
     /**
      * 
      * @type {boolean}
@@ -159,13 +141,10 @@ export function FixtureFromJSONTyped(json: any, ignoreDiscriminator: boolean): F
         'size': SizeFromJSON(json['size']),
         'descriptors': ((json['descriptors'] as Array<any>).map(ItemDescriptorFromJSON)),
         'items': ((json['items'] as Array<any>).map(FixtureItemFromJSON)),
-        'knows_contained_items': json['knows_contained_items'],
-        'knows_hidden_compartment_items': json['knows_hidden_compartment_items'],
         'has_hidden_compartment': json['has_hidden_compartment'],
         'knows_if_hidden_compartment': json['knows_if_hidden_compartment'],
         'open': json['open'],
         'can_be_opened': json['can_be_opened'],
-        'knows_if_can_be_opened': json['knows_if_can_be_opened'],
         'hidden_compartment_open': json['hidden_compartment_open'],
     };
 }
@@ -186,13 +165,10 @@ export function FixtureToJSON(value?: Fixture | null): any {
         'size': SizeToJSON(value.size),
         'descriptors': ((value.descriptors as Array<any>).map(ItemDescriptorToJSON)),
         'items': ((value.items as Array<any>).map(FixtureItemToJSON)),
-        'knows_contained_items': value.knows_contained_items,
-        'knows_hidden_compartment_items': value.knows_hidden_compartment_items,
         'has_hidden_compartment': value.has_hidden_compartment,
         'knows_if_hidden_compartment': value.knows_if_hidden_compartment,
         'open': value.open,
         'can_be_opened': value.can_be_opened,
-        'knows_if_can_be_opened': value.knows_if_can_be_opened,
         'hidden_compartment_open': value.hidden_compartment_open,
     };
 }

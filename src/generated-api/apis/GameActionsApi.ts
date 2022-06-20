@@ -33,6 +33,9 @@ import {
     FixtureLooted,
     FixtureLootedFromJSON,
     FixtureLootedToJSON,
+    FixtureOpened,
+    FixtureOpenedFromJSON,
+    FixtureOpenedToJSON,
     InspectFixture,
     InspectFixtureFromJSON,
     InspectFixtureToJSON,
@@ -72,6 +75,12 @@ import {
     NpcLooted,
     NpcLootedFromJSON,
     NpcLootedToJSON,
+    OpenFixture,
+    OpenFixtureFromJSON,
+    OpenFixtureToJSON,
+    OpenFixtureHiddenCompartment,
+    OpenFixtureHiddenCompartmentFromJSON,
+    OpenFixtureHiddenCompartmentToJSON,
     PerformAction,
     PerformActionFromJSON,
     PerformActionToJSON,
@@ -157,6 +166,18 @@ export interface MovePlayerItemRequest {
     underworldUsername: string;
     gameId: string;
     movePlayerItem: MovePlayerItem;
+}
+
+export interface OpenFixtureRequest {
+    underworldUsername: string;
+    gameId: string;
+    openFixture: OpenFixture;
+}
+
+export interface OpenFixtureHiddenCompartmentRequest {
+    underworldUsername: string;
+    gameId: string;
+    openFixtureHiddenCompartment: OpenFixtureHiddenCompartment;
 }
 
 export interface UseItemOnPlayerRequest {
@@ -373,6 +394,40 @@ export interface GameActionsApiInterface {
      * Use an item on your player character.
      */
     movePlayerItem(requestParameters: MovePlayerItemRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<ItemMoved>;
+
+    /**
+     * 
+     * @summary Open a fixture.
+     * @param {string} underworldUsername 
+     * @param {string} gameId 
+     * @param {OpenFixture} openFixture 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameActionsApiInterface
+     */
+    openFixtureRaw(requestParameters: OpenFixtureRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<FixtureOpened>>;
+
+    /**
+     * Open a fixture.
+     */
+    openFixture(requestParameters: OpenFixtureRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<FixtureOpened>;
+
+    /**
+     * 
+     * @summary Open hidden compartment of fixture.
+     * @param {string} underworldUsername 
+     * @param {string} gameId 
+     * @param {OpenFixtureHiddenCompartment} openFixtureHiddenCompartment 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameActionsApiInterface
+     */
+    openFixtureHiddenCompartmentRaw(requestParameters: OpenFixtureHiddenCompartmentRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<FixtureOpened>>;
+
+    /**
+     * Open hidden compartment of fixture.
+     */
+    openFixtureHiddenCompartment(requestParameters: OpenFixtureHiddenCompartmentRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<FixtureOpened>;
 
     /**
      * 
@@ -921,6 +976,96 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      */
     async movePlayerItem(requestParameters: MovePlayerItemRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<ItemMoved> {
         const response = await this.movePlayerItemRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Open a fixture.
+     */
+    async openFixtureRaw(requestParameters: OpenFixtureRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<FixtureOpened>> {
+        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
+            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling openFixture.');
+        }
+
+        if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
+            throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling openFixture.');
+        }
+
+        if (requestParameters.openFixture === null || requestParameters.openFixture === undefined) {
+            throw new runtime.RequiredError('openFixture','Required parameter requestParameters.openFixture was null or undefined when calling openFixture.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
+            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        }
+
+        const response = await this.request({
+            path: `/game/{game_id}/open_fixture`.replace(`{${"game_id"}}`, encodeURIComponent(String(requestParameters.gameId))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: OpenFixtureToJSON(requestParameters.openFixture),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => FixtureOpenedFromJSON(jsonValue));
+    }
+
+    /**
+     * Open a fixture.
+     */
+    async openFixture(requestParameters: OpenFixtureRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<FixtureOpened> {
+        const response = await this.openFixtureRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Open hidden compartment of fixture.
+     */
+    async openFixtureHiddenCompartmentRaw(requestParameters: OpenFixtureHiddenCompartmentRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<FixtureOpened>> {
+        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
+            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling openFixtureHiddenCompartment.');
+        }
+
+        if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
+            throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling openFixtureHiddenCompartment.');
+        }
+
+        if (requestParameters.openFixtureHiddenCompartment === null || requestParameters.openFixtureHiddenCompartment === undefined) {
+            throw new runtime.RequiredError('openFixtureHiddenCompartment','Required parameter requestParameters.openFixtureHiddenCompartment was null or undefined when calling openFixtureHiddenCompartment.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
+            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        }
+
+        const response = await this.request({
+            path: `/game/{game_id}/open_fixture_hidden_compartment`.replace(`{${"game_id"}}`, encodeURIComponent(String(requestParameters.gameId))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: OpenFixtureHiddenCompartmentToJSON(requestParameters.openFixtureHiddenCompartment),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => FixtureOpenedFromJSON(jsonValue));
+    }
+
+    /**
+     * Open hidden compartment of fixture.
+     */
+    async openFixtureHiddenCompartment(requestParameters: OpenFixtureHiddenCompartmentRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<FixtureOpened> {
+        const response = await this.openFixtureHiddenCompartmentRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
