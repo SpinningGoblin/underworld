@@ -11,14 +11,12 @@ const nameText = (eventName: EventName): string => {
   switch (eventName) {
     case "dead_npc_beaten":
       return "You beat a dead NPC. Why?";
-    case "fixture_can_be_opened_discovered":
-      return "You found out if the fixture can be opened";
-    case "fixture_contained_discovered":
-      return "You found out what the fixture contains";
-    case "fixture_has_hidden_discovered":
-      return "You found out if the fixture has hidden items";
-    case "fixture_hidden_items_discovered":
-      return "You found out the hidden items in fixture";
+    case "fixture_has_hidden_compartment_discovered":
+      return "Fixture's hidden compartment discovered";
+    case "fixture_opened":
+      return "Fixture was opened";
+    case "fixture_hidden_compartment_opened":
+      return "Fixture hidden compartment opened";
     case "item_taken_from_fixture":
       return "You took an item from the fixture";
     case "item_taken_from_npc":

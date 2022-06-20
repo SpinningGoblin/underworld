@@ -10,6 +10,8 @@ import {
 } from "../../generated-api";
 import { InspectFixtureView } from "../actions/InspectFixtureView";
 import { LootFixtureView } from "../actions/LootFixtureView";
+import { OpenFixtureHiddenCompartmentView } from "../actions/OpenFixtureHiddenCompartment";
+import { OpenFixtureView } from "../actions/OpenFixtureView";
 
 import styles from "./styles.module.css";
 
@@ -83,23 +85,43 @@ export const FixturePositionView: FunctionComponent<
 > = ({ fixturePosition }) => {
   const inspectArgs: InspectFixture = {
     fixture_id: fixturePosition.fixture.id,
-    discover_can_be_opened: true,
-    discover_contained: true,
-    discover_hidden: true,
-    discover_hidden_items: true,
+    discover_hidden_compartment: true,
   };
 
-  const items = fixturePosition.fixture.items.filter((i) => !i.is_hidden);
+  const items = fixturePosition.fixture.items.slice();
 
   const renderHiddenCompartment = (
     hiddenItems: Array<FixtureItem>,
   ): ReactElement => {
-    if (!fixturePosition.fixture.knows_hidden_compartment_items) {
-      return <span>You do not know their inventory</span>;
+    if (!fixturePosition.fixture.knows_if_hidden_compartment) {
+      return (
+        <div className={styles["hidden-search"]}>
+          <span>Is there a hidden compartment?</span>
+          <div className={styles["basic-actions"]}>
+            <InspectFixtureView args={inspectArgs} />
+          </div>
+        </div>
+      );
+    }
+
+    if (
+      fixturePosition.fixture.has_hidden_compartment &&
+      !fixturePosition.fixture.hidden_compartment_open
+    ) {
+      return (
+        <div className={styles["hidden-search"]}>
+          <span>The hidden compartment is closed</span>
+          <div className={styles["basic-actions"]}>
+            <OpenFixtureHiddenCompartmentView
+              args={{ fixture_id: fixturePosition.fixture.id }}
+            />
+          </div>
+        </div>
+      );
     }
 
     if (hiddenItems.length === 0) {
-      return <span>There are no hidden items</span>;
+      return <span>There are no hidden items.</span>;
     }
 
     return (
@@ -122,18 +144,15 @@ export const FixturePositionView: FunctionComponent<
         {descriptionText(fixturePosition)}
       </div>
       <div>{positionText(fixturePosition)}</div>
-      <div className={styles["basic-actions"]}>
-        <InspectFixtureView args={inspectArgs} />
-      </div>
+      {fixturePosition.fixture.can_be_opened && !fixturePosition.fixture.open && (
+        <div className={styles["basic-actions"]}>
+          <OpenFixtureView args={{ fixture_id: fixturePosition.fixture.id }} />
+        </div>
+      )}
       <div className={styles.items}>
-        {!fixturePosition.fixture.knows_contained_items &&
-          "You do not know what items it holds."}
-        {fixturePosition.fixture.knows_contained_items &&
-          items.length === 0 &&
-          "It holds no items"}
-        {fixturePosition.fixture.knows_contained_items &&
-          items.length > 0 &&
-          items.map((item, index) => (
+        {items.length === 0 && "There are no items"}
+        {items.length > 0 &&
+          items.filter(item => !item.is_in_hidden_compartment).map((item, index) => (
             <ItemView
               key={`${fixturePosition.fixture.id}_${index}`}
               fixtureId={fixturePosition.fixture.id}
@@ -142,15 +161,11 @@ export const FixturePositionView: FunctionComponent<
           ))}
       </div>
       <div className={styles.items}>
-        {!fixturePosition.fixture.knows_if_hidden_compartment &&
-          "You do not know if there is a hidden compartment."}
-        {fixturePosition.fixture.knows_if_hidden_compartment && (
-          <>
-            <span className="title">Hidden Compartment</span>
-            {renderHiddenCompartment(
-              fixturePosition.fixture.items.filter((i) => i.is_hidden),
-            )}
-          </>
+        <span className="title">Hidden Compartment</span>
+        {renderHiddenCompartment(
+          fixturePosition.fixture.items.filter(
+            (i) => i.is_in_hidden_compartment,
+          ),
         )}
       </div>
     </div>
