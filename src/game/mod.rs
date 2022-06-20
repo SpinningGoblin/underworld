@@ -6,5 +6,6 @@ pub mod inspect;
 pub mod items;
 pub mod look;
 pub mod loot;
+pub mod open;
 pub mod repository;
 pub mod spells;
