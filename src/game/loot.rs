@@ -24,13 +24,12 @@ pub async fn loot_npc(
     game_id: &str,
     args: &LootNpc,
 ) -> Result<NpcLooted, GameError> {
-    let player = match crate::player_characters::repository::current(transaction, &username).await?
-    {
+    let player = match crate::player_characters::repository::current(transaction, username).await? {
         Some(it) => it,
         None => return Err(GameError::NoPlayerCharacterSetError),
     };
 
-    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
+    let state = match super::repository::by_id(transaction, username, game_id).await? {
         Some(it) => it,
         None => return Err(GameError::GameNotFoundError),
     };
@@ -39,14 +38,14 @@ pub async fn loot_npc(
     let action = Action::LootNpc(args.to_owned());
     let events = game.handle_action(&action)?;
 
-    super::repository::save(transaction, &username, &game.state).await?;
-    crate::player_characters::repository::save(transaction, &username, &game.player).await?;
+    super::repository::save(transaction, username, &game.state).await?;
+    crate::player_characters::repository::save(transaction, username, &game.player).await?;
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
     Ok(NpcLooted {
         events: game_events,
-        actions: game_actions(&game, &username),
+        actions: game_actions(&game, username),
     })
 }
 
@@ -62,13 +61,12 @@ pub async fn loot_fixture(
     game_id: &str,
     args: &LootFixture,
 ) -> Result<FixtureLooted, GameError> {
-    let player = match crate::player_characters::repository::current(transaction, &username).await?
-    {
+    let player = match crate::player_characters::repository::current(transaction, username).await? {
         Some(it) => it,
         None => return Err(GameError::NoPlayerCharacterSetError),
     };
 
-    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
+    let state = match super::repository::by_id(transaction, username, game_id).await? {
         Some(it) => it,
         None => return Err(GameError::GameNotFoundError),
     };
@@ -77,13 +75,13 @@ pub async fn loot_fixture(
     let action = Action::LootFixture(args.to_owned());
     let events = game.handle_action(&action)?;
 
-    super::repository::save(transaction, &username, &game.state).await?;
-    crate::player_characters::repository::save(transaction, &username, &game.player).await?;
+    super::repository::save(transaction, username, &game.state).await?;
+    crate::player_characters::repository::save(transaction, username, &game.player).await?;
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
     Ok(FixtureLooted {
         events: game_events,
-        actions: game_actions(&game, &username),
+        actions: game_actions(&game, username),
     })
 }

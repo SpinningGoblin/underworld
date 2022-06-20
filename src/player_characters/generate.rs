@@ -34,25 +34,25 @@ pub async fn generate_player_character(
     );
 
     let player_character = generator.generate();
-    super::repository::save(transaction, &username, &player_character)
+    super::repository::save(transaction, username, &player_character)
         .await
         .unwrap();
 
     let mut set_as_current = false;
 
-    if super::repository::current(transaction, &username)
+    if super::repository::current(transaction, username)
         .await
         .unwrap()
         .is_none()
     {
-        super::repository::set_current(transaction, &username, &player_character)
+        super::repository::set_current(transaction, username, &player_character)
             .await
             .unwrap();
         set_as_current = true;
     }
 
     GeneratedPlayerCharacter {
-        actions: player_character_actions(&username, &player_character.id.to_string()),
+        actions: player_character_actions(username, &player_character.id.to_string()),
         player_character_id: player_character.id.to_string(),
         set_as_current,
     }

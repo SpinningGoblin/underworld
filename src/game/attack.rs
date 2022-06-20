@@ -28,12 +28,12 @@ pub async fn attack_npc(
     args: &AttackNpc,
 ) -> Result<NpcAttacked, GameError> {
     let player_character =
-        match crate::player_characters::repository::current(transaction, &username).await? {
+        match crate::player_characters::repository::current(transaction, username).await? {
             Some(it) => it,
             None => return Err(GameError::NoPlayerCharacterSetError),
         };
 
-    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
+    let state = match super::repository::by_id(transaction, username, game_id).await? {
         Some(it) => it,
         None => return Err(GameError::GameNotFoundError),
     };
@@ -44,13 +44,13 @@ pub async fn attack_npc(
     };
 
     let events = game.handle_action(&Action::AttackNpc(args.to_owned()))?;
-    super::repository::save(transaction, &username, &game.state).await?;
-    crate::player_characters::repository::save(transaction, &username, &game.player).await?;
+    super::repository::save(transaction, username, &game.state).await?;
+    crate::player_characters::repository::save(transaction, username, &game.player).await?;
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
     Ok(NpcAttacked {
         events: game_events,
-        actions: game_actions(&game, &username),
+        actions: game_actions(&game, username),
     })
 }

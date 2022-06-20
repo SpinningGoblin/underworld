@@ -12,17 +12,16 @@ pub async fn game_actions(
     username: &str,
     game_id: &str,
 ) -> Result<Vec<PerformAction>, GameError> {
-    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
+    let state = match super::repository::by_id(transaction, username, game_id).await? {
         Some(game_state) => game_state,
         None => return Err(GameError::GameNotFoundError),
     };
 
-    let player = match crate::player_characters::repository::current(transaction, &username).await?
-    {
+    let player = match crate::player_characters::repository::current(transaction, username).await? {
         Some(player) => player,
         None => return Err(GameError::NoPlayerCharacterSetError),
     };
 
     let game = Game { state, player };
-    Ok(crate::actions::game_actions(&game, &username))
+    Ok(crate::actions::game_actions(&game, username))
 }

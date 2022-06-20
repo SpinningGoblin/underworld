@@ -20,11 +20,11 @@ pub async fn set_current_player_character(
     username: &str,
     pc_id: &str,
 ) -> Result<(), GameError> {
-    let player_result = super::repository::by_id(transaction, &username, &pc_id).await?;
+    let player_result = super::repository::by_id(transaction, username, pc_id).await?;
 
     match player_result {
         Some(it) => {
-            super::repository::set_current(transaction, &username, &it).await?;
+            super::repository::set_current(transaction, username, &it).await?;
             Ok(())
         }
         None => Err(GameError::UnknownPlayerCharacterError),

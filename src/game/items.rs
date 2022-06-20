@@ -28,12 +28,12 @@ pub async fn use_item_on_player(
     args: &UseItemOnPlayer,
 ) -> Result<ItemUsed, GameError> {
     let player_character =
-        match crate::player_characters::repository::current(transaction, &username).await? {
+        match crate::player_characters::repository::current(transaction, username).await? {
             Some(it) => it,
             None => return Err(GameError::NoPlayerCharacterSetError),
         };
 
-    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
+    let state = match super::repository::by_id(transaction, username, game_id).await? {
         Some(it) => it,
         None => return Err(GameError::GameNotFoundError),
     };
@@ -44,14 +44,14 @@ pub async fn use_item_on_player(
     };
 
     let events = game.handle_action(&Action::UseItemOnPlayer(args.to_owned()))?;
-    super::repository::save(transaction, &username, &game.state).await?;
-    crate::player_characters::repository::save(transaction, &username, &game.player).await?;
+    super::repository::save(transaction, username, &game.state).await?;
+    crate::player_characters::repository::save(transaction, username, &game.player).await?;
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
     Ok(ItemUsed {
         events: game_events,
-        actions: game_actions(&game, &username),
+        actions: game_actions(&game, username),
     })
 }
 
@@ -71,12 +71,12 @@ pub async fn move_player_item(
     args: &MovePlayerItem,
 ) -> Result<ItemMoved, GameError> {
     let player_character =
-        match crate::player_characters::repository::current(transaction, &username).await? {
+        match crate::player_characters::repository::current(transaction, username).await? {
             Some(it) => it,
             None => return Err(GameError::NoPlayerCharacterSetError),
         };
 
-    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
+    let state = match super::repository::by_id(transaction, username, game_id).await? {
         Some(it) => it,
         None => return Err(GameError::GameNotFoundError),
     };
@@ -87,13 +87,13 @@ pub async fn move_player_item(
     };
 
     let events = game.handle_action(&Action::MovePlayerItem(args.to_owned()))?;
-    super::repository::save(transaction, &username, &game.state).await?;
-    crate::player_characters::repository::save(transaction, &username, &game.player).await?;
+    super::repository::save(transaction, username, &game.state).await?;
+    crate::player_characters::repository::save(transaction, username, &game.player).await?;
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
     Ok(ItemMoved {
         events: game_events,
-        actions: game_actions(&game, &username),
+        actions: game_actions(&game, username),
     })
 }

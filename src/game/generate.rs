@@ -24,10 +24,9 @@ pub async fn generate_game(
     let game_generator = game_generator();
     let game_state = game_generator.generate();
 
-    super::repository::save(transaction, &username, &game_state).await?;
+    super::repository::save(transaction, username, &game_state).await?;
 
-    let player = match crate::player_characters::repository::current(transaction, &username).await?
-    {
+    let player = match crate::player_characters::repository::current(transaction, username).await? {
         Some(it) => it,
         None => return Err(GameError::NoPlayerCharacterSetError),
     };
@@ -37,6 +36,6 @@ pub async fn generate_game(
         state: game_state,
         player,
     };
-    let actions = game_actions(&game, &username);
+    let actions = game_actions(&game, username);
     Ok(GeneratedGame { actions, game_id })
 }

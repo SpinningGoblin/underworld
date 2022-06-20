@@ -15,7 +15,7 @@ pub async fn look_at_room(
     username: &str,
     game_id: &str,
 ) -> Result<RoomView, GameError> {
-    let state = match super::repository::by_id(transaction, &username, &game_id).await? {
+    let state = match super::repository::by_id(transaction, username, game_id).await? {
         Some(it) => it,
         None => return Err(GameError::GameNotFoundError),
     };
@@ -29,7 +29,7 @@ pub async fn look_at_npc(
     game_id: &str,
     args: &LookAtNpc,
 ) -> Result<NonPlayerView, GameError> {
-    let state = match super::repository::by_id(transaction, &username, &game_id)
+    let state = match super::repository::by_id(transaction, username, game_id)
         .await
         .unwrap()
     {
@@ -37,7 +37,7 @@ pub async fn look_at_npc(
         None => return Err(GameError::GameNotFoundError),
     };
 
-    let player = match crate::player_characters::repository::current(transaction, &username)
+    let player = match crate::player_characters::repository::current(transaction, username)
         .await
         .unwrap()
     {
@@ -64,7 +64,7 @@ pub async fn look_at_fixture(
     game_id: &str,
     args: &LookAtFixture,
 ) -> Result<FixtureView, GameError> {
-    let state = match super::repository::by_id(transaction, &username, &game_id)
+    let state = match super::repository::by_id(transaction, username, game_id)
         .await
         .unwrap()
     {
@@ -72,7 +72,7 @@ pub async fn look_at_fixture(
         None => return Err(GameError::GameNotFoundError),
     };
 
-    let player = match crate::player_characters::repository::current(transaction, &username)
+    let player = match crate::player_characters::repository::current(transaction, username)
         .await
         .unwrap()
     {
