@@ -31,6 +31,8 @@ export const ActionName = {
     LootFixture: 'loot_fixture',
     LootNpc: 'loot_npc',
     MovePlayerItem: 'move_player_item',
+    OpenFixture: 'open_fixture',
+    OpenFixtureHiddenCompartment: 'open_fixture_hidden_compartment',
     QuickLookRoom: 'quick_look_room',
     SetCurrentPlayerCharacter: 'set_current_player_character',
     UseItemOnPlayer: 'use_item_on_player'
