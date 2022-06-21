@@ -1,7 +1,7 @@
 use poem_openapi::{Enum, Object};
 use serde::Serialize;
 use serde_json::Value;
-use underworld_core::events::event::Event;
+use underworld_core::events::Event;
 
 #[derive(Object, Serialize)]
 pub struct GameEvent {
@@ -47,6 +47,15 @@ pub enum EventName {
     RoomExited,
     RoomFirstSeen,
     RoomGenerated,
+    NpcDamagedByPoison,
+    NpcPoisonDurationChanged,
+    NpcPoisonLevelChanged,
+    NpcPoisoned,
+    PlayerDamagedByPoison,
+    PlayerMaxHealthChanged,
+    PlayerPoisonLevelChanged,
+    PlayerPoisoned,
+    PlayerPoisonDurationChanged,
 }
 
 impl From<Event> for GameEvent {
@@ -156,13 +165,13 @@ impl From<Event> for GameEvent {
                 name: EventName::PlayerItemUsed,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
-            Event::PlayerResurrected(it) => GameEvent {
+            Event::PlayerResurrected => GameEvent {
                 name: EventName::PlayerResurrected,
-                data: Some(serde_json::to_value(&it).unwrap()),
+                data: None,
             },
-            Event::PlayerRetributionAuraDissipated(it) => GameEvent {
+            Event::PlayerRetributionAuraDissipated => GameEvent {
                 name: EventName::PlayerRetributionAuraDissipated,
-                data: Some(serde_json::to_value(&it).unwrap()),
+                data: None,
             },
             Event::PlayerSpellForgotten(it) => GameEvent {
                 name: EventName::PlayerSpellForgotten,
@@ -186,6 +195,42 @@ impl From<Event> for GameEvent {
             },
             Event::FixtureOpened(it) => GameEvent {
                 name: EventName::FixtureOpened,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::NpcDamagedByPoison(it) => GameEvent {
+                name: EventName::NpcDamagedByPoison,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::NpcPoisonDurationChanged(it) => GameEvent {
+                name: EventName::NpcPoisonDurationChanged,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::NpcPoisonLevelChanged(it) => GameEvent {
+                name: EventName::NpcPoisonLevelChanged,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::NpcPoisoned(it) => GameEvent {
+                name: EventName::NpcPoisoned,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerDamagedByPoison(it) => GameEvent {
+                name: EventName::PlayerDamagedByPoison,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerMaxHealthChanged(it) => GameEvent {
+                name: EventName::PlayerMaxHealthChanged,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerPoisonLevelChanged(it) => GameEvent {
+                name: EventName::PlayerPoisonLevelChanged,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerPoisoned(it) => GameEvent {
+                name: EventName::PlayerPoisoned,
+                data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerPoisonDurationChanged(it) => GameEvent {
+                name: EventName::PlayerPoisonDurationChanged,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
         }

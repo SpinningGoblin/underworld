@@ -4,7 +4,7 @@ use underworld_core::{
     components::{
         fixtures::fixture::FixtureView, non_player::NonPlayerView, rooms::room_view::RoomView,
     },
-    events::event::Event,
+    events::Event,
     game::Game,
 };
 

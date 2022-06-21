@@ -3,7 +3,7 @@ use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{action::Action, inspect_fixture::InspectFixture, inspect_npc::InspectNpc},
-    events::event::Event,
+    events::Event,
     game::Game,
 };
 

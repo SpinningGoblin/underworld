@@ -1,9 +1,16 @@
 use poem_openapi::Object;
 use serde::Serialize;
-use sqlx::{Transaction, Postgres};
-use underworld_core::{actions::{OpenFixture, Action, OpenFixtureHiddenCompartment}, game::Game};
+use sqlx::{Postgres, Transaction};
+use underworld_core::{
+    actions::{Action, OpenFixture, OpenFixtureHiddenCompartment},
+    game::Game,
+};
 
-use crate::{event::GameEvent, actions::{PerformAction, game_actions}, error::GameError};
+use crate::{
+    actions::{game_actions, PerformAction},
+    error::GameError,
+    event::GameEvent,
+};
 
 #[derive(Serialize, Object)]
 pub struct FixtureOpened {
