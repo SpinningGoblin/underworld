@@ -31,6 +31,7 @@ pub enum EventName {
     PlayerGainsRetributionAura,
     PlayerGainsShieldAura,
     PlayerHealed,
+    PlayerHealthFullyRestored,
     PlayerHit,
     PlayerHitNpc,
     PlayerItemMoved,
@@ -232,6 +233,10 @@ impl From<Event> for GameEvent {
             Event::PlayerPoisonDurationChanged(it) => GameEvent {
                 name: EventName::PlayerPoisonDurationChanged,
                 data: Some(serde_json::to_value(&it).unwrap()),
+            },
+            Event::PlayerHealthFullyRestored => GameEvent {
+                name: EventName::PlayerHealthFullyRestored,
+                data: None,
             },
         }
     }

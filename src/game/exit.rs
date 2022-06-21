@@ -43,6 +43,7 @@ pub async fn exit_room(
 
     let events = game.handle_action(&Action::ExitRoom(args.to_owned()))?;
     super::repository::save(transaction, username, &game.state).await?;
+    crate::player_characters::repository::save(transaction, username, &game.player).await?;
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
     Ok(RoomExited {

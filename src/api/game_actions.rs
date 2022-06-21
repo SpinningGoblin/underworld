@@ -9,7 +9,7 @@ use underworld_core::{
     actions::{
         AttackNpc, CastSpellOnPlayer, ExitRoom, InspectFixture, InspectNpc, LookAtFixture,
         LookAtNpc, LootFixture, LootNpc, MovePlayerItem, OpenFixture, OpenFixtureHiddenCompartment,
-        UseItemOnPlayer,
+        UseItemOnPlayer, CastSpellOnNpc,
     },
     components::{
         fixtures::fixture::FixtureView, non_player::NonPlayerView, rooms::room_view::RoomView,
@@ -27,7 +27,7 @@ use crate::{
         look::{look_at_fixture, look_at_npc, look_at_room},
         loot::{loot_fixture, loot_npc, FixtureLooted, NpcLooted},
         open::{open_fixture, open_fixture_hidden_compartment, FixtureOpened},
-        spells::{cast_spell_on_player, SpellCast},
+        spells::{cast_spell_on_player, SpellCast, cast_spell_on_npc},
     },
 };
 
@@ -171,6 +171,27 @@ impl UnderworldGameActionApi {
         let mut transaction = pool.0.begin().await.unwrap();
         let cast_result =
             cast_spell_on_player(&mut transaction, &username, &game_id, &args).await?;
+        transaction.commit().await.unwrap();
+
+        Ok(CastSpellResponse::SpellCast(Json(cast_result)))
+    }
+
+    /// Cast a spell on your player character.
+    #[oai(
+        path = "/cast_spell_on_npc",
+        method = "post",
+        operation_id = "cast_spell_on_npc"
+    )]
+    async fn cast_spell_on_npc(
+        &self,
+        pool: Data<&PgPool>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<CastSpellOnNpc>,
+    ) -> Result<CastSpellResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let cast_result =
+            cast_spell_on_npc(&mut transaction, &username, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(CastSpellResponse::SpellCast(Json(cast_result)))
