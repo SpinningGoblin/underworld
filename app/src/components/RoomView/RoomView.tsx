@@ -26,6 +26,14 @@ const flavourText = (flavour: FlavourText): string => {
       return "A strange mold and moss cover the walls.";
     case "unseen_lights_flicker_walls":
       return "Unseen lights flicker across the walls.";
+    case "is_something_watching_you":
+      return "Is something watching you?";
+    case "smells_like_old_goblin_socks":
+      return "It smells like old goblin socks. Where is that smell coming from?";
+    case "something_squishy_all_over_floor":
+      return "There's something squishy all over the floor...";
+    case "you_hear_scratching_all_around_you":
+      return "You hear scratching all around you... But from what?";
   }
 };
 
