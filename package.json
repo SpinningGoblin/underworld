@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "compile": "tsc --noEmit",
     "preview": "vite preview",
     "generate": "openapi-generator-cli generate -i http://localhost:8080/spec -g typescript-fetch -o src/generated-api --additional-properties=supportsES6=true,withInterfaces=true,modelPropertyNaming=original",
     "prettier": "prettier --write src",
