@@ -47,3 +47,17 @@
   padding: 5px;
   min-width: 60px;
 }
+
+.spells-on-npc {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  padding-top: 6px;
+  gap: 6px;
+}
+
+.cast-button {
+  background-color: #9bbc0f;
+  color: #0f380f;
+  padding: 5px;
+  min-width: 60px;
+}

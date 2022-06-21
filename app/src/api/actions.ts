@@ -1,5 +1,6 @@
 import {
   AttackNpc,
+  CastSpellOnNpc,
   CastSpellOnPlayer,
   ExitRoom,
   GameEvent,
@@ -123,12 +124,17 @@ export const performExitRoom = async (args: ExitRoom): Promise<void> => {
       exitRoom: args,
     });
 
-    const room = await getCurrentRoom();
+    const playerApi = getPlayerApi();
+    const [room, player] = await Promise.all([
+      getCurrentRoom(),
+      playerApi.getCurrentPc({ underworldUsername: username }),
+    ]);
 
     const actionPerformed: ActionPerformed = {
       actions,
       events,
       room,
+      player,
     };
 
     notifyListeners(actionPerformed);
@@ -151,6 +157,39 @@ export const performAttackNpc = async (args: AttackNpc): Promise<void> => {
       underworldUsername: username,
       gameId,
       attackNpc: args,
+    });
+
+    const playerApi = getPlayerApi();
+    const [room, player] = await Promise.all([
+      getCurrentRoom(),
+      playerApi.getCurrentPc({ underworldUsername: username }),
+    ]);
+
+    notifyListeners({
+      actions,
+      events,
+      player,
+      room,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
+};
+
+export const performCastSpellOnNpc = async (args: CastSpellOnNpc): Promise<void> => {
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
+    const { actions, events } = await api.castSpellOnNpc({
+      underworldUsername: username,
+      gameId,
+      castSpellOnNpc: args,
     });
 
     const playerApi = getPlayerApi();
@@ -255,11 +294,16 @@ export const performOpenFixture = async (
     });
 
     const room = await getCurrentRoom();
+    const playerApi = getPlayerApi();
+    const player = await playerApi.getCurrentPc({
+      underworldUsername: username,
+    });
 
     notifyListeners({
       actions: response.actions,
       events: response.events,
       room,
+      player,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -285,11 +329,16 @@ export const performOpenFixtureHiddenCompartment = async (
     });
 
     const room = await getCurrentRoom();
+    const playerApi = getPlayerApi();
+    const player = await playerApi.getCurrentPc({
+      underworldUsername: username,
+    });
 
     notifyListeners({
       actions: response.actions,
       events: response.events,
       room,
+      player,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -315,11 +364,16 @@ export const performInspectFixture = async (
     });
 
     const room = await getCurrentRoom();
+    const playerApi = getPlayerApi();
+    const player = await playerApi.getCurrentPc({
+      underworldUsername: username,
+    });
 
     notifyListeners({
       actions: response.actions,
       events: response.events,
       room,
+      player,
     });
   } catch (e) {
     if (typeof e === "string") {

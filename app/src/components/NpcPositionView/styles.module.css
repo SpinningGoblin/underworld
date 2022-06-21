@@ -14,7 +14,7 @@
 
 .basic-actions {
   margin-top: 10px;
-  display: flex;
+  display: grid;
   gap: 6px;
 }
 

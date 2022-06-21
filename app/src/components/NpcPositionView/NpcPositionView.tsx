@@ -3,8 +3,10 @@ import {
   AttackNpc,
   InspectNpc,
   NpcPosition,
+  PlayerCharacter,
 } from "../../generated-api";
 import { AttackNpcView } from "../actions";
+import { CastSpellOnNpcView } from "../actions/CastSpellOnNpcView";
 import { InspectNpcView } from "../actions/InspectNpcView";
 import { NpcInventoryView } from "./NpcInventoryView";
 
@@ -12,6 +14,7 @@ import styles from "./styles.module.css";
 
 export interface NpcPositionViewProps {
   npcPosition: NpcPosition;
+  player: PlayerCharacter;
 }
 
 const nameText = (npcPosition: NpcPosition): string =>
@@ -85,6 +88,7 @@ const positionText = (npcPosition: NpcPosition): string => {
 
 export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
   npcPosition,
+  player,
 }) => {
   const inspectArgs: InspectNpc = {
     npc_id: npcPosition.npc.id,
@@ -111,6 +115,10 @@ export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
     );
   };
 
+  const learnedSpells = player.character.spell_memory!.spells.filter(
+    (learnedSpell) => learnedSpell.spell.spell_type === "attack",
+  );
+
   return (
     <div className={styles["npc-position"]}>
       <div>
@@ -129,6 +137,12 @@ export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
       <div className={styles["basic-actions"]}>
         <InspectNpcView args={inspectArgs} />
         <AttackNpcView args={attackArgs} />
+        {learnedSpells.length > 0 && (
+          <CastSpellOnNpcView
+            learnedSpells={learnedSpells}
+            npcId={npcPosition.npc.id}
+          />
+        )}
       </div>
       <div className={styles.inventory}>
         {!npcPosition.npc.character.inventory_known &&
