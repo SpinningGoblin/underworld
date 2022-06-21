@@ -18,6 +18,9 @@ import {
     AttackNpc,
     AttackNpcFromJSON,
     AttackNpcToJSON,
+    CastSpellOnNpc,
+    CastSpellOnNpcFromJSON,
+    CastSpellOnNpcToJSON,
     CastSpellOnPlayer,
     CastSpellOnPlayerFromJSON,
     CastSpellOnPlayerToJSON,
@@ -102,6 +105,12 @@ export interface AttackNpcRequest {
     underworldUsername: string;
     gameId: string;
     attackNpc: AttackNpc;
+}
+
+export interface CastSpellOnNpcRequest {
+    underworldUsername: string;
+    gameId: string;
+    castSpellOnNpc: CastSpellOnNpc;
 }
 
 export interface CastSpellOnPlayerRequest {
@@ -209,6 +218,23 @@ export interface GameActionsApiInterface {
      * Attack a specific NPC inside the current room of the specified game.
      */
     attackNpc(requestParameters: AttackNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<NpcAttacked>;
+
+    /**
+     * 
+     * @summary Cast a spell on your player character.
+     * @param {string} underworldUsername 
+     * @param {string} gameId 
+     * @param {CastSpellOnNpc} castSpellOnNpc 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameActionsApiInterface
+     */
+    castSpellOnNpcRaw(requestParameters: CastSpellOnNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<SpellCast>>;
+
+    /**
+     * Cast a spell on your player character.
+     */
+    castSpellOnNpc(requestParameters: CastSpellOnNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<SpellCast>;
 
     /**
      * 
@@ -495,6 +521,51 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      */
     async attackNpc(requestParameters: AttackNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<NpcAttacked> {
         const response = await this.attackNpcRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Cast a spell on your player character.
+     */
+    async castSpellOnNpcRaw(requestParameters: CastSpellOnNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<SpellCast>> {
+        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
+            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling castSpellOnNpc.');
+        }
+
+        if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
+            throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling castSpellOnNpc.');
+        }
+
+        if (requestParameters.castSpellOnNpc === null || requestParameters.castSpellOnNpc === undefined) {
+            throw new runtime.RequiredError('castSpellOnNpc','Required parameter requestParameters.castSpellOnNpc was null or undefined when calling castSpellOnNpc.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
+            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        }
+
+        const response = await this.request({
+            path: `/game/{game_id}/cast_spell_on_npc`.replace(`{${"game_id"}}`, encodeURIComponent(String(requestParameters.gameId))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CastSpellOnNpcToJSON(requestParameters.castSpellOnNpc),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SpellCastFromJSON(jsonValue));
+    }
+
+    /**
+     * Cast a spell on your player character.
+     */
+    async castSpellOnNpc(requestParameters: CastSpellOnNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<SpellCast> {
+        const response = await this.castSpellOnNpcRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

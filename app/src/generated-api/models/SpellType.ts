@@ -19,8 +19,8 @@
  */
 export const SpellType = {
     Attack: 'attack',
-    Aura: 'aura',
-    Healing: 'healing'
+    Healing: 'healing',
+    PlayerEffect: 'player_effect'
 } as const;
 export type SpellType = typeof SpellType[keyof typeof SpellType];
 

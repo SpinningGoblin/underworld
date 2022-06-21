@@ -36,6 +36,7 @@ export const EventName = {
     PlayerGainsRetributionAura: 'player_gains_retribution_aura',
     PlayerGainsShieldAura: 'player_gains_shield_aura',
     PlayerHealed: 'player_healed',
+    PlayerHealthFullyRestored: 'player_health_fully_restored',
     PlayerHit: 'player_hit',
     PlayerHitNpc: 'player_hit_npc',
     PlayerItemMoved: 'player_item_moved',
@@ -51,7 +52,16 @@ export const EventName = {
     PlayerSpellUsed: 'player_spell_used',
     RoomExited: 'room_exited',
     RoomFirstSeen: 'room_first_seen',
-    RoomGenerated: 'room_generated'
+    RoomGenerated: 'room_generated',
+    NpcDamagedByPoison: 'npc_damaged_by_poison',
+    NpcPoisonDurationChanged: 'npc_poison_duration_changed',
+    NpcPoisonLevelChanged: 'npc_poison_level_changed',
+    NpcPoisoned: 'npc_poisoned',
+    PlayerDamagedByPoison: 'player_damaged_by_poison',
+    PlayerMaxHealthChanged: 'player_max_health_changed',
+    PlayerPoisonLevelChanged: 'player_poison_level_changed',
+    PlayerPoisoned: 'player_poisoned',
+    PlayerPoisonDurationChanged: 'player_poison_duration_changed'
 } as const;
 export type EventName = typeof EventName[keyof typeof EventName];
 
