@@ -3,6 +3,7 @@
 export * from './ActionName';
 export * from './Attack';
 export * from './AttackNpc';
+export * from './CastSpellOnNpc';
 export * from './CastSpellOnPlayer';
 export * from './Character';
 export * from './CharacterItem';

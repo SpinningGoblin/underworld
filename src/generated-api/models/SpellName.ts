@@ -19,11 +19,14 @@
  */
 export const SpellName = {
     ElectricBlast: 'electric_blast',
+    GreatHeal: 'great_heal',
     Heal: 'heal',
     Phoenix: 'phoenix',
     QuickHeal: 'quick_heal',
     RagingFireball: 'raging_fireball',
     Retribution: 'retribution',
+    PoisonCloud: 'poison_cloud',
+    PoisonDart: 'poison_dart',
     TinyShield: 'tiny_shield'
 } as const;
 export type SpellName = typeof SpellName[keyof typeof SpellName];

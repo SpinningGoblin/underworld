@@ -8,6 +8,7 @@ index.ts
 models/ActionName.ts
 models/Attack.ts
 models/AttackNpc.ts
+models/CastSpellOnNpc.ts
 models/CastSpellOnPlayer.ts
 models/Character.ts
 models/CharacterItem.ts
