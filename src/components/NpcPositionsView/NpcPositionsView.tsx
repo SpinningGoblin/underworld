@@ -23,6 +23,7 @@ const npcText = (room: Room): string => {
 };
 
 export const NpcPositionsView: FunctionComponent<NpcPositionsViewProps> = ({
+  player,
   room,
 }) => (
   <div className={styles.npcs}>
@@ -32,6 +33,7 @@ export const NpcPositionsView: FunctionComponent<NpcPositionsViewProps> = ({
         <NpcPositionView
           key={npcPosition.npc.id}
           npcPosition={npcPosition}
+          player={player}
         />
       ))}
     </div>
