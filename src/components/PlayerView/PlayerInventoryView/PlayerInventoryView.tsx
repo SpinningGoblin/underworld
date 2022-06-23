@@ -1,7 +1,9 @@
 import { FunctionComponent } from "react";
 import {
+  Attack,
   CharacterItem,
   Consumable,
+  Defense,
   Inventory,
   ItemDescriptor,
   ItemType,
@@ -67,6 +69,20 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
     (action) => action.name === "use_item_on_player",
   );
 
+  const renderAttack = (attack: Attack) => (
+    <div className={styles.attack}>
+      <span>{`${attack.num_rolls}d6 ${
+        attack.modifier !== 0 ? `+${attack.modifier}` : ""
+      }`}</span>
+    </div>
+  );
+
+  const renderDefense = (defense: Defense) => (
+    <div className={styles.defense}>
+      <span>{`${defense.damage_resistance} damage resistance`}</span>
+    </div>
+  );
+
   return (
     <div className={[styles.item, "action-card"].join(" ")}>
       <div className={styles["item-name"]}>
@@ -76,6 +92,8 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
           itemTypeText(characterItem.item.item_type),
         ].join(" ")}
       </div>
+      {characterItem.item.attack && renderAttack(characterItem.item.attack)}
+      {characterItem.item.defense && renderDefense(characterItem.item.defense)}
       {equipActions.length > 0 && (
         <div className={styles.equip}>
           <span>Equip to </span>
