@@ -43,3 +43,11 @@
   display: flex;
   gap: 2px;
 }
+
+.attack {
+  color: #9bbc0f;
+}
+
+.defense {
+  color: #9bbc0f;
+}
