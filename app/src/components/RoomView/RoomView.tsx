@@ -1,7 +1,10 @@
 import { FunctionComponent } from "react";
 import {
+  Exit,
   ExitRoom,
+  FixturePosition,
   FlavourText,
+  NpcPosition,
   PerformAction,
   PlayerCharacter,
   Room,
@@ -27,7 +30,7 @@ const flavourText = (flavour: FlavourText): string => {
     case "unseen_lights_flicker_walls":
       return "Unseen lights flicker across the walls.";
     case "is_something_watching_you":
-      return "Is something watching you?";
+      return "It feels like there is something you can't see watching you.";
     case "smells_like_old_goblin_socks":
       return "It smells like old goblin socks. Where is that smell coming from?";
     case "something_squishy_all_over_floor":
@@ -70,6 +73,38 @@ const description = (room: Room): string => {
   ].join(" ");
 };
 
+const exitText = (exits: Exit[]): string => {
+  const seenBefore = exits.filter((exit) => exit.has_visited_connected_room);
+
+  return `You see ${exits.length} exits. ${seenBefore.length} you have been through before.`;
+};
+
+const npcText = (npcPositions: NpcPosition[]): string => {
+  if (!npcPositions.length) {
+    return "There are no other creatures in the room.";
+  }
+
+  const creatureText =
+    npcPositions.length === 1
+      ? "is 1 creature"
+      : `are ${npcPositions.length} creatures`;
+
+  return `There ${creatureText} in the room with you.`;
+};
+
+const fixtureText = (fixturePositions: FixturePosition[]): string => {
+  if (!fixturePositions.length) {
+    return "There is nothing else interesting in the room.";
+  }
+
+  const itemText =
+    fixturePositions.length === 1
+      ? "is 1 item"
+      : `are ${fixturePositions.length} items`;
+
+  return `There ${itemText} in the room with you.`;
+};
+
 export const RoomView: FunctionComponent<RoomViewProps> = ({
   room,
   player,
@@ -77,7 +112,9 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
   <div className={styles.room}>
     <span className={styles.description}>
       {`You are in a ${description(room)} `}
-      {`You see ${room.exits.length} exits you can jump through.`}
+      {`${exitText(room.exits)} `}
+      {`${npcText(room.npc_positions)} `}
+      {`${fixtureText(room.fixture_positions)} `}
     </span>
     {room.exits.length > 0 && (
       <div className={styles.exits}>
@@ -91,6 +128,7 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
       </div>
     )}
     <NpcPositionsView room={room} player={player} />
+    <hr className={styles.divider} />
     <FixturePositionsView room={room} />
   </div>
 );

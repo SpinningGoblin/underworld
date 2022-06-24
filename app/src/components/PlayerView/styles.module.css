@@ -1,16 +1,15 @@
 .player {
+  @apply p-3 relative;
   color: #9bbc0f;
-  padding: 16px;
   border: 1px solid #aaaaaa;
-  position: relative;
 }
 
 .description {
-  font-style: normal;
+  @apply not-italic;
 }
 
 .health {
-  font-weight: 500;
+  @apply font-medium;
   color: #9bbc0f;
 }
 
@@ -19,15 +18,16 @@
 }
 
 .inventory {
-  margin-top: 2px;
+  @apply mt-0.5;
 }
 
 .collapse {
-  position: absolute;
-  top: 5vmin;
-  right: 10px;
+  @apply absolute top-9 right-5 p-0.5;
   background: #9bbc0f;
-  border: none;
+}
+
+.collapse-icon {
+  @apply h-6;
 }
 
 .collapse svg {

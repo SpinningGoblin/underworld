@@ -96,7 +96,7 @@ export const FixturePositionView: FunctionComponent<
     if (!fixturePosition.fixture.knows_if_hidden_compartment) {
       return (
         <div className={styles["hidden-search"]}>
-          <span>Is there a hidden compartment?</span>
+          <span>Hidden compartment?</span>
           <div className={styles["basic-actions"]}>
             <InspectFixtureView args={inspectArgs} />
           </div>

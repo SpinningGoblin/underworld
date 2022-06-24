@@ -1,8 +1,4 @@
 .description {
-  padding: 10px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: space-between;
+  @apply p-2 flex items-center justify-between gap-2;
   color: #9bbc0f
 }

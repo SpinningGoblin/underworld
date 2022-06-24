@@ -1,14 +1,12 @@
 .input {
-  max-height: 40px;
-  padding: 2px;
+  @apply max-h-8 p-0.5;
   background-color: #9bbc0f;
   color: #0f380f;
 }
 
 .ready {
+  @apply p-1 ml-2;
   background-color: #9bbc0f;
-  padding: 5px;
-  margin-left: 10px;
   color: #0f380f
 }
 
@@ -17,8 +15,6 @@
 }
 
 .container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
+  @apply fixed top-1/2 left-1/2;
   transform: translate(-50%, -50%);
 }

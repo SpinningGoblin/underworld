@@ -16,7 +16,7 @@ export const CastSpellOnPlayerView: FunctionComponent<
   };
 
   return (
-    <button onClick={onClick} className={styles["cast-spell"]}>
+    <button onClick={onClick} className={styles["action-button"]}>
       Cast spell
     </button>
   );

@@ -147,7 +147,7 @@ export const App = () => {
     !player || player.character.stats.health!.current === 0;
 
   const renderGameIds = (openingPage: boolean) => (
-    <>
+    <div className={openingPage ? "" : "game-id-section"}>
       {player && gameIds.length === 0 && (
         <button className="generate-button" onClick={onClickGetGameIds}>
           Get game IDs
@@ -180,7 +180,7 @@ export const App = () => {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 
   if (room && player) {

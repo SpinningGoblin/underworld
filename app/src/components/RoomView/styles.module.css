@@ -1,24 +1,24 @@
 .room {
-  padding: 16px;
-  border: 1px solid #aaaaaa;
+
   color: #9bbc0f;
 }
 
 .description {
-  margin-bottom: 10px;
-  display: block;
-  text-align: left;
-  padding: 16px;
+  @apply mt-1 mb-1 p-2 block text-left;
   border: 1px solid gray;
   color: #9bbc0f;
 }
 
 .exits {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 8px;
+  @apply grid gap-2;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 }
 
 .exit-title {
-  font-style: normal;
+  @apply font-normal;
+}
+
+.divider {
+  @apply mt-2 mb-2;
+  border-top: 1px solid #aaaaaa;
 }

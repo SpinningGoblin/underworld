@@ -53,7 +53,7 @@ export const CastSpellOnNpcView: FunctionComponent<CastSpellOnNpcViewProps> = ({
       >
         {options}
       </select>
-      <button onClick={onClick} className={styles["cast-button"]}>
+      <button onClick={onClick} className={styles["action-button"]}>
         Cast
       </button>
     </div>

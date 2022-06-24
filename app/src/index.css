@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
   font-family: "monogram-extended";
   font-style: normal;
@@ -5,27 +9,12 @@
 }
 
 body {
-  margin: 0;
+  @apply m-0;
   font-family:  -apple-system, "monogram-extended";
-  font-size: calc(10px + 2.5vmin);
+  font-size: calc(10px + 2vmin);
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-button {
-  font-family: inherit;
-  font-size: calc(10px + 2vmin);
-}
-
-input {
-  font-family: inherit;
-  font-size: calc(10px + 2vmin);
-}
-
-select {
-  font-family: inherit;
-  font-size: calc(10px + 2vmin);
 }
 
 code {

@@ -23,7 +23,7 @@ export const MovePlayerItemView: FunctionComponent<MovePlayerItemViewProps> = ({
   };
 
   return (
-    <button onClick={onClick} className={styles["move-button"]}>
+    <button onClick={onClick} className={styles["action-button"]}>
       {tagText(args.location_tag)}
     </button>
   );

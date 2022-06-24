@@ -26,7 +26,7 @@ export const ExitRoomView: FunctionComponent<ExitRoomViewProps> = ({
       onMouseEnter={() => setImage(openDoor)}
       onMouseLeave={() => setImage(closedDoor)}
     >
-      <img src={image} alt="open door" height={30} />
+      <img className={styles["exit-door"]} src={image} alt="open door" />
     </button>
   );
 };

@@ -1,13 +1,10 @@
 .App {
-  text-align: center;
-  min-height: 100vh;
-  height: 100vh;
+  @apply text-center min-h-screen h-screen w-screen;
   background-color: #0f380f;
-  width: 100vw;
 }
 
 button {
-  cursor: pointer;
+  @apply cursor-pointer;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -17,37 +14,32 @@ button {
 }
 
 .name-input {
-  max-height: 40px;
-  padding: 2px;
+  @apply max-h-10 p-0.5;
 }
 
 .App-logo {
-  height: 10vmin;
-  pointer-events: none;
+  @apply h-1/6;
 }
 
 .App-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @apply flex items-center justify-center p-1.5 text-white;
   font-size: calc(10px + 3vmin);
-  color: white;
-  padding: 5px;
   color: #9bbc0f
 }
 
 .game-ids {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  @apply flex flex-col items-center gap-2;
 }
 
 .game-id-select {
-  padding: 2px;
+  @apply p-0.5 max-h-8;
   background-color: #9bbc0f;
   color: #0f380f;
   max-width: 50%;
+}
+
+.game-id-section {
+  @apply ml-5;
 }
 
 .room {
@@ -55,9 +47,9 @@ button {
 }
 
 .generate-button {
+  @apply pl-1 pr-1 w-fit text-center;
   background-color: #9bbc0f;
   color: #0f380f;
-  padding: 5px;
 }
 
 @keyframes App-logo-spin {
@@ -83,8 +75,7 @@ button {
 }
 
 .title {
-  text-decoration: underline;
-  margin-bottom: 2px;
+  @apply mb-0.5 underline;
   color: #9bbc0f;
 }
 
@@ -94,15 +85,10 @@ button {
 }
 
 .username {
-  padding: 5px;
+  @apply p-1;
   background-color: #9bbc0f;
 }
 
 .id-and-generate {
-  display: flex;
-  flex-wrap: wrap;
-  padding-bottom: 10px;
-  padding-left: 8px;
-  padding-right: 8px;
-  gap: 8px;
+  @apply flex flex-wrap pb-2 pl-2 pr-2 gap-2 items-center;
 }

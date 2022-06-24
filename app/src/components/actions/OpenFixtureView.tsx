@@ -16,7 +16,7 @@ export const OpenFixtureView: FunctionComponent<OpenFixtureViewProps> = ({
   };
 
   return (
-    <button onClick={onClick} className={styles["inspect-button"]}>
+    <button onClick={onClick} className={styles["action-button"]}>
       Open
     </button>
   );

@@ -14,7 +14,7 @@ export const LootNpcView: FunctionComponent<LootNpcViewProps> = ({ args }) => {
   };
 
   return (
-    <button onClick={onClick} className={styles.actionButton}>
+    <button onClick={onClick} className={styles["action-button"]}>
       Loot
     </button>
   );

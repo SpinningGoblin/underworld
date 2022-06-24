@@ -1,39 +1,18 @@
-.actionButton {
-  background-color: #9bbc0f;
-  color: #0f380f;
-  padding: 5px;
-}
-
 .exit-button {
-  border: 1px solid #aaaaaa;
+  @apply p-1;
   background-color: #9bbc0f;
 }
 
-.cast-spell {
+.action-button {
+  @apply w-fit text-center pl-1 pr-1;
   background-color: #9bbc0f;
   color: #0f380f;
-  padding: 5px;
-}
-
-.move-button {
-  background-color: #9bbc0f;
-  color: #0f380f;
-  padding: 5px;
-  min-width: 60px;
 }
 
 .inspect-button {
+  @apply w-fit text-center pl-1 pr-1;
   background-color: #9bbc0f;
   color: #0f380f;
-  padding: 5px;
-  min-width: 60px;
-}
-
-.attack-button {
-  background-color: #9bbc0f;
-  color: #0f380f;
-  padding: 5px;
-  min-width: 60px;
 }
 
 .attack-button:hover {
@@ -41,23 +20,10 @@
   color: #9bbc0f;
 }
 
-.loot-button {
-  background-color: #9bbc0f;
-  color: #0f380f;
-  padding: 5px;
-  min-width: 60px;
-}
-
 .spells-on-npc {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  padding-top: 6px;
-  gap: 6px;
+  @apply flex gap-1.5;
 }
 
-.cast-button {
-  background-color: #9bbc0f;
-  color: #0f380f;
-  padding: 5px;
-  min-width: 60px;
+.exit-door {
+  @apply h-8 max-w-none;
 }

@@ -1,32 +1,21 @@
 .items {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  align-items: baseline;
+  @apply flex flex-col gap-0.5 items-baseline;
   color: #9bbc0f
 }
 
 .item-name {
-  font-style: normal;
+  @apply not-italic;
 }
 
 .item {
-  padding: 10px;
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  align-items: center;
+  @apply p-2 items-center gap-1.5;
   color: #9bbc0f
 }
 
 .loot {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding-top: 2px;
+  @apply flex items-center gap-1.5 pt-0.5;
 }
 
 .equipped-text {
-  text-decoration: underline;
-  margin-bottom: 4px;
+  @apply underline mb-1;
 }

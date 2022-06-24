@@ -1,16 +1,8 @@
 .fixtures {
-  margin-top: 10px;
-}
-
-.fixture-text {
-  padding: 16px;
-  border: 1px solid #aaaaaa;
-  color: #9bbc0f;
+  @apply mt-2;
 }
 
 .fixture-list {
-  display: grid;
+  @apply grid gap-1.5;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  padding-top: 6px;
-  gap: 6px;
 }
