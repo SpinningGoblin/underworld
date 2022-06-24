@@ -1,10 +1,6 @@
 .event {
-  display: block;
-  width: 100%;
-  border: 0.5px solid #aaaaaa;
+  @apply block p-1 mb-1 cursor-pointer w-full;
+  border-bottom: 0.5px solid;
   color: #9bbc0f;
   background-color: #0f380f;
-  padding: 5px;
-  margin-bottom: 5px;
-  cursor: pointer;
 }

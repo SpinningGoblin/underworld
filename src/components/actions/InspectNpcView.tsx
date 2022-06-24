@@ -16,7 +16,7 @@ export const InspectNpcView: FunctionComponent<InspectNpcViewProps> = ({
   };
 
   return (
-    <button onClick={onClick} className={styles["inspect-button"]}>
+    <button onClick={onClick} className={styles["action-button"]}>
       Inspect
     </button>
   );

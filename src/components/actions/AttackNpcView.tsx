@@ -16,7 +16,10 @@ export const AttackNpcView: FunctionComponent<AttackNpcViewProps> = ({
   };
 
   return (
-    <button onClick={onClick} className={styles["attack-button"]}>
+    <button
+      onClick={onClick}
+      className={[styles["action-button"], styles["attack-button"]].join(" ")}
+    >
       Attack
     </button>
   );

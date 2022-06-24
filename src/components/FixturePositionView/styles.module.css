@@ -1,57 +1,37 @@
 .fixture-position {
-  min-height: 200px;
+  @apply p-2 flex flex-col items-baseline;
   color: #9bbc0f;
-  padding: 16px;
   border: 1px solid #aaaaaa;
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
 }
 
 .label {
-  font-style: italic;
+  @apply italic;
 }
 
 .basic-actions {
-  margin-top: 10px;
-  display: flex;
-  gap: 6px;
+  @apply mt-2 flex gap-1.5;
 }
 
 .items {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  align-items: baseline;
-  margin-top: 10px;
+  @apply flex flex-col gap-0.5 items-baseline mt-2;
 }
 
 .item-name {
-  font-style: normal;
+  @apply not-italic;
 }
 
 .item {
-  padding: 10px;
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  align-items: center;
+  @apply p-2 flex items-start gap-1.5;
 }
 
 .loot {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding-top: 2px;
+  @apply flex items-center gap-1.5 pt-0.5;
 }
 
 .equipped-text {
-  text-decoration: underline;
-  margin-bottom: 4px;
+  @apply underline mb-1;
 }
 
 .hidden-search {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @apply flex justify-between items-center gap-1;
 }

@@ -16,7 +16,7 @@ export const InspectFixtureView: FunctionComponent<InspectFixtureViewProps> = ({
   };
 
   return (
-    <button onClick={onClick} className={styles["inspect-button"]}>
+    <button onClick={onClick} className={styles["action-button"]}>
       Search
     </button>
   );

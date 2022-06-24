@@ -26,7 +26,7 @@ export const LookAtNpcView: FunctionComponent<LookAtNpcViewProps> = ({
   };
 
   return (
-    <button onClick={onClick} className={styles.actionButton}>
+    <button onClick={onClick} className={styles["action-button"]}>
       <b>Look</b> at <b>{npc.character.species}</b>
     </button>
   );

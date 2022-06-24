@@ -16,7 +16,7 @@ export const UseItemOnPlayerView: FunctionComponent<
   };
 
   return (
-    <button onClick={onClick} className={styles.actionButton}>
+    <button onClick={onClick} className={styles["action-button"]}>
       Use
     </button>
   );

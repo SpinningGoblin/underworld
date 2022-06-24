@@ -16,7 +16,7 @@ export const LootFixtureView: FunctionComponent<LootFixtureViewProps> = ({
   };
 
   return (
-    <button onClick={onClick} className={styles.actionButton}>
+    <button onClick={onClick} className={styles["action-button"]}>
       Loot
     </button>
   );

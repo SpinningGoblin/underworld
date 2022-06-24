@@ -54,10 +54,9 @@ export const PlayerView: FunctionComponent<PlayerViewProps> = ({
           onClick={() => setCollapsed((current) => !current)}
         >
           <img
-            className={collapsedClass}
+            className={[collapsedClass, styles["collapse-icon"]].join(" ")}
             src={chevron}
             alt="chevron"
-            height={25}
           />
         </button>
       </div>
