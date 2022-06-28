@@ -14,7 +14,8 @@ export const EffectsView: FunctionComponent<EffectsViewProps> = ({
     <div className="title">Current Effects</div>
     {!effects.resurrection_aura &&
       !effects.retribution_aura &&
-      !effects.shield_aura && <span>No current effects</span>}
+      !effects.shield_aura &&
+      !effects.poison && <span>No current effects</span>}
 
     <span>{effects.resurrection_aura && "Has resurrection aura"}</span>
     <span>
@@ -24,6 +25,10 @@ export const EffectsView: FunctionComponent<EffectsViewProps> = ({
     <span>
       {effects.shield_aura &&
         `Shield aura with ${effects.shield_aura.damage_resistance} damage resistance`}
+    </span>
+    <span>
+      {effects.poison &&
+        `Poisoned taking ${effects.poison.damage} every ${effects.poison.duration} actions`}
     </span>
   </div>
 );

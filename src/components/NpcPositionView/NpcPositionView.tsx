@@ -8,6 +8,7 @@ import {
 import { AttackNpcView } from "../actions";
 import { CastSpellOnNpcView } from "../actions/CastSpellOnNpcView";
 import { InspectNpcView } from "../actions/InspectNpcView";
+import { EffectsView } from "../EffectsView";
 import { NpcInventoryView } from "./NpcInventoryView";
 
 import styles from "./styles.module.css";
@@ -119,21 +120,24 @@ export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
     (learnedSpell) => learnedSpell.spell.spell_type === "attack",
   );
 
+  const { current_effects: currentEffects } = npcPosition.npc.character;
+
   return (
     <div className={styles["npc-position"]}>
       <div>
-        <span className={styles.label}>Name: </span>
-        {nameText(npcPosition)}
-      </div>
-      <div>
         <span className={styles.label}>Species: </span>
         {speciesText(npcPosition)}
+      </div>
+      <div>
+        <span className={styles.label}>Name: </span>
+        {nameText(npcPosition)}
       </div>
       <div>{positionText(npcPosition)}</div>
       <div>
         <span className={styles.label}>Health: </span>
         {healthText(npcPosition)}
       </div>
+      <EffectsView effects={currentEffects} />
       <div className={styles["basic-actions"]}>
         <InspectNpcView args={inspectArgs} />
         <AttackNpcView args={attackArgs} />
