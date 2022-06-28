@@ -67,6 +67,7 @@ models/OpenFixture.ts
 models/OpenFixtureHiddenCompartment.ts
 models/PerformAction.ts
 models/PlayerCharacter.ts
+models/Poison.ts
 models/Room.ts
 models/RoomDescriptor.ts
 models/RoomExited.ts

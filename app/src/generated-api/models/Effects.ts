@@ -25,6 +25,12 @@ import {
     DefenseFromJSONTyped,
     DefenseToJSON,
 } from './Defense';
+import {
+    Poison,
+    PoisonFromJSON,
+    PoisonFromJSONTyped,
+    PoisonToJSON,
+} from './Poison';
 
 /**
  * 
@@ -68,6 +74,12 @@ export interface Effects {
      * @memberof Effects
      */
     knows_has_resurrection_aura: boolean;
+    /**
+     * 
+     * @type {Poison}
+     * @memberof Effects
+     */
+    poison?: Poison;
 }
 
 export function EffectsFromJSON(json: any): Effects {
@@ -86,6 +98,7 @@ export function EffectsFromJSONTyped(json: any, ignoreDiscriminator: boolean): E
         'knows_has_retribution_aura': json['knows_has_retribution_aura'],
         'resurrection_aura': json['resurrection_aura'],
         'knows_has_resurrection_aura': json['knows_has_resurrection_aura'],
+        'poison': !exists(json, 'poison') ? undefined : PoisonFromJSON(json['poison']),
     };
 }
 
@@ -104,6 +117,7 @@ export function EffectsToJSON(value?: Effects | null): any {
         'knows_has_retribution_aura': value.knows_has_retribution_aura,
         'resurrection_aura': value.resurrection_aura,
         'knows_has_resurrection_aura': value.knows_has_resurrection_aura,
+        'poison': PoisonToJSON(value.poison),
     };
 }
 
