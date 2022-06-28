@@ -142,9 +142,9 @@ impl From<Event> for GameEvent {
                 name: EventName::ItemTakenFromFixture,
                 data: Some(serde_json::to_value(&it).unwrap()),
             },
-            Event::PlayerGainsResurrectionAura(it) => GameEvent {
+            Event::PlayerGainsResurrectionAura => GameEvent {
                 name: EventName::PlayerGainsResurrectionAura,
-                data: Some(serde_json::to_value(&it).unwrap()),
+                data: None,
             },
             Event::PlayerGainsRetributionAura(it) => GameEvent {
                 name: EventName::PlayerGainsRetributionAura,
