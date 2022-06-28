@@ -91,13 +91,7 @@ export interface Character {
      * @type {Effects}
      * @memberof Character
      */
-    current_effects?: Effects;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Character
-     */
-    current_effects_known: boolean;
+    current_effects: Effects;
     /**
      * 
      * @type {SpellMemory}
@@ -127,8 +121,7 @@ export function CharacterFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'life_modifier': !exists(json, 'life_modifier') ? undefined : LifeModifierFromJSON(json['life_modifier']),
         'inventory': !exists(json, 'inventory') ? undefined : InventoryFromJSON(json['inventory']),
         'inventory_known': json['inventory_known'],
-        'current_effects': !exists(json, 'current_effects') ? undefined : EffectsFromJSON(json['current_effects']),
-        'current_effects_known': json['current_effects_known'],
+        'current_effects': EffectsFromJSON(json['current_effects']),
         'spell_memory': !exists(json, 'spell_memory') ? undefined : SpellMemoryFromJSON(json['spell_memory']),
         'spell_memory_known': json['spell_memory_known'],
     };
@@ -149,7 +142,6 @@ export function CharacterToJSON(value?: Character | null): any {
         'inventory': InventoryToJSON(value.inventory),
         'inventory_known': value.inventory_known,
         'current_effects': EffectsToJSON(value.current_effects),
-        'current_effects_known': value.current_effects_known,
         'spell_memory': SpellMemoryToJSON(value.spell_memory),
         'spell_memory_known': value.spell_memory_known,
     };

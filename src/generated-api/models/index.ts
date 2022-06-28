@@ -62,6 +62,7 @@ export * from './OpenFixture';
 export * from './OpenFixtureHiddenCompartment';
 export * from './PerformAction';
 export * from './PlayerCharacter';
+export * from './Poison';
 export * from './Room';
 export * from './RoomDescriptor';
 export * from './RoomExited';
