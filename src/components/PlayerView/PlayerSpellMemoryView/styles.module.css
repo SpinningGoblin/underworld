@@ -17,3 +17,12 @@
 .spell-list {
   @apply pt-1 flex flex-col gap-1.5;
 }
+
+.card {
+  color: #9bbc0f;
+  border: 0.5px solid #0f380f;
+}
+
+.card:hover {
+  border: 0.5px solid #9bbc0fbf;
+}

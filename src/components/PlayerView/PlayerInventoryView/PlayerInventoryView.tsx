@@ -85,7 +85,7 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
   );
 
   return (
-    <div className={[styles.item, "action-card"].join(" ")}>
+    <div className={[styles.item, styles.card].join(" ")}>
       <div className={styles["item-name"]}>
         {[
           ...characterItem.item.descriptors.map(descriptorText),
