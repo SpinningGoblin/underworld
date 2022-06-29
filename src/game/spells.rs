@@ -2,7 +2,7 @@ use poem_openapi::Object;
 use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
-    actions::{action::Action, CastSpellOnPlayer, CastSpellOnNpc},
+    actions::{action::Action, CastSpellOnNpc, CastSpellOnPlayer},
     game::Game,
 };
 

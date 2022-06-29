@@ -7,9 +7,9 @@ use poem_openapi::{
 use sqlx::PgPool;
 use underworld_core::{
     actions::{
-        AttackNpc, CastSpellOnPlayer, ExitRoom, InspectFixture, InspectNpc, LookAtFixture,
-        LookAtNpc, LootFixture, LootNpc, MovePlayerItem, OpenFixture, OpenFixtureHiddenCompartment,
-        UseItemOnPlayer, CastSpellOnNpc,
+        AttackNpc, CastSpellOnNpc, CastSpellOnPlayer, ExitRoom, InspectFixture, InspectNpc,
+        LookAtFixture, LookAtNpc, LootFixture, LootNpc, MovePlayerItem, OpenFixture,
+        OpenFixtureHiddenCompartment, SellPlayerItem, UseItemOnPlayer,
     },
     components::{
         fixtures::fixture::FixtureView, non_player::NonPlayerView, rooms::room_view::RoomView,
@@ -23,11 +23,13 @@ use crate::{
         exit::{exit_room, RoomExited},
         get::game_actions,
         inspect::{inspect_fixture, inspect_npc, FixtureInspected, NpcInspected},
-        items::{move_player_item, use_item_on_player, ItemMoved, ItemUsed},
+        items::{
+            move_player_item, sell_player_item, use_item_on_player, ItemMoved, ItemSold, ItemUsed,
+        },
         look::{look_at_fixture, look_at_npc, look_at_room},
         loot::{loot_fixture, loot_npc, FixtureLooted, NpcLooted},
         open::{open_fixture, open_fixture_hidden_compartment, FixtureOpened},
-        spells::{cast_spell_on_player, SpellCast, cast_spell_on_npc},
+        spells::{cast_spell_on_npc, cast_spell_on_player, SpellCast},
     },
 };
 
@@ -103,6 +105,12 @@ enum UseItemResponse {
 enum MoveItemResponse {
     #[oai(status = 200)]
     ItemMoved(Json<ItemMoved>),
+}
+
+#[derive(ApiResponse)]
+enum SellItemResponse {
+    #[oai(status = 200)]
+    ItemSold(Json<ItemSold>),
 }
 
 #[derive(ApiResponse)]
@@ -190,8 +198,7 @@ impl UnderworldGameActionApi {
         args: Json<CastSpellOnNpc>,
     ) -> Result<CastSpellResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let cast_result =
-            cast_spell_on_npc(&mut transaction, &username, &game_id, &args).await?;
+        let cast_result = cast_spell_on_npc(&mut transaction, &username, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(CastSpellResponse::SpellCast(Json(cast_result)))
@@ -237,6 +244,27 @@ impl UnderworldGameActionApi {
         transaction.commit().await.unwrap();
 
         Ok(MoveItemResponse::ItemMoved(Json(move_item_result)))
+    }
+
+    /// Sell an item on your player.
+    #[oai(
+        path = "/sell_player_item",
+        method = "post",
+        operation_id = "sell_player_item"
+    )]
+    async fn sell_player_item(
+        &self,
+        pool: Data<&PgPool>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<SellPlayerItem>,
+    ) -> Result<SellItemResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let sell_item_result =
+            sell_player_item(&mut transaction, &username, &game_id, &args).await?;
+        transaction.commit().await.unwrap();
+
+        Ok(SellItemResponse::ItemSold(Json(sell_item_result)))
     }
 
     /// Loot some items from an NPC.

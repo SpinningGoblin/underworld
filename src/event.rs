@@ -53,6 +53,7 @@ pub enum EventName {
     NpcPoisonLevelChanged,
     NpcPoisoned,
     PlayerDamagedByPoison,
+    PlayerGainedGold,
     PlayerMaxHealthChanged,
     PlayerPoisonLevelChanged,
     PlayerPoisoned,
@@ -237,6 +238,10 @@ impl From<Event> for GameEvent {
             Event::PlayerHealthFullyRestored => GameEvent {
                 name: EventName::PlayerHealthFullyRestored,
                 data: None,
+            },
+            Event::PlayerGainedGold(gold) => GameEvent {
+                name: EventName::PlayerGainedGold,
+                data: Some(serde_json::to_value(&gold).unwrap()),
             },
         }
     }

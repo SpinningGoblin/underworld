@@ -22,6 +22,7 @@ pub enum ActionName {
     OpenFixture,
     OpenFixtureHiddenCompartment,
     QuickLookRoom,
+    SellPlayerItem,
     SetCurrentPlayerCharacter,
     UseItemOnPlayer,
 }
@@ -181,6 +182,13 @@ pub fn game_actions(game: &Game, _username: &str) -> Vec<PerformAction> {
                 )),
                 http_action: "POST".to_string(),
                 args: Some(serde_json::to_value(&open).unwrap()),
+            },
+            Action::SellPlayerItem(sell) => PerformAction {
+                name: ActionName::SellPlayerItem,
+                description: "Sell an item for some gold".to_string(),
+                link: get_api_link(&format!("game/{}/sell_player_item", &game_id)),
+                http_action: "POST".to_string(),
+                args: Some(serde_json::to_value(&sell).unwrap()),
             },
         });
 
