@@ -58,6 +58,7 @@ export const EventName = {
     NpcPoisonLevelChanged: 'npc_poison_level_changed',
     NpcPoisoned: 'npc_poisoned',
     PlayerDamagedByPoison: 'player_damaged_by_poison',
+    PlayerGainedGold: 'player_gained_gold',
     PlayerMaxHealthChanged: 'player_max_health_changed',
     PlayerPoisonLevelChanged: 'player_poison_level_changed',
     PlayerPoisoned: 'player_poisoned',
