@@ -17,6 +17,7 @@ import {
   PlayerCharacter,
   ResponseError,
   Room,
+  SellPlayerItem,
   UseItemOnPlayer,
 } from "../generated-api";
 import { getCurrentGameId } from "./current-game";
@@ -397,6 +398,43 @@ export const performMovePlayerItem = async (
       underworldUsername: username,
       gameId,
       movePlayerItem: args,
+    });
+
+    const playerApi = getPlayerApi();
+    const [room, player] = await Promise.all([
+      getCurrentRoom(),
+      playerApi.getCurrentPc({ underworldUsername: username }),
+    ]);
+
+    notifyListeners({
+      actions,
+      events,
+      room,
+      player,
+    });
+  } catch (e) {
+    if (typeof e === "string") {
+      notifyError(e);
+    } else if (e instanceof ResponseError) {
+      console.log("getting response");
+      const message = await e.response.text();
+      notifyError(message);
+    }
+    throw e;
+  }
+};
+
+export const performSellPlayerItem = async (
+  args: SellPlayerItem,
+): Promise<void> => {
+  try {
+    const { username, gameId } = getBasicParams();
+    const api = getGameActionsApi();
+
+    const { actions, events } = await api.sellPlayerItem({
+      underworldUsername: username,
+      gameId,
+      sellPlayerItem: args,
     });
 
     const playerApi = getPlayerApi();
