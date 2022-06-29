@@ -23,7 +23,7 @@
 }
 
 .actions {
-  @apply flex gap-0.5;
+  @apply flex gap-1;
 }
 
 .attack {

@@ -9,8 +9,8 @@
 }
 
 .side {
-  @apply overflow-y-auto overflow-x-hidden;
-  border-left: 1px solid slategray;
+  @apply overflow-y-auto overflow-x-hidden pr-1 pl-1;
+  border-left: 0.5px solid #9bbc0fbf;
 }
 
 .logo {
@@ -25,7 +25,7 @@
 
 .events-list {
   @apply p-1.5;
-  border: 0.5px solid #aaaaaa;
+  border: 0.5px solid #9bbc0fbf;
 }
 
 .events-title {

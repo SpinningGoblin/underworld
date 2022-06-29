@@ -15,7 +15,7 @@ export const ExitView: FunctionComponent<ExitViewProps> = ({
   exit,
   exitArgs,
 }) => (
-  <div className="action-card">
+  <div className={styles.card}>
     <span className={styles.description}>
       {`${[...exit.descriptors, typeText(exit.exit_type)].join(" ")} ${
         exit.has_visited_connected_room ? "(Traveled before)" : "(Never seen)"

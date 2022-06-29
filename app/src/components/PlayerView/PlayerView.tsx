@@ -33,6 +33,7 @@ export const PlayerView: FunctionComponent<PlayerViewProps> = ({
         <div className={healthClasses}>{`Health ${
           player.character.stats.health!.current
         } / ${player.character.stats.health!.max}`}</div>
+        <div className={styles.gold}>{`${player.gold} gold`}</div>
         <EffectsView effects={player.character.current_effects!} />
         {!collapsed && (
           <>

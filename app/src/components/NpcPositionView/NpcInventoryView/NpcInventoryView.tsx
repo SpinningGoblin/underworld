@@ -30,7 +30,7 @@ const ItemView: FunctionComponent<ItemViewProps> = ({
   npcId,
   canLoot,
 }) => (
-  <div className={[styles.item, "action-card"].join(" ")}>
+  <div className={[styles.item, styles.card].join(" ")}>
     <div className={styles["item-name"]}>
       {[
         ...item.descriptors.map(descriptorText),
