@@ -17,7 +17,7 @@ const PlayerSpellView: FunctionComponent<PlayerSpellViewProps> = ({
   spell,
   castArgs,
 }) => (
-  <div className={[styles.spell, "action-card"].join(" ")}>
+  <div className={[styles.spell, styles.card].join(" ")}>
     <div className={styles["spell-name"]}>{spell.name}</div>
     <div className={styles.uses}>
       <span>{spell.uses} uses remain</span>

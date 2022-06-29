@@ -104,6 +104,10 @@ export const FixturePositionView: FunctionComponent<
       );
     }
 
+    if (!fixturePosition.fixture.has_hidden_compartment) {
+      return <span>There is no hidden compartment.</span>;
+    }
+
     if (
       fixturePosition.fixture.has_hidden_compartment &&
       !fixturePosition.fixture.hidden_compartment_open
