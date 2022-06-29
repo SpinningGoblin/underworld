@@ -40,6 +40,12 @@ export interface PlayerCharacter {
     id: string;
     /**
      * 
+     * @type {number}
+     * @memberof PlayerCharacter
+     */
+    gold: number;
+    /**
+     * 
      * @type {string}
      * @memberof PlayerCharacter
      */
@@ -58,6 +64,7 @@ export function PlayerCharacterFromJSONTyped(json: any, ignoreDiscriminator: boo
         
         'character': CharacterFromJSON(json['character']),
         'id': json['id'],
+        'gold': json['gold'],
         'name': !exists(json, 'name') ? undefined : json['name'],
     };
 }
@@ -73,6 +80,7 @@ export function PlayerCharacterToJSON(value?: PlayerCharacter | null): any {
         
         'character': CharacterToJSON(value.character),
         'id': value.id,
+        'gold': value.gold,
         'name': value.name,
     };
 }

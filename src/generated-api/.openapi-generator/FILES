@@ -46,6 +46,7 @@ models/Inventory.ts
 models/Item.ts
 models/ItemDescriptor.ts
 models/ItemMoved.ts
+models/ItemSold.ts
 models/ItemType.ts
 models/ItemUsed.ts
 models/LearnSpellEffect.ts
@@ -72,6 +73,7 @@ models/Room.ts
 models/RoomDescriptor.ts
 models/RoomExited.ts
 models/RoomType.ts
+models/SellPlayerItem.ts
 models/Size.ts
 models/Species.ts
 models/Spell.ts

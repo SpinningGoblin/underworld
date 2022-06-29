@@ -34,6 +34,7 @@ export const ActionName = {
     OpenFixture: 'open_fixture',
     OpenFixtureHiddenCompartment: 'open_fixture_hidden_compartment',
     QuickLookRoom: 'quick_look_room',
+    SellPlayerItem: 'sell_player_item',
     SetCurrentPlayerCharacter: 'set_current_player_character',
     UseItemOnPlayer: 'use_item_on_player'
 } as const;

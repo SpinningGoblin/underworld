@@ -48,6 +48,9 @@ import {
     ItemMoved,
     ItemMovedFromJSON,
     ItemMovedToJSON,
+    ItemSold,
+    ItemSoldFromJSON,
+    ItemSoldToJSON,
     ItemUsed,
     ItemUsedFromJSON,
     ItemUsedToJSON,
@@ -93,6 +96,9 @@ import {
     RoomExited,
     RoomExitedFromJSON,
     RoomExitedToJSON,
+    SellPlayerItem,
+    SellPlayerItemFromJSON,
+    SellPlayerItemToJSON,
     SpellCast,
     SpellCastFromJSON,
     SpellCastToJSON,
@@ -187,6 +193,12 @@ export interface OpenFixtureHiddenCompartmentRequest {
     underworldUsername: string;
     gameId: string;
     openFixtureHiddenCompartment: OpenFixtureHiddenCompartment;
+}
+
+export interface SellPlayerItemRequest {
+    underworldUsername: string;
+    gameId: string;
+    sellPlayerItem: SellPlayerItem;
 }
 
 export interface UseItemOnPlayerRequest {
@@ -454,6 +466,23 @@ export interface GameActionsApiInterface {
      * Open hidden compartment of fixture.
      */
     openFixtureHiddenCompartment(requestParameters: OpenFixtureHiddenCompartmentRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<FixtureOpened>;
+
+    /**
+     * 
+     * @summary Sell an item on your player.
+     * @param {string} underworldUsername 
+     * @param {string} gameId 
+     * @param {SellPlayerItem} sellPlayerItem 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameActionsApiInterface
+     */
+    sellPlayerItemRaw(requestParameters: SellPlayerItemRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<ItemSold>>;
+
+    /**
+     * Sell an item on your player.
+     */
+    sellPlayerItem(requestParameters: SellPlayerItemRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<ItemSold>;
 
     /**
      * 
@@ -1137,6 +1166,51 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      */
     async openFixtureHiddenCompartment(requestParameters: OpenFixtureHiddenCompartmentRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<FixtureOpened> {
         const response = await this.openFixtureHiddenCompartmentRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Sell an item on your player.
+     */
+    async sellPlayerItemRaw(requestParameters: SellPlayerItemRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<ItemSold>> {
+        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
+            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling sellPlayerItem.');
+        }
+
+        if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
+            throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling sellPlayerItem.');
+        }
+
+        if (requestParameters.sellPlayerItem === null || requestParameters.sellPlayerItem === undefined) {
+            throw new runtime.RequiredError('sellPlayerItem','Required parameter requestParameters.sellPlayerItem was null or undefined when calling sellPlayerItem.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
+            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        }
+
+        const response = await this.request({
+            path: `/game/{game_id}/sell_player_item`.replace(`{${"game_id"}}`, encodeURIComponent(String(requestParameters.gameId))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: SellPlayerItemToJSON(requestParameters.sellPlayerItem),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ItemSoldFromJSON(jsonValue));
+    }
+
+    /**
+     * Sell an item on your player.
+     */
+    async sellPlayerItem(requestParameters: SellPlayerItemRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<ItemSold> {
+        const response = await this.sellPlayerItemRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
