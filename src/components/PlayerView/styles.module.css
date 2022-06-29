@@ -1,7 +1,6 @@
 .player {
-  @apply p-3 relative;
+  @apply p-2 relative;
   color: #9bbc0f;
-  border: 1px solid #aaaaaa;
 }
 
 .description {
@@ -10,6 +9,10 @@
 
 .health {
   @apply font-medium;
+  color: #9bbc0f;
+}
+
+.gold {
   color: #9bbc0f;
 }
 

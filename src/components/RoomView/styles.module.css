@@ -1,16 +1,14 @@
 .room {
-
   color: #9bbc0f;
 }
 
 .description {
   @apply mt-1 mb-1 p-2 block text-left;
-  border: 1px solid gray;
   color: #9bbc0f;
 }
 
 .exits {
-  @apply grid gap-2;
+  @apply grid gap-2 pr-2 pl-2;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 }
 
@@ -20,5 +18,5 @@
 
 .divider {
   @apply mt-2 mb-2;
-  border-top: 1px solid #aaaaaa;
+  border-top: 0.5px solid #9bbc0f;
 }

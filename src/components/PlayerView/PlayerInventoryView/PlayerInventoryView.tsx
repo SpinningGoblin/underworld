@@ -12,6 +12,7 @@ import {
   UseItemOnPlayer,
 } from "../../../generated-api";
 import { MovePlayerItemView } from "../../actions";
+import { SellPlayerItemView } from "../../actions/SellPlayerItemView";
 import { UseItemOnPlayerView } from "../../actions/UseItemOnPlayerView";
 
 import styles from "./styles.module.css";
@@ -104,6 +105,7 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
                 args={action.args! as MovePlayerItem}
               />
             ))}
+            <SellPlayerItemView itemId={characterItem.item.id} />
           </div>
         </div>
       )}

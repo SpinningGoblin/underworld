@@ -1,7 +1,7 @@
 .npc-position {
   @apply p-3 flex flex-col align-baseline;
   color: #9bbc0f;
-  border: 1px solid #aaaaaa;
+  border-right: 0.5px solid #9bbc0fbf;
 }
 
 .label {
