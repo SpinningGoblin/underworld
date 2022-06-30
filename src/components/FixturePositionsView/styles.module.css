@@ -1,8 +1,0 @@
-.fixtures {
-  @apply mt-2;
-}
-
-.fixture-list {
-  @apply grid gap-1.5;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-}

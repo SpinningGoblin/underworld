@@ -123,7 +123,7 @@ export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
   const { current_effects: currentEffects } = npcPosition.npc.character;
 
   return (
-    <div className={styles["npc-position"]}>
+    <div className={styles["npc-position"]} data-npc-position-id={npcPosition.npc.id}>
       <div>
         <span className={styles.label}>Species: </span>
         {speciesText(npcPosition)}

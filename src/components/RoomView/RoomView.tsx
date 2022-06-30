@@ -1,8 +1,14 @@
-import { FunctionComponent } from "react";
 import {
-  Exit,
+  FunctionComponent,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
   ExitRoom,
   FixturePosition,
+  FixtureType,
   FlavourText,
   NpcPosition,
   PerformAction,
@@ -10,8 +16,8 @@ import {
   Room,
 } from "../../generated-api";
 import { ExitView } from "../ExitView/ExitView";
-import { FixturePositionsView } from "../FixturePositionsView";
-import { NpcPositionsView } from "../NpcPositionsView";
+import { FixturePositionView } from "../FixturePositionView";
+import { NpcPositionView } from "../NpcPositionView";
 
 import styles from "./styles.module.css";
 
@@ -73,50 +79,153 @@ const description = (room: Room): string => {
   ].join(" ");
 };
 
-const exitText = (exits: Exit[]): string => {
-  const seenBefore = exits.filter((exit) => exit.has_visited_connected_room);
-
-  return `You see ${exits.length} exits. ${seenBefore.length} you have been through before.`;
+const fixtureTypeText = (fixtureType: FixtureType): string => {
+  switch (fixtureType) {
+    case "statue_tentacled_monstrosity":
+      return "statue of a tentacled monstrosity";
+    case "statue_warrior":
+      return "statue of an unknown warrior";
+    default:
+      return fixtureType.replaceAll("_", " ");
+  }
 };
 
-const npcText = (npcPositions: NpcPosition[]): string => {
-  if (!npcPositions.length) {
-    return "There are no other creatures in the room.";
+const fixtureDescriptionText = (fixturePosition: FixturePosition): string =>
+  [
+    ...fixturePosition.fixture.descriptors.map((text) =>
+      text.replaceAll("_", " "),
+    ),
+    fixturePosition.fixture.material ? fixturePosition.fixture.material : "",
+    fixtureTypeText(fixturePosition.fixture.fixture_type),
+  ].join(" ");
+
+const starterText = (index: number, max: number): string => {
+  if (index === 0) {
+    return "There is a ";
   }
 
-  const creatureText =
-    npcPositions.length === 1
-      ? "is 1 creature"
-      : `are ${npcPositions.length} creatures`;
-
-  return `There ${creatureText} in the room with you.`;
-};
-
-const fixtureText = (fixturePositions: FixturePosition[]): string => {
-  if (!fixturePositions.length) {
-    return "There is nothing else interesting in the room.";
+  if (index === max) {
+    return " and a ";
   }
 
-  const itemText =
-    fixturePositions.length === 1
-      ? "is 1 item"
-      : `are ${fixturePositions.length} items`;
-
-  return `There ${itemText} in the room with you.`;
+  return ", a ";
 };
 
 export const RoomView: FunctionComponent<RoomViewProps> = ({
   room,
   player,
-}) => (
-  <div className={styles.room}>
-    <span className={styles.description}>
-      {`You are in a ${description(room)} `}
-      {`${exitText(room.exits)} `}
-      {`${npcText(room.npc_positions)} `}
-      {`${fixtureText(room.fixture_positions)} `}
+}) => {
+  const [showExits, setShowExits] = useState<boolean>(false);
+  const [shownNpcId, setShownNpcId] = useState<string | undefined>();
+  const [shownFixtureId, setShownFixtureId] = useState<string | undefined>();
+  const roomId = useRef(room.id);
+
+  useEffect(() => {
+    if (room.id !== roomId.current) {
+      setShowExits(false);
+      setShownNpcId(undefined);
+      setShownFixtureId(undefined);
+      roomId.current = room.id;
+    }
+  }, [room]);
+
+  const exitText = (): ReactNode => (
+    <span>
+      <span>You see </span>
+      <button
+        className={styles["description-button"]}
+        onClick={() => setShowExits((current) => !current)}
+      >
+        {room.exits.length} exits
+      </button>{" "}
     </span>
-    {room.exits.length > 0 && (
+  );
+
+  const singleNpcText = (
+    npcPosition: NpcPosition,
+    starterText: string,
+    finisherText: string,
+  ): ReactNode => (
+    <span key={npcPosition.npc.id}>
+      <span>{starterText}</span>
+      <button
+        className={styles["description-button"]}
+        onClick={() => setShownNpcId(npcPosition.npc.id)}
+      >
+        {`${npcPosition.npc.character.species}`}
+      </button>
+      <span>{finisherText}</span>
+    </span>
+  );
+
+  const npcText = (): ReactNode => {
+    if (!room.npc_positions.length) {
+      return "There are no creatures in the room with you.";
+    }
+
+    if (room.npc_positions.length === 1) {
+      return singleNpcText(room.npc_positions[0], "There is a ", ". ");
+    }
+
+    return (
+      <>
+        {room.npc_positions.map((npcPosition, index) =>
+          singleNpcText(
+            npcPosition,
+            starterText(index, room.npc_positions.length - 1),
+            index === room.npc_positions.length - 1
+              ? " in the room with you. "
+              : "",
+          ),
+        )}
+      </>
+    );
+  };
+
+  const singleFixtureText = (
+    fixturePosition: FixturePosition,
+    starterText: string,
+    finisherText: string,
+  ): ReactNode => (
+    <span key={fixturePosition.fixture.id}>
+      <span>{starterText}</span>
+      <button
+        className={styles["description-button"]}
+        onClick={() => setShownFixtureId(fixturePosition.fixture.id)}
+      >
+        {`${fixtureDescriptionText(fixturePosition)}`}
+      </button>
+      <span>{finisherText}</span>
+    </span>
+  );
+
+  const fixtureText = (): ReactNode => {
+    if (!room.fixture_positions.length) {
+      return " There is nothing else interesting in the room.";
+    }
+
+    if (room.fixture_positions.length === 1) {
+      return singleFixtureText(room.fixture_positions[0], " There is a ", ". ");
+    }
+
+    return (
+      <>
+        {room.fixture_positions.map((fixturePosition, index) =>
+          singleFixtureText(
+            fixturePosition,
+            starterText(index, room.fixture_positions.length - 1),
+            index === room.fixture_positions.length - 1
+              ? " around. "
+              : "",
+          ),
+        )}
+      </>
+    );
+  };
+
+  const exitView = (): ReactNode => (
+    <>
+      <button onClick={() => setShowExits((current) => !current)}>Close</button>
       <div className={styles.exits}>
         {room.exits.map((exit) => {
           const exitArgs: ExitRoom = {
@@ -126,9 +235,56 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
           return <ExitView key={exit.id} exit={exit} exitArgs={exitArgs} />;
         })}
       </div>
-    )}
-    <NpcPositionsView room={room} player={player} />
-    <hr className={styles.divider} />
-    <FixturePositionsView room={room} />
-  </div>
-);
+    </>
+  );
+
+  const npcView = (): ReactNode => {
+    const npcPosition = room.npc_positions.find(
+      (npcPosition) => npcPosition.npc.id === shownNpcId,
+    );
+    return (
+      <>
+        <button onClick={() => setShownNpcId(undefined)}>Close</button>
+        {npcPosition && (
+          <NpcPositionView npcPosition={npcPosition} player={player} />
+        )}
+      </>
+    );
+  };
+
+  const fixtureView = (): ReactNode => {
+    const fixturePosition = room.fixture_positions.find(
+      (fixturePosition) => fixturePosition.fixture.id === shownFixtureId,
+    );
+    return (
+      <>
+        <button onClick={() => setShownFixtureId(undefined)}>Close</button>
+        {fixturePosition && (
+          <FixturePositionView fixturePosition={fixturePosition} />
+        )}
+      </>
+    );
+  };
+
+  const descriptionView = () => (
+    <span className={styles.description}>
+      {`You are in a ${description(room)} `}
+      {exitText()}
+      {npcText()}
+      {fixtureText()}
+    </span>
+  );
+
+  let body: ReactNode;
+  if (showExits) {
+    body = exitView();
+  } else if (shownNpcId) {
+    body = npcView();
+  } else if (shownFixtureId) {
+    body = fixtureView();
+  } else {
+    body = descriptionView();
+  }
+
+  return <div className={styles.room}>{body}</div>;
+};
