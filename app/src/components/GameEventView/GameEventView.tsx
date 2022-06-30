@@ -75,6 +75,8 @@ const nameText = (eventName: EventName): string => {
       return "The world gets more dangerous...";
     case "player_gained_gold":
       return "You gained some gold";
+    case "player_max_health_changed":
+      return "Your max health was changed";
     default:
       return eventName;
   }

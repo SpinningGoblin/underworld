@@ -8,16 +8,21 @@
 }
 
 .health {
-  @apply font-medium;
-  color: #9bbc0f;
+  @apply font-medium flex items-center gap-1;
+  color: #d70505;
 }
 
 .gold {
-  color: #9bbc0f;
+  @apply flex items-center gap-1;
+  color: #ffdf00;
 }
 
-.low-health {
-  color: 	#E10600;
+.health-and-gold {
+  @apply flex items-center gap-2;
+}
+
+.basics {
+  @apply flex justify-between;
 }
 
 .inventory {
@@ -25,7 +30,7 @@
 }
 
 .collapse {
-  @apply absolute top-9 right-5 p-0.5;
+  @apply p-0.5;
   background: #9bbc0f;
 }
 

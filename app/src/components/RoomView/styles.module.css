@@ -20,3 +20,7 @@
   @apply mt-2 mb-2;
   border-top: 0.5px solid #9bbc0f;
 }
+
+.description-button {
+  @apply font-semibold text-3xl;
+}
