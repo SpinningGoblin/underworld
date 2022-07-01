@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement, useState } from "react";
+import { FunctionComponent, useState } from "react";
 import {
   GameEvent,
   PerformAction,
@@ -15,7 +15,6 @@ export interface GameScreenProps {
   actions: Array<PerformAction>;
   allowGeneratePlayer: boolean;
   events: Array<GameEvent>;
-  gameIdSelector: ReactElement;
   onClickGeneratePlayer: () => void;
   player: PlayerCharacter;
   room: Room;
@@ -25,7 +24,6 @@ export const GameScreen: FunctionComponent<GameScreenProps> = ({
   actions,
   allowGeneratePlayer,
   events,
-  gameIdSelector,
   onClickGeneratePlayer,
   player,
   room,
@@ -47,11 +45,13 @@ export const GameScreen: FunctionComponent<GameScreenProps> = ({
       </div>
       <div className={styles.side}>
         {allowGeneratePlayer && (
-          <button className="generate-button" onClick={onClickGeneratePlayer}>
+          <button
+            className={styles["generate-button"]}
+            onClick={onClickGeneratePlayer}
+          >
             Generate new PC
           </button>
         )}
-        {gameIdSelector}
         <div className={styles["events-container"]}>
           <span className={["title", styles["events-title"]].join(" ")}>
             Game Events

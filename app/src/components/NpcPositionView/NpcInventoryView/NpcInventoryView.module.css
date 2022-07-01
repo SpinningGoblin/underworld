@@ -21,6 +21,7 @@
 }
 
 .card {
+  @apply flex justify-between;
   color: #9bbc0f;
   border: 0.5px solid #0f380f;
 }

@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { generateGame, getGameIds } from "./api/game";
-import { setCurrentGameId } from "./api/current-game";
+import { getCurrentGameId, setCurrentGameId } from "./api/current-game";
 import {
   GameEvent,
   PerformAction,
@@ -21,20 +21,28 @@ import { generatePlayer, getCurrentPlayer } from "./api/player";
 import { GetReadyScreen } from "./components/GetReadyScreen";
 import { GameScreen } from "./components/GameScreen";
 import { Header } from "./components/Header";
+import { OptionsScreen } from "./components/OptionsScreen";
+
+import OptionsIcon from "./images/options.svg";
+import CloseIcon from "./images/close.svg";
+
+type OpeningPromises = [
+  Promise<PlayerCharacter>,
+  Promise<string[]>,
+  Promise<PerformAction[]>,
+  Promise<Room | undefined>,
+];
 
 export const App = () => {
   const [gameIds, setGameIds] = useState<Array<string>>([]);
-  const [gameId, setGameId] = useState<string | undefined>();
+  const [gameId, setGameId] = useState<string | undefined>(getCurrentGameId());
   const [room, setRoom] = useState<Room | undefined>();
   const [actions, setActions] = useState<Array<PerformAction>>([]);
   const [player, setPlayer] = useState<PlayerCharacter | undefined>();
   const [events, setEvents] = useState<Array<GameEvent>>([]);
   const [ready, setReady] = useState<boolean>(false);
+  const [showOptions, setShowOptions] = useState<boolean>(false);
   const firstPlayerLoadDone = useRef<boolean>(false);
-
-  const onClickGetGameIds = async () => {
-    setGameIds(await getGameIds());
-  };
 
   const onClickGenerateGame = () => {
     generateGame()
@@ -57,10 +65,29 @@ export const App = () => {
 
   useEffect(() => {
     if (ready && !firstPlayerLoadDone.current) {
-      Promise.all([getCurrentPlayer(), getGameIds()])
-        .then(([pl, ids]) => {
+      console.log("getting initial");
+      console.log(gameId);
+      const roomPromise: Promise<Room | undefined> = gameId
+        ? getCurrentRoom()
+        : Promise.resolve(undefined);
+      const actionsPromise: Promise<PerformAction[]> = gameId
+        ? getCurrentActions()
+        : Promise.resolve([]);
+
+      const promises: OpeningPromises = [
+        getCurrentPlayer(),
+        getGameIds(),
+        actionsPromise,
+        roomPromise,
+      ];
+
+      Promise.all(promises)
+        .then(([pl, ids, actions, room]) => {
+          console.log(ids);
           setPlayer(pl);
           setGameIds(ids);
+          setActions(actions);
+          setRoom(room);
         })
         .catch((e) => console.error(e))
         .finally(() => (firstPlayerLoadDone.current = true));
@@ -107,6 +134,7 @@ export const App = () => {
 
   useEffect(() => {
     if (gameId) {
+      console.log(`here ${gameId}`);
       setCurrentGameId(gameId);
       Promise.all([
         getCurrentRoom(),
@@ -124,63 +152,13 @@ export const App = () => {
     }
   }, [gameId]);
 
-  const options = [<option key="empty" value=""></option>];
-
-  gameIds
-    .sort((a, b) => a.localeCompare(b))
-    .forEach((id) =>
-      options.push(
-        <option key={id} value={id}>
-          {id}
-        </option>,
-      ),
-    );
-
   const allowGeneratePlayer =
     !player || player.character.stats.health!.current === 0;
 
-  const renderGameIds = (openingPage: boolean) => (
-    <div className={openingPage ? "" : "game-id-section"}>
-      {player && gameIds.length === 0 && (
-        <button className="generate-button" onClick={onClickGetGameIds}>
-          Get game IDs
-        </button>
-      )}
-      <div className="game-ids">
-        <span className="title">Current Game</span>
-        <div className="id-and-generate">
-          {gameIds.length > 0 && (
-            <select
-              className={`game-id-select ${
-                openingPage ? "opening-page-ids" : ""
-              }`}
-              value={gameId || ""}
-              onChange={(event) => {
-                if (event.currentTarget.value) {
-                  setGameId(event.currentTarget.value);
-                } else {
-                  setGameId(undefined);
-                }
-              }}
-            >
-              {options}
-            </select>
-          )}
-          {player && (
-            <button className="generate-button" onClick={onClickGenerateGame}>
-              New Game
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-
   let body: ReactNode;
-
   if (!ready) {
     body = <GetReadyScreen onReadyClicked={() => setReady(true)} />;
-  } else if (room && player) {
+  } else if (room && player && !showOptions) {
     body = (
       <GameScreen
         room={room}
@@ -189,23 +167,46 @@ export const App = () => {
         actions={actions}
         allowGeneratePlayer={allowGeneratePlayer}
         onClickGeneratePlayer={onClickGeneratePlayer}
-        gameIdSelector={renderGameIds(false)}
       />
     );
   } else {
     body = (
-      <div className="body">
-        <button className="generate-button" onClick={onClickGeneratePlayer}>
-          Generate new PC
-        </button>
-        {renderGameIds(true)}
-      </div>
+      <OptionsScreen
+        onClickGeneratePlayer={onClickGeneratePlayer}
+        onClickGenerateGame={onClickGenerateGame}
+        gameIds={gameIds}
+        selectedGameId={gameId}
+        onGameIdChange={setGameId}
+      />
     );
   }
 
+  const headerButton = () => {
+    if (!ready || !player || !room) {
+      return <></>;
+    }
+
+    if (showOptions) {
+      return (
+        <button
+          onClick={() => setShowOptions(false)}
+          className="options-button"
+        >
+          <img className="options-icon" src={CloseIcon} alt="close" />
+        </button>
+      );
+    } else {
+      return (
+        <button onClick={() => setShowOptions(true)} className="options-button">
+          <img className="options-icon" src={OptionsIcon} alt="options" />
+        </button>
+      );
+    }
+  };
+
   return (
     <div className="App">
-      <Header />
+      <Header>{headerButton()}</Header>
       {body}
     </div>
   );

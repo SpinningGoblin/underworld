@@ -8,8 +8,7 @@
 }
 
 .exits {
-  @apply grid gap-2 pr-2 pl-2;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  @apply grid gap-2 pr-2 pl-2 pt-5;
 }
 
 .exit-title {
@@ -22,5 +21,18 @@
 }
 
 .description-button {
-  @apply font-semibold text-3xl;
+  @apply font-semibold text-3xl tracking-wider;
+}
+
+.close {
+  @apply flex justify-end pt-2;
+}
+
+.close-button {
+  @apply p-1 mr-1;
+  background-color: #9bbc0f;
+}
+
+.close-icon {
+  @apply h-4 max-w-none;
 }

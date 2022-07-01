@@ -15,9 +15,10 @@ import {
   PlayerCharacter,
   Room,
 } from "../../generated-api";
-import { ExitView } from "../ExitView/ExitView";
+import { ExitView } from "../ExitView";
 import { FixturePositionView } from "../FixturePositionView";
 import { NpcPositionView } from "../NpcPositionView";
+import CloseIcon from "../../images/close.svg";
 
 import styles from "./RoomView.module.css";
 
@@ -223,7 +224,6 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
 
   const exitView = (): ReactNode => (
     <>
-      <button onClick={() => setShowExits((current) => !current)}>Close</button>
       <div className={styles.exits}>
         {room.exits.map((exit) => {
           const exitArgs: ExitRoom = {
@@ -242,7 +242,6 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
     );
     return (
       <>
-        <button onClick={() => setShownNpcId(undefined)}>Close</button>
         {npcPosition && (
           <NpcPositionView npcPosition={npcPosition} player={player} />
         )}
@@ -256,7 +255,6 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
     );
     return (
       <>
-        <button onClick={() => setShownFixtureId(undefined)}>Close</button>
         {fixturePosition && (
           <FixturePositionView fixturePosition={fixturePosition} />
         )}
@@ -267,8 +265,11 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
   const descriptionView = () => (
     <span className={styles.description}>
       {`You are in a ${description(room)} `}
+      <br />
       {exitText()}
+      <br />
       {npcText()}
+      <br />
       {fixtureText()}
     </span>
   );
@@ -284,5 +285,25 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
     body = descriptionView();
   }
 
-  return <div className={styles.room}>{body}</div>;
+  const showClose = showExits || !!shownNpcId || !!shownFixtureId;
+
+  return (
+    <div className={styles.room}>
+      {showClose && (
+        <div className={styles.close}>
+          <button
+            onClick={() => {
+              setShowExits(false);
+              setShownFixtureId(undefined);
+              setShownNpcId(undefined);
+            }}
+            className={styles["close-button"]}
+          >
+            <img className={styles["close-icon"]} src={CloseIcon} alt="close" />
+          </button>
+        </div>
+      )}
+      {body}
+    </div>
+  );
 };
