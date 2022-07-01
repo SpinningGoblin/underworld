@@ -19,7 +19,7 @@ import { ExitView } from "../ExitView/ExitView";
 import { FixturePositionView } from "../FixturePositionView";
 import { NpcPositionView } from "../NpcPositionView";
 
-import styles from "./styles.module.css";
+import styles from "./RoomView.module.css";
 
 export interface RoomViewProps {
   room: Room;

@@ -9,7 +9,7 @@ import { GameEventView } from "../GameEventView";
 import { PlayerView } from "../PlayerView";
 import { RoomView } from "../RoomView";
 
-import styles from "./styles.module.css";
+import styles from "./GameScreen.module.css";
 
 export interface GameScreenProps {
   actions: Array<PerformAction>;

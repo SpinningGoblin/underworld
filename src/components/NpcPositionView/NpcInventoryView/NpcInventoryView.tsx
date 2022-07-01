@@ -7,7 +7,7 @@ import {
 } from "../../../generated-api";
 import { LootNpcView } from "../../actions/LootNpcView";
 
-import styles from "./styles.module.css";
+import styles from "./NpcInventoryView.module.css";
 
 export interface NpcInventoryViewProps {
   npcId: string;

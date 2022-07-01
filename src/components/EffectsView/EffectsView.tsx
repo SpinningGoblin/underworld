@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import { Effects } from "../../generated-api";
 
-import styles from "./styles.module.css";
+import styles from "./EffectsView.module.css";
 
 export interface EffectsViewProps {
   effects: Effects;

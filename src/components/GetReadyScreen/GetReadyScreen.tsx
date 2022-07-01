@@ -1,7 +1,7 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { getUsername, setUsername } from "../../api/username";
 
-import styles from "./styles.module.css";
+import styles from "./GetReadyScreen.module.css";
 
 export interface GetReadyScreenProps {
   onReadyClicked: () => void;

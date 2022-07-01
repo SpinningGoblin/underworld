@@ -7,7 +7,7 @@ import chevron from "../../images/chevron.svg";
 import GoldCoin from "../../images/gold_coin.svg";
 import Heart from "../../images/heart.svg";
 
-import styles from "./styles.module.css";
+import styles from "./PlayerView.module.css";
 
 export interface PlayerViewProps {
   player: PlayerCharacter;
