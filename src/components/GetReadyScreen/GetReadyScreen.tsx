@@ -19,7 +19,7 @@ export const GetReadyScreen: FunctionComponent<GetReadyScreenProps> = ({
   }, [user]);
 
   return (
-    <div className="body">
+    <div className={styles.body}>
       <div className={styles.container}>
         <input
           className={styles.input}

@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import { CastSpellOnPlayer, Spell, SpellMemory } from "../../../generated-api";
 import { CastSpellOnPlayerView } from "../../actions";
 
-import styles from "./PlayerSpellView.module.css";
+import styles from "./PlayerSpellMemoryView.module.css";
 
 export interface PlayerSpellMemoryViewProps {
   spellMemory: SpellMemory;

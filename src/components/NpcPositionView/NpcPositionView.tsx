@@ -11,7 +11,7 @@ import { InspectNpcView } from "../actions/InspectNpcView";
 import { EffectsView } from "../EffectsView";
 import { NpcInventoryView } from "./NpcInventoryView";
 
-import styles from "./NpCPositionView.module.css";
+import styles from "./NpcPositionView.module.css";
 
 export interface NpcPositionViewProps {
   npcPosition: NpcPosition;

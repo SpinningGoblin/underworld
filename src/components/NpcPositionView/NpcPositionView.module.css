@@ -1,5 +1,5 @@
 .npc-position {
-  @apply p-3 flex flex-col align-baseline gap-2;
+  @apply p-5 flex flex-col gap-2 items-start;
   color: #9bbc0f;
 }
 

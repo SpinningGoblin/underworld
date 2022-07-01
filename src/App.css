@@ -11,41 +11,16 @@ button {
   @apply max-h-10 p-0.5;
 }
 
-.game-ids {
-  @apply flex flex-col items-center gap-2;
-}
-
-.game-id-select {
-  @apply p-0.5 max-h-8;
-  background-color: #9bbc0f;
-  color: #0f380f;
-  max-width: 50%;
-}
-
-.game-id-section {
-  @apply ml-5;
-}
-
-.generate-button {
-  @apply pl-1 pr-1 w-fit text-center;
-  background-color: #9bbc0f;
-  color: #0f380f;
-}
-
-button {
-  font-size: calc(10px + 2vmin);
-}
-
-.body {
-  @apply mt-6;
-  background-color: #0f380f;
-}
-
 .title {
   @apply mb-0.5 underline;
   color: #9bbc0f;
 }
 
-.id-and-generate {
-  @apply flex flex-wrap pb-2 pl-2 pr-2 gap-2 items-center;
+.options-button {
+  @apply p-1;
+  background-color: #9bbc0f;
+}
+
+.options-icon {
+  @apply h-4 max-w-none;
 }

@@ -26,3 +26,9 @@
 .events-container {
   @apply p-1.5;
 }
+
+.generate-button {
+  @apply pl-1 pr-1 w-fit text-center;
+  background-color: #9bbc0f;
+  color: #0f380f;
+}
