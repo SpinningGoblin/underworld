@@ -7,24 +7,8 @@ button {
   @apply cursor-pointer;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 10s linear;
-  }
-}
-
 .name-input {
   @apply max-h-10 p-0.5;
-}
-
-.App-logo {
-  @apply h-1/6;
-}
-
-.App-header {
-  @apply flex items-center justify-center p-1.5 text-white;
-  font-size: calc(10px + 3vmin);
-  color: #9bbc0f
 }
 
 .game-ids {
@@ -42,28 +26,10 @@ button {
   @apply ml-5;
 }
 
-.room {
-  margin-top: 8px;
-}
-
 .generate-button {
   @apply pl-1 pr-1 w-fit text-center;
   background-color: #9bbc0f;
   color: #0f380f;
-}
-
-@keyframes App-logo-spin {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-
-  50% {
-    transform: rotate(360deg) scale(0.3);
-  }
-
-  100% {
-    transform: rotate(0) scale(1);
-  }
 }
 
 button {
@@ -71,22 +37,13 @@ button {
 }
 
 .body {
+  @apply mt-6;
   background-color: #0f380f;
 }
 
 .title {
   @apply mb-0.5 underline;
   color: #9bbc0f;
-}
-
-.action-card {
-  color: #9bbc0f;
-  border: 0.5px solid #aaaaaa;
-}
-
-.username {
-  @apply p-1;
-  background-color: #9bbc0f;
 }
 
 .id-and-generate {

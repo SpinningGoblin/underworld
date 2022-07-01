@@ -67,7 +67,7 @@ interface ItemViewProps {
 }
 
 const ItemView: FunctionComponent<ItemViewProps> = ({ item, fixtureId }) => (
-  <div className={[styles.item, "action-card"].join(" ")}>
+  <div className={[styles.item, styles.card].join(" ")}>
     <div className={styles["item-name"]}>
       {[
         ...item.descriptors.map(descriptorText),
@@ -156,13 +156,15 @@ export const FixturePositionView: FunctionComponent<
       <div className={styles.items}>
         {items.length === 0 && "There are no items"}
         {items.length > 0 &&
-          items.filter(item => !item.is_in_hidden_compartment).map((item, index) => (
-            <ItemView
-              key={`${fixturePosition.fixture.id}_${index}`}
-              fixtureId={fixturePosition.fixture.id}
-              item={item.item}
-            />
-          ))}
+          items
+            .filter((item) => !item.is_in_hidden_compartment)
+            .map((item, index) => (
+              <ItemView
+                key={`${fixturePosition.fixture.id}_${index}`}
+                fixtureId={fixturePosition.fixture.id}
+                item={item.item}
+              />
+            ))}
       </div>
       <div className={styles.items}>
         <span className="title">Hidden Compartment</span>

@@ -1,6 +1,6 @@
 .description {
   @apply p-2 flex items-center justify-between gap-2;
-  color: #9bbc0f
+  color: #9bbc0f;
 }
 
 .card {

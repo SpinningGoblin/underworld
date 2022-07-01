@@ -1,7 +1,7 @@
 .screen {
-  @apply grid h-screen;
+  @apply grid;
+  height: 95vh;
   grid-template-columns: 3fr 1fr;
-  background-color: #0f380f;
 }
 
 .game {
@@ -11,16 +11,6 @@
 .side {
   @apply overflow-y-auto overflow-x-hidden pr-1 pl-1;
   border-left: 0.5px solid #9bbc0fbf;
-}
-
-.logo {
-  @apply h-12 pointer-events-none;
-}
-
-.header {
-  @apply flex items-center justify-evenly p-1;
-  font-size: calc(10px + 2vmin);
-  color: #9bbc0f
 }
 
 .events-list {

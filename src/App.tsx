@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import goblin from "./images/goblin_big_hat.svg";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { generateGame, getGameIds } from "./api/game";
 import { setCurrentGameId } from "./api/current-game";
@@ -21,6 +20,7 @@ import {
 import { generatePlayer, getCurrentPlayer } from "./api/player";
 import { GetReadyScreen } from "./components/GetReadyScreen";
 import { GameScreen } from "./components/GameScreen";
+import { Header } from "./components/Header";
 
 export const App = () => {
   const [gameIds, setGameIds] = useState<Array<string>>([]);
@@ -92,10 +92,7 @@ export const App = () => {
       const events = actionPerformed.events.slice();
       events.reverse();
 
-      setEvents((existing) => [
-        ...events,
-        ...existing,
-      ]);
+      setEvents((existing) => [...events, ...existing]);
 
       for (const event of actionPerformed.events) {
         if (event.name === "player_killed") {
@@ -139,10 +136,6 @@ export const App = () => {
       ),
     );
 
-  if (!ready) {
-    return <GetReadyScreen onReadyClicked={() => setReady(true)} />;
-  }
-
   const allowGeneratePlayer =
     !player || player.character.stats.health!.current === 0;
 
@@ -183,8 +176,12 @@ export const App = () => {
     </div>
   );
 
-  if (room && player) {
-    return (
+  let body: ReactNode;
+
+  if (!ready) {
+    body = <GetReadyScreen onReadyClicked={() => setReady(true)} />;
+  } else if (room && player) {
+    body = (
       <GameScreen
         room={room}
         player={player}
@@ -195,20 +192,21 @@ export const App = () => {
         gameIdSelector={renderGameIds(false)}
       />
     );
+  } else {
+    body = (
+      <div className="body">
+        <button className="generate-button" onClick={onClickGeneratePlayer}>
+          Generate new PC
+        </button>
+        {renderGameIds(true)}
+      </div>
+    );
   }
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={goblin} className="App-logo" alt="logo" />
-        <p>Underworld Server</p>
-      </header>
-      <div className="body">
-        <button className="generate-button" onClick={onClickGeneratePlayer}>
-          Generate new player character
-        </button>
-        {renderGameIds(true)}
-      </div>
+      <Header />
+      {body}
     </div>
   );
 };

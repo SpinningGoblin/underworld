@@ -183,7 +183,9 @@ export const performAttackNpc = async (args: AttackNpc): Promise<void> => {
   }
 };
 
-export const performCastSpellOnNpc = async (args: CastSpellOnNpc): Promise<void> => {
+export const performCastSpellOnNpc = async (
+  args: CastSpellOnNpc,
+): Promise<void> => {
   try {
     const { username, gameId } = getBasicParams();
     const api = getGameActionsApi();
@@ -282,9 +284,7 @@ export const performUseItemOnPlayer = async (
   }
 };
 
-export const performOpenFixture = async (
-  args: OpenFixture,
-): Promise<void> => {
+export const performOpenFixture = async (args: OpenFixture): Promise<void> => {
   try {
     const { username, gameId } = getBasicParams();
     const api = getGameActionsApi();
