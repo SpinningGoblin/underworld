@@ -1,6 +1,6 @@
 .items {
   @apply flex flex-col gap-0.5 items-baseline;
-  color: #9bbc0f
+  color: #9bbc0f;
 }
 
 .item-name {

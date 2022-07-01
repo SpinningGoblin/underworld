@@ -1,6 +1,7 @@
 .player {
-  @apply p-2 relative;
+  @apply pt-3 pl-3 pr-3 pb-4 relative;
   color: #9bbc0f;
+  border-bottom: 0.5px solid #9bbc0f;
 }
 
 .description {

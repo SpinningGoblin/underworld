@@ -5,13 +5,14 @@
 @font-face {
   font-family: "monogram-extended";
   font-style: normal;
-  src: local("monogram-extended"), url("./fonts/monogram-extended.ttf") format("truetype");
+  src: local("monogram-extended"),
+    url("./fonts/monogram-extended.ttf") format("truetype");
 }
 
 body {
-  @apply m-0;
-  font-family:  -apple-system, "monogram-extended";
-  font-size: calc(10px + 2vmin);
+  @apply m-0 p-0;
+  font-family: -apple-system, "monogram-extended";
+  font-size: calc(10px + 1.75vmin);
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

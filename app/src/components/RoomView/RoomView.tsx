@@ -214,9 +214,7 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
           singleFixtureText(
             fixturePosition,
             starterText(index, room.fixture_positions.length - 1),
-            index === room.fixture_positions.length - 1
-              ? " around. "
-              : "",
+            index === room.fixture_positions.length - 1 ? " around. " : "",
           ),
         )}
       </>

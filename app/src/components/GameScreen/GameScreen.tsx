@@ -8,7 +8,6 @@ import {
 import { GameEventView } from "../GameEventView";
 import { PlayerView } from "../PlayerView";
 import { RoomView } from "../RoomView";
-import goblin from "../../images/goblin_big_hat.svg";
 
 import styles from "./styles.module.css";
 
@@ -47,13 +46,9 @@ export const GameScreen: FunctionComponent<GameScreenProps> = ({
         )}
       </div>
       <div className={styles.side}>
-        <header className={styles.header}>
-          <img src={goblin} className={styles.logo} alt="logo" />
-          <p>Underworld Server</p>
-        </header>
         {allowGeneratePlayer && (
           <button className="generate-button" onClick={onClickGeneratePlayer}>
-            Generate new player character
+            Generate new PC
           </button>
         )}
         {gameIdSelector}

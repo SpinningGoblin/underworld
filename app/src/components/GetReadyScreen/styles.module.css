@@ -7,7 +7,7 @@
 .ready {
   @apply p-1 ml-2;
   background-color: #9bbc0f;
-  color: #0f380f
+  color: #0f380f;
 }
 
 .ready:disabled {
