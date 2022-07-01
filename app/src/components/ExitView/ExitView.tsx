@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import { Exit, ExitRoom, ExitType } from "../../generated-api";
 import { ExitRoomView } from "../actions";
 
-import styles from "./styles.module.css";
+import styles from "./ExitView.module.css";
 
 export interface ExitViewProps {
   exit: Exit;

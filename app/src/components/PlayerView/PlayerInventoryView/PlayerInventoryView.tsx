@@ -15,7 +15,7 @@ import { MovePlayerItemView } from "../../actions";
 import { SellPlayerItemView } from "../../actions/SellPlayerItemView";
 import { UseItemOnPlayerView } from "../../actions/UseItemOnPlayerView";
 
-import styles from "./styles.module.css";
+import styles from "./PlayerInventoryView.module.css";
 
 export interface PlayerInventoryViewProps {
   inventory: Inventory;

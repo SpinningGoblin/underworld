@@ -13,7 +13,7 @@ import { LootFixtureView } from "../actions/LootFixtureView";
 import { OpenFixtureHiddenCompartmentView } from "../actions/OpenFixtureHiddenCompartment";
 import { OpenFixtureView } from "../actions/OpenFixtureView";
 
-import styles from "./styles.module.css";
+import styles from "./FixturePosition.module.css";
 
 export interface FixturePositionViewProps {
   fixturePosition: FixturePosition;
