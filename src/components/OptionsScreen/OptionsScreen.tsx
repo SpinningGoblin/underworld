@@ -1,4 +1,5 @@
 import { FunctionComponent } from "react";
+import { PlayerCharacter } from "../../generated-api";
 
 import styles from "./OptionsScreen.module.css";
 
@@ -9,6 +10,7 @@ export interface OptionsScreenProps {
   onGameIdChange: (gameId?: string) => void;
   onClickGenerateGame: () => void;
   onClickGeneratePlayer: () => void;
+  player?: PlayerCharacter;
 }
 
 export const OptionsScreen: FunctionComponent<OptionsScreenProps> = ({
@@ -17,6 +19,7 @@ export const OptionsScreen: FunctionComponent<OptionsScreenProps> = ({
   onGameIdChange,
   openingPage,
   gameIds,
+  player,
   selectedGameId,
 }) => {
   const options = [<option key="empty" value=""></option>];
@@ -33,12 +36,15 @@ export const OptionsScreen: FunctionComponent<OptionsScreenProps> = ({
 
   return (
     <div className={styles.body}>
-      <button
-        className={styles["generate-button"]}
-        onClick={onClickGeneratePlayer}
-      >
-        Generate new PC
-      </button>
+      <div className={styles["generate-pc"]}>
+        {player && <span>You are a {player.character.species.replaceAll("_", " ")}</span>}
+        <button
+          className={styles["generate-button"]}
+          onClick={onClickGeneratePlayer}
+        >
+          Generate new PC
+        </button>
+      </div>
       <div className={openingPage ? "" : styles["game-id-section"]}>
         <div className={styles["game-ids"]}>
           <span className="title">Current Game</span>
