@@ -172,6 +172,7 @@ export const App = () => {
   } else {
     body = (
       <OptionsScreen
+        player={player}
         onClickGeneratePlayer={onClickGeneratePlayer}
         onClickGenerateGame={onClickGenerateGame}
         gameIds={gameIds}
