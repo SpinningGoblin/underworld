@@ -1805,7 +1805,7 @@ dependencies = [
 [[package]]
 name = "underworld_core"
 version = "0.5.0"
-source = "git+https://github.com/derrickp/underworld_core?rev=2825bd9c8ac3775ea681ef40c04e7738013c8c56#2825bd9c8ac3775ea681ef40c04e7738013c8c56"
+source = "git+https://github.com/derrickp/underworld_core?rev=54af0383964f716c404b4c6936dbbbea960780c9#54af0383964f716c404b4c6936dbbbea960780c9"
 dependencies = [
  "chrono",
  "poem-openapi",

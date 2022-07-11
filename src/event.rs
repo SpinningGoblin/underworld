@@ -25,6 +25,7 @@ pub enum EventName {
     NpcHiddenDiscovered,
     NpcMissed,
     NpcPackedDiscovered,
+    NpcPoisonEffectDissipated,
     NpcViewed,
     NpcWeaponReadied,
     PlayerGainsResurrectionAura,
@@ -58,6 +59,8 @@ pub enum EventName {
     PlayerPoisonLevelChanged,
     PlayerPoisoned,
     PlayerPoisonDurationChanged,
+    PlayerShieldAuraDamaged,
+    PlayerShieldAuraDissipated,
 }
 
 impl From<Event> for GameEvent {
@@ -242,6 +245,18 @@ impl From<Event> for GameEvent {
             Event::PlayerGainedGold(gold) => GameEvent {
                 name: EventName::PlayerGainedGold,
                 data: Some(serde_json::to_value(&gold).unwrap()),
+            },
+            Event::PlayerShieldAuraDamaged(damage) => GameEvent {
+                name: EventName::PlayerShieldAuraDamaged,
+                data: Some(serde_json::to_value(&damage).unwrap()),
+            },
+            Event::PlayerShieldAuraDissipated => GameEvent {
+                name: EventName::PlayerShieldAuraDissipated,
+                data: None,
+            },
+            Event::NpcPoisonEffectDissipated(dissipated) => GameEvent {
+                name: EventName::NpcPoisonEffectDissipated,
+                data: Some(serde_json::to_value(&dissipated).unwrap()),
             },
         }
     }
