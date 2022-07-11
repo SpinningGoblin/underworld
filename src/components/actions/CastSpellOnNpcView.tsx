@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import { performCastSpellOnNpc } from "../../api/actions";
 import { CastSpellOnNpc, LearnedSpell, SpellName } from "../../generated-api";
 
@@ -30,11 +30,17 @@ export const CastSpellOnNpcView: FunctionComponent<CastSpellOnNpcViewProps> = ({
 }) => {
   const [spellId, setSpellId] = useState<string>(learnedSpells[0].id);
 
+  useEffect(() => {
+    setSpellId(learnedSpells[0].id);
+  }, [learnedSpells]);
+
   const options = learnedSpells.map((learnedSpell) => (
     <option key={learnedSpell.id} value={learnedSpell.id}>
       {spellNameText(learnedSpell.spell.name)}
     </option>
   ));
+
+  options.splice(0, 0, <option key="empty" value=""></option>);
 
   const onClick = () => {
     const castSpellOnNpc: CastSpellOnNpc = {
@@ -45,10 +51,12 @@ export const CastSpellOnNpcView: FunctionComponent<CastSpellOnNpcViewProps> = ({
     performCastSpellOnNpc(castSpellOnNpc);
   };
 
+  const value = learnedSpells.find((spell) => spell.id === spellId)?.id || "";
+
   return (
     <div className={styles["spells-on-npc"]}>
       <select
-        value={spellId}
+        value={value}
         onChange={(event) => setSpellId(event.currentTarget.value)}
       >
         {options}
