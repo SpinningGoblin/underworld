@@ -2,8 +2,8 @@ use poem_openapi::Object;
 use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
-    actions::{action::Action, attack_npc::AttackNpc},
-    game::Game,
+    actions::{Action, AttackNpc},
+    Game,
 };
 
 use crate::{

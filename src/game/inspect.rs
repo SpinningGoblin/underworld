@@ -2,9 +2,9 @@ use poem_openapi::Object;
 use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
-    actions::{action::Action, inspect_fixture::InspectFixture, inspect_npc::InspectNpc},
+    actions::{Action, InspectFixture, InspectNpc},
     events::Event,
-    game::Game,
+    Game,
 };
 
 use crate::{

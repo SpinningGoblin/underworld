@@ -11,9 +11,7 @@ use underworld_core::{
         LookAtFixture, LookAtNpc, LootFixture, LootNpc, MovePlayerItem, OpenFixture,
         OpenFixtureHiddenCompartment, SellPlayerItem, UseItemOnPlayer,
     },
-    components::{
-        fixtures::fixture::FixtureView, non_player::NonPlayerView, rooms::room_view::RoomView,
-    },
+    components::{fixtures::FixtureView, rooms::RoomView, NonPlayerView},
 };
 
 use crate::{

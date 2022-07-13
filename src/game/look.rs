@@ -1,11 +1,9 @@
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
-    actions::{action::Action, look_at_fixture::LookAtFixture, look_at_npc::LookAtNpc},
-    components::{
-        fixtures::fixture::FixtureView, non_player::NonPlayerView, rooms::room_view::RoomView,
-    },
+    actions::{Action, LookAtFixture, LookAtNpc},
+    components::{fixtures::FixtureView, rooms::RoomView, NonPlayerView},
     events::Event,
-    game::Game,
+    Game,
 };
 
 use crate::error::GameError;

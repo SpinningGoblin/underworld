@@ -1,5 +1,5 @@
 use sqlx::{Postgres, Transaction};
-use underworld_core::components::player::PlayerCharacter;
+use underworld_core::components::PlayerCharacter;
 
 pub async fn get_player_character(
     transaction: &mut Transaction<'_, Postgres>,

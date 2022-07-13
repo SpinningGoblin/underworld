@@ -1,5 +1,5 @@
 use sqlx::{Postgres, Transaction};
-use underworld_core::game::Game;
+use underworld_core::Game;
 
 use crate::{actions::PerformAction, error::GameError};
 

@@ -5,7 +5,7 @@ use poem_openapi::{
     ApiResponse, OpenApi,
 };
 use sqlx::PgPool;
-use underworld_core::{components::player::PlayerCharacterView, systems::view::player};
+use underworld_core::{components::PlayerCharacterView, systems::view::player};
 
 use crate::player_characters::{
     current::{get_current_player_character, set_current_player_character},

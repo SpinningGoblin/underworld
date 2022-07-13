@@ -3,7 +3,7 @@ use poem::Result;
 use poem_openapi::{payload::Json, ApiResponse, Object, OpenApi};
 use serde::{Deserialize, Serialize};
 use underworld_core::{
-    components::{character::CharacterViewArgs, non_player::NonPlayerView},
+    components::{CharacterViewArgs, NonPlayerView},
     generators::{generator::Generator, name::generate_name, non_players::npc_generator},
     systems::view::non_player,
 };

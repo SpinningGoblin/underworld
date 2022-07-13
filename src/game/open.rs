@@ -3,7 +3,7 @@ use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{Action, OpenFixture, OpenFixtureHiddenCompartment},
-    game::Game,
+    Game,
 };
 
 use crate::{

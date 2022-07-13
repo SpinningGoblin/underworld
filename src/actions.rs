@@ -1,7 +1,7 @@
 use poem_openapi::{Enum, Object};
 use serde::Serialize;
 use serde_json::Value;
-use underworld_core::{actions::action::Action, game::Game};
+use underworld_core::{actions::Action, Game};
 
 #[derive(Enum, Serialize)]
 #[oai(rename_all = "snake_case")]

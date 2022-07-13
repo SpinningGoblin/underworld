@@ -2,8 +2,8 @@ use poem_openapi::Object;
 use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
-    game::Game,
     generators::{game::game_generator, generator::Generator},
+    Game,
 };
 
 use crate::{

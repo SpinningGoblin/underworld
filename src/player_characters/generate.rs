@@ -2,7 +2,7 @@ use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
-    components::{size::Size, species::Species},
+    components::{Size, Species},
     generators::{generator::Generator, players::player_generator},
 };
 

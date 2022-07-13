@@ -1,6 +1,6 @@
 use serde_json::Value;
 use sqlx::{postgres::PgRow, Postgres, Row, Transaction};
-use underworld_core::components::player::PlayerCharacter;
+use underworld_core::components::PlayerCharacter;
 
 use crate::error::GameError;
 
