@@ -18,6 +18,7 @@
  * @export
  */
 export const SpellName = {
+    AcidSplash: 'acid_splash',
     ElectricBlast: 'electric_blast',
     GreatHeal: 'great_heal',
     Heal: 'heal',

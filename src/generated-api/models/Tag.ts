@@ -23,6 +23,7 @@ export const Tag = {
     Blade: 'blade',
     Blunt: 'blunt',
     Bone: 'bone',
+    Ceramic: 'ceramic',
     Cloth: 'cloth',
     Clothing: 'clothing',
     Combat: 'combat',
@@ -40,6 +41,7 @@ export const Tag = {
     Rope: 'rope',
     Shield: 'shield',
     Stone: 'stone',
+    Throwable: 'throwable',
     Whip: 'whip',
     Wood: 'wood'
 } as const;

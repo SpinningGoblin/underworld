@@ -20,6 +20,12 @@ import {
     ConsumableEffectNameToJSON,
 } from './ConsumableEffectName';
 import {
+    HealingEffect,
+    HealingEffectFromJSON,
+    HealingEffectFromJSONTyped,
+    HealingEffectToJSON,
+} from './HealingEffect';
+import {
     LearnSpellEffect,
     LearnSpellEffectFromJSON,
     LearnSpellEffectFromJSONTyped,
@@ -44,6 +50,12 @@ export interface ConsumableEffect {
      * @memberof ConsumableEffect
      */
     learn_spell_effect?: LearnSpellEffect;
+    /**
+     * 
+     * @type {HealingEffect}
+     * @memberof ConsumableEffect
+     */
+    healing_effect?: HealingEffect;
 }
 
 export function ConsumableEffectFromJSON(json: any): ConsumableEffect {
@@ -58,6 +70,7 @@ export function ConsumableEffectFromJSONTyped(json: any, ignoreDiscriminator: bo
         
         'name': ConsumableEffectNameFromJSON(json['name']),
         'learn_spell_effect': !exists(json, 'learn_spell_effect') ? undefined : LearnSpellEffectFromJSON(json['learn_spell_effect']),
+        'healing_effect': !exists(json, 'healing_effect') ? undefined : HealingEffectFromJSON(json['healing_effect']),
     };
 }
 
@@ -72,6 +85,7 @@ export function ConsumableEffectToJSON(value?: ConsumableEffect | null): any {
         
         'name': ConsumableEffectNameToJSON(value.name),
         'learn_spell_effect': LearnSpellEffectToJSON(value.learn_spell_effect),
+        'healing_effect': HealingEffectToJSON(value.healing_effect),
     };
 }
 

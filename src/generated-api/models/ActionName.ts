@@ -36,6 +36,7 @@ export const ActionName = {
     QuickLookRoom: 'quick_look_room',
     SellPlayerItem: 'sell_player_item',
     SetCurrentPlayerCharacter: 'set_current_player_character',
+    ThrowItemAtNpc: 'throw_item_at_npc',
     UseItemOnPlayer: 'use_item_on_player'
 } as const;
 export type ActionName = typeof ActionName[keyof typeof ActionName];
