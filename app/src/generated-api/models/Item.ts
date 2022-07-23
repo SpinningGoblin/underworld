@@ -55,6 +55,12 @@ import {
     TagFromJSONTyped,
     TagToJSON,
 } from './Tag';
+import {
+    Throwable,
+    ThrowableFromJSON,
+    ThrowableFromJSONTyped,
+    ThrowableToJSON,
+} from './Throwable';
 
 /**
  * 
@@ -146,6 +152,12 @@ export interface Item {
      * @memberof Item
      */
     knows_consumable: boolean;
+    /**
+     * 
+     * @type {Throwable}
+     * @memberof Item
+     */
+    throwable?: Throwable;
 }
 
 export function ItemFromJSON(json: any): Item {
@@ -172,6 +184,7 @@ export function ItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): Item
         'defense_known': json['defense_known'],
         'consumable': !exists(json, 'consumable') ? undefined : ConsumableFromJSON(json['consumable']),
         'knows_consumable': json['knows_consumable'],
+        'throwable': !exists(json, 'throwable') ? undefined : ThrowableFromJSON(json['throwable']),
     };
 }
 
@@ -198,6 +211,7 @@ export function ItemToJSON(value?: Item | null): any {
         'defense_known': value.defense_known,
         'consumable': ConsumableToJSON(value.consumable),
         'knows_consumable': value.knows_consumable,
+        'throwable': ThrowableToJSON(value.throwable),
     };
 }
 

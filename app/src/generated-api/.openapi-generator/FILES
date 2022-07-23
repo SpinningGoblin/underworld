@@ -7,6 +7,7 @@ apis/index.ts
 index.ts
 models/ActionName.ts
 models/Attack.ts
+models/AttackEffect.ts
 models/AttackNpc.ts
 models/CastSpellOnNpc.ts
 models/CastSpellOnPlayer.ts
@@ -39,6 +40,7 @@ models/GeneratedGame.ts
 models/GeneratedNpc.ts
 models/GeneratedPlayerCharacter.ts
 models/GroupDescriptor.ts
+models/HealingEffect.ts
 models/Health.ts
 models/InspectFixture.ts
 models/InspectNpc.ts
@@ -64,6 +66,7 @@ models/NpcInspected.ts
 models/NpcLooted.ts
 models/NpcPosition.ts
 models/NpcPositionDescriptor.ts
+models/OilSplashEffect.ts
 models/OpenFixture.ts
 models/OpenFixtureHiddenCompartment.ts
 models/PerformAction.ts
@@ -83,6 +86,9 @@ models/SpellName.ts
 models/SpellType.ts
 models/Stats.ts
 models/Tag.ts
+models/Throwable.ts
+models/ThrowableEffect.ts
+models/ThrowableEffectName.ts
 models/UseItemOnPlayer.ts
 models/index.ts
 runtime.ts

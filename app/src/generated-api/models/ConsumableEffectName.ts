@@ -18,7 +18,8 @@
  * @export
  */
 export const ConsumableEffectName = {
-    LearnSpell: 'learn_spell'
+    LearnSpell: 'learn_spell',
+    HealingGrog: 'healing_grog'
 } as const;
 export type ConsumableEffectName = typeof ConsumableEffectName[keyof typeof ConsumableEffectName];
 

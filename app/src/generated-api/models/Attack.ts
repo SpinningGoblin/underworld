@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    AttackEffect,
+    AttackEffectFromJSON,
+    AttackEffectFromJSONTyped,
+    AttackEffectToJSON,
+} from './AttackEffect';
+
 /**
  * 
  * @export
@@ -31,6 +38,12 @@ export interface Attack {
      * @memberof Attack
      */
     modifier: number;
+    /**
+     * 
+     * @type {Array<AttackEffect>}
+     * @memberof Attack
+     */
+    effects: Array<AttackEffect>;
 }
 
 export function AttackFromJSON(json: any): Attack {
@@ -45,6 +58,7 @@ export function AttackFromJSONTyped(json: any, ignoreDiscriminator: boolean): At
         
         'num_rolls': json['num_rolls'],
         'modifier': json['modifier'],
+        'effects': ((json['effects'] as Array<any>).map(AttackEffectFromJSON)),
     };
 }
 
@@ -59,6 +73,7 @@ export function AttackToJSON(value?: Attack | null): any {
         
         'num_rolls': value.num_rolls,
         'modifier': value.modifier,
+        'effects': ((value.effects as Array<any>).map(AttackEffectToJSON)),
     };
 }
 

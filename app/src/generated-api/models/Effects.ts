@@ -80,6 +80,12 @@ export interface Effects {
      * @memberof Effects
      */
     poison?: Poison;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Effects
+     */
+    covered_in_oil: boolean;
 }
 
 export function EffectsFromJSON(json: any): Effects {
@@ -99,6 +105,7 @@ export function EffectsFromJSONTyped(json: any, ignoreDiscriminator: boolean): E
         'resurrection_aura': json['resurrection_aura'],
         'knows_has_resurrection_aura': json['knows_has_resurrection_aura'],
         'poison': !exists(json, 'poison') ? undefined : PoisonFromJSON(json['poison']),
+        'covered_in_oil': json['covered_in_oil'],
     };
 }
 
@@ -118,6 +125,7 @@ export function EffectsToJSON(value?: Effects | null): any {
         'resurrection_aura': value.resurrection_aura,
         'knows_has_resurrection_aura': value.knows_has_resurrection_aura,
         'poison': PoisonToJSON(value.poison),
+        'covered_in_oil': value.covered_in_oil,
     };
 }
 

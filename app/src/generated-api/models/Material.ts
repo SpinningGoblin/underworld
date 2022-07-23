@@ -19,8 +19,10 @@
  */
 export const Material = {
     Bone: 'bone',
+    Ceramic: 'ceramic',
     Cotton: 'cotton',
     Fur: 'fur',
+    Glass: 'glass',
     Gold: 'gold',
     Hide: 'hide',
     Iron: 'iron',
