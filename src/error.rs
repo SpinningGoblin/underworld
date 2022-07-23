@@ -11,6 +11,7 @@ pub enum GameError {
     InvalidIdError(String),
     ItemNotDirectlyUsableError(String),
     ItemNotFoundError(String),
+    ItemNotThrowableError(String),
     NpcNotFoundError(String),
     PlayerIsDeadError,
     SpellNotFoundError(String),
@@ -61,6 +62,9 @@ impl From<underworld_core::errors::Error> for GameError {
             underworld_core::errors::Error::FixtureHasHiddenCompartmentUnknown(it) => {
                 GameError::FixtureHasHiddenCompartmentUnknown(it)
             }
+            underworld_core::errors::Error::ItemNotThrowableError(it) => {
+                GameError::ItemNotThrowableError(it)
+            }
         }
     }
 }
@@ -86,6 +90,7 @@ impl ResponseError for GameError {
             GameError::FixtureCannotBeOpened(_) => poem::http::StatusCode::BAD_REQUEST,
             GameError::FixtureHasNoHiddenCompartment(_) => poem::http::StatusCode::BAD_REQUEST,
             GameError::FixtureHasHiddenCompartmentUnknown(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::ItemNotThrowableError(_) => poem::http::StatusCode::BAD_REQUEST,
         }
     }
 }

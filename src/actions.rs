@@ -24,6 +24,7 @@ pub enum ActionName {
     QuickLookRoom,
     SellPlayerItem,
     SetCurrentPlayerCharacter,
+    ThrowItemAtNpc,
     UseItemOnPlayer,
 }
 
@@ -189,6 +190,13 @@ pub fn game_actions(game: &Game, _username: &str) -> Vec<PerformAction> {
                 link: get_api_link(&format!("game/{}/sell_player_item", &game_id)),
                 http_action: "POST".to_string(),
                 args: Some(serde_json::to_value(&sell).unwrap()),
+            },
+            Action::ThrowItemAtNpc(throw) => PerformAction {
+                name: ActionName::ThrowItemAtNpc,
+                description: "Toss a throwable at an NPC".to_string(),
+                link: get_api_link(&format!("game/{}/throw_item_at_npc", &game_id)),
+                http_action: "POST".to_string(),
+                args: Some(serde_json::to_value(&throw).unwrap()),
             },
         });
 
