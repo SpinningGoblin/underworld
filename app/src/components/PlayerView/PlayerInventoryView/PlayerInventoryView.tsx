@@ -75,6 +75,9 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
       <span>{`${attack.num_rolls}d6 ${
         attack.modifier !== 0 ? `+${attack.modifier}` : ""
       }`}</span>
+      {attack.effects.length > 0 && (
+        <span className={styles.effects}>{attack.effects.join(", ")}</span>
+      )}
     </div>
   );
 
