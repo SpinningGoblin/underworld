@@ -8,6 +8,7 @@ import {
 import { AttackNpcView } from "../actions";
 import { CastSpellOnNpcView } from "../actions/CastSpellOnNpcView";
 import { InspectNpcView } from "../actions/InspectNpcView";
+import { ThrowItemAtNpcView } from "../actions/ThrowItemAtNpcView";
 import { EffectsView } from "../EffectsView";
 import { NpcInventoryView } from "./NpcInventoryView";
 
@@ -116,9 +117,15 @@ export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
     );
   };
 
-  const learnedSpells = player.character.spell_memory!.spells.filter(
-    (learnedSpell) => learnedSpell.spell.spell_type === "attack",
-  );
+  const learnedSpells =
+    player.character.spell_memory?.spells.filter(
+      (learnedSpell) => learnedSpell.spell.spell_type === "attack",
+    ) ?? [];
+
+  const throwables =
+    player.character.inventory?.equipment.filter(
+      (characterItem) => characterItem.item.throwable,
+    ) ?? [];
 
   const { current_effects: currentEffects } = npcPosition.npc.character;
 
@@ -147,6 +154,12 @@ export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
         {learnedSpells.length > 0 && (
           <CastSpellOnNpcView
             learnedSpells={learnedSpells}
+            npcId={npcPosition.npc.id}
+          />
+        )}
+        {throwables.length > 0 && (
+          <ThrowItemAtNpcView
+            items={throwables.map(t => t.item)}
             npcId={npcPosition.npc.id}
           />
         )}
