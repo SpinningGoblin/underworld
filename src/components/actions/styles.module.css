@@ -24,6 +24,10 @@
   @apply flex gap-1.5;
 }
 
+.items-on-npc {
+  @apply flex gap-1.5;
+}
+
 .exit-door {
   @apply h-8 max-w-none;
 }
