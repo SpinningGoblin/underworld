@@ -1,5 +1,6 @@
 import { FunctionComponent, ReactElement } from "react";
 import {
+  Fixture,
   FixtureItem,
   FixturePosition,
   FixtureType,
@@ -80,6 +81,14 @@ const ItemView: FunctionComponent<ItemViewProps> = ({ item, fixtureId }) => (
   </div>
 );
 
+const isFixtureOpen = (fixture: Fixture): boolean => {
+  if (!fixture.can_be_opened) {
+    return true;
+  }
+
+  return fixture.open;
+};
+
 export const FixturePositionView: FunctionComponent<
   FixturePositionViewProps
 > = ({ fixturePosition }) => {
@@ -141,6 +150,8 @@ export const FixturePositionView: FunctionComponent<
     );
   };
 
+  const open = isFixtureOpen(fixturePosition.fixture);
+
   return (
     <div className={styles["fixture-position"]}>
       <div>
@@ -148,24 +159,26 @@ export const FixturePositionView: FunctionComponent<
         {descriptionText(fixturePosition)}
       </div>
       <div>{positionText(fixturePosition)}</div>
-      {fixturePosition.fixture.can_be_opened && !fixturePosition.fixture.open && (
+      {fixturePosition.fixture.can_be_opened && !open && (
         <div className={styles["basic-actions"]}>
           <OpenFixtureView args={{ fixture_id: fixturePosition.fixture.id }} />
         </div>
       )}
-      <div className={styles.items}>
-        {items.length === 0 && "There are no items"}
-        {items.length > 0 &&
-          items
-            .filter((item) => !item.is_in_hidden_compartment)
-            .map((item, index) => (
-              <ItemView
-                key={`${fixturePosition.fixture.id}_${index}`}
-                fixtureId={fixturePosition.fixture.id}
-                item={item.item}
-              />
-            ))}
-      </div>
+      {open && (
+        <div className={styles.items}>
+          {items.length === 0 && "There are no items"}
+          {items.length > 0 &&
+            items
+              .filter((item) => !item.is_in_hidden_compartment)
+              .map((item, index) => (
+                <ItemView
+                  key={`${fixturePosition.fixture.id}_${index}`}
+                  fixtureId={fixturePosition.fixture.id}
+                  item={item.item}
+                />
+              ))}
+        </div>
+      )}
       <div className={styles.items}>
         <span className="title">Hidden Compartment</span>
         {renderHiddenCompartment(
