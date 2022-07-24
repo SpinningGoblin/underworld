@@ -9,7 +9,7 @@ use underworld_core::{
     actions::{
         AttackNpc, CastSpellOnNpc, CastSpellOnPlayer, ExitRoom, InspectFixture, InspectNpc,
         LookAtFixture, LookAtNpc, LootFixture, LootNpc, MovePlayerItem, OpenFixture,
-        OpenFixtureHiddenCompartment, SellPlayerItem, UseItemOnPlayer,
+        OpenFixtureHiddenCompartment, SellPlayerItem, UseItemOnPlayer, ThrowItemAtNpc,
     },
     components::{fixtures::FixtureView, rooms::RoomView, NonPlayerView},
 };
@@ -22,7 +22,7 @@ use crate::{
         get::game_actions,
         inspect::{inspect_fixture, inspect_npc, FixtureInspected, NpcInspected},
         items::{
-            move_player_item, sell_player_item, use_item_on_player, ItemMoved, ItemSold, ItemUsed,
+            move_player_item, sell_player_item, use_item_on_player, ItemMoved, ItemSold, ItemUsed, throw_item_at_npc,
         },
         look::{look_at_fixture, look_at_npc, look_at_room},
         loot::{loot_fixture, loot_npc, FixtureLooted, NpcLooted},
@@ -218,6 +218,27 @@ impl UnderworldGameActionApi {
         let mut transaction = pool.0.begin().await.unwrap();
         let use_item_result =
             use_item_on_player(&mut transaction, &username, &game_id, &args).await?;
+        transaction.commit().await.unwrap();
+
+        Ok(UseItemResponse::ItemUsed(Json(use_item_result)))
+    }
+
+    /// Use an item on your player character.
+    #[oai(
+        path = "/throw_item_at_npc",
+        method = "post",
+        operation_id = "throw_item_at_npc"
+    )]
+    async fn throw_item_at_npc(
+        &self,
+        pool: Data<&PgPool>,
+        #[oai(name = "underworld-username")] username: Header<String>,
+        game_id: Path<String>,
+        args: Json<ThrowItemAtNpc>,
+    ) -> Result<UseItemResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let use_item_result =
+            throw_item_at_npc(&mut transaction, &username, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(UseItemResponse::ItemUsed(Json(use_item_result)))
