@@ -102,6 +102,9 @@ import {
     SpellCast,
     SpellCastFromJSON,
     SpellCastToJSON,
+    ThrowItemAtNpc,
+    ThrowItemAtNpcFromJSON,
+    ThrowItemAtNpcToJSON,
     UseItemOnPlayer,
     UseItemOnPlayerFromJSON,
     UseItemOnPlayerToJSON,
@@ -199,6 +202,12 @@ export interface SellPlayerItemRequest {
     underworldUsername: string;
     gameId: string;
     sellPlayerItem: SellPlayerItem;
+}
+
+export interface ThrowItemAtNpcRequest {
+    underworldUsername: string;
+    gameId: string;
+    throwItemAtNpc: ThrowItemAtNpc;
 }
 
 export interface UseItemOnPlayerRequest {
@@ -483,6 +492,23 @@ export interface GameActionsApiInterface {
      * Sell an item on your player.
      */
     sellPlayerItem(requestParameters: SellPlayerItemRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<ItemSold>;
+
+    /**
+     * 
+     * @summary Use an item on your player character.
+     * @param {string} underworldUsername 
+     * @param {string} gameId 
+     * @param {ThrowItemAtNpc} throwItemAtNpc 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GameActionsApiInterface
+     */
+    throwItemAtNpcRaw(requestParameters: ThrowItemAtNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<ItemUsed>>;
+
+    /**
+     * Use an item on your player character.
+     */
+    throwItemAtNpc(requestParameters: ThrowItemAtNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<ItemUsed>;
 
     /**
      * 
@@ -1211,6 +1237,51 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      */
     async sellPlayerItem(requestParameters: SellPlayerItemRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<ItemSold> {
         const response = await this.sellPlayerItemRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Use an item on your player character.
+     */
+    async throwItemAtNpcRaw(requestParameters: ThrowItemAtNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<ItemUsed>> {
+        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
+            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling throwItemAtNpc.');
+        }
+
+        if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
+            throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling throwItemAtNpc.');
+        }
+
+        if (requestParameters.throwItemAtNpc === null || requestParameters.throwItemAtNpc === undefined) {
+            throw new runtime.RequiredError('throwItemAtNpc','Required parameter requestParameters.throwItemAtNpc was null or undefined when calling throwItemAtNpc.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
+            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        }
+
+        const response = await this.request({
+            path: `/game/{game_id}/throw_item_at_npc`.replace(`{${"game_id"}}`, encodeURIComponent(String(requestParameters.gameId))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ThrowItemAtNpcToJSON(requestParameters.throwItemAtNpc),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ItemUsedFromJSON(jsonValue));
+    }
+
+    /**
+     * Use an item on your player character.
+     */
+    async throwItemAtNpc(requestParameters: ThrowItemAtNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<ItemUsed> {
+        const response = await this.throwItemAtNpcRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

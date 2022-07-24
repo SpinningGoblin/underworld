@@ -86,6 +86,7 @@ models/SpellName.ts
 models/SpellType.ts
 models/Stats.ts
 models/Tag.ts
+models/ThrowItemAtNpc.ts
 models/Throwable.ts
 models/ThrowableEffect.ts
 models/ThrowableEffectName.ts
