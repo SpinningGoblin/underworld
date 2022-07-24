@@ -81,6 +81,7 @@ export * from './SpellName';
 export * from './SpellType';
 export * from './Stats';
 export * from './Tag';
+export * from './ThrowItemAtNpc';
 export * from './Throwable';
 export * from './ThrowableEffect';
 export * from './ThrowableEffectName';
