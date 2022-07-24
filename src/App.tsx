@@ -40,6 +40,7 @@ export const App = () => {
   const [actions, setActions] = useState<Array<PerformAction>>([]);
   const [player, setPlayer] = useState<PlayerCharacter | undefined>();
   const [events, setEvents] = useState<Array<GameEvent>>([]);
+  const [lastEvents, setLastEvents] = useState<Array<GameEvent>>([]);
   const [ready, setReady] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const firstPlayerLoadDone = useRef<boolean>(false);
@@ -49,6 +50,8 @@ export const App = () => {
       .then((generatedGame) => {
         setGameIds((existing) => [...existing, generatedGame.game_id]);
         setGameId(generatedGame.game_id);
+        setEvents([]);
+        setLastEvents([]);
       })
       .catch((e) => console.error(e));
   };
@@ -120,6 +123,7 @@ export const App = () => {
       events.reverse();
 
       setEvents((existing) => [...events, ...existing]);
+      setLastEvents(events);
 
       for (const event of actionPerformed.events) {
         if (event.name === "player_killed") {
@@ -163,6 +167,7 @@ export const App = () => {
       <GameScreen
         room={room}
         player={player}
+        lastEvents={lastEvents}
         events={events}
         actions={actions}
         allowGeneratePlayer={allowGeneratePlayer}
