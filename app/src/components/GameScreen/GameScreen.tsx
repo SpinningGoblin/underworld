@@ -14,6 +14,7 @@ import styles from "./GameScreen.module.css";
 export interface GameScreenProps {
   actions: Array<PerformAction>;
   allowGeneratePlayer: boolean;
+  lastEvents: Array<GameEvent>;
   events: Array<GameEvent>;
   onClickGeneratePlayer: () => void;
   player: PlayerCharacter;
@@ -23,12 +24,16 @@ export interface GameScreenProps {
 export const GameScreen: FunctionComponent<GameScreenProps> = ({
   actions,
   allowGeneratePlayer,
+  lastEvents,
   events,
   onClickGeneratePlayer,
   player,
   room,
 }) => {
-  const [showFullPlayer, setShowFullPlayer] = useState<boolean>(false);
+  const [showFullPlayer, setShowFullPlayer] = useState(false);
+  const [showAllEvents, setShowAllEvents] = useState(false);
+
+  const showText = showAllEvents ? "Hide" : "Show all events";
 
   return (
     <div className={styles.screen}>
@@ -54,10 +59,18 @@ export const GameScreen: FunctionComponent<GameScreenProps> = ({
         )}
         <div className={styles["events-container"]}>
           <span className={["title", styles["events-title"]].join(" ")}>
-            Game Events
+            Last Game Events
           </span>
           <div className={styles["events-list"]}>
-            {events.map((event, index) => (
+            {lastEvents.map((event, index) => (
+              <GameEventView key={index} event={event} />
+            ))}
+          </div>
+          <div className={styles["events-list"]}>
+            <button className={styles["generate-button"]} onClick={() => setShowAllEvents((current) => !current)}>
+              {showText}
+            </button>
+            {showAllEvents && events.map((event, index) => (
               <GameEventView key={index} event={event} />
             ))}
           </div>
