@@ -9,7 +9,7 @@ use underworld_core::{
     actions::{
         AttackNpc, CastSpellOnNpc, CastSpellOnPlayer, ExitRoom, InspectFixture, InspectNpc,
         LookAtFixture, LookAtNpc, LootFixture, LootNpc, MovePlayerItem, OpenFixture,
-        OpenFixtureHiddenCompartment, SellPlayerItem, UseItemOnPlayer, ThrowItemAtNpc,
+        OpenFixtureHiddenCompartment, SellPlayerItem, ThrowItemAtNpc, UseItemOnPlayer,
     },
     components::{fixtures::FixtureView, rooms::RoomView, NonPlayerView},
 };
@@ -22,7 +22,8 @@ use crate::{
         get::game_actions,
         inspect::{inspect_fixture, inspect_npc, FixtureInspected, NpcInspected},
         items::{
-            move_player_item, sell_player_item, use_item_on_player, ItemMoved, ItemSold, ItemUsed, throw_item_at_npc,
+            move_player_item, sell_player_item, throw_item_at_npc, use_item_on_player, ItemMoved,
+            ItemSold, ItemUsed,
         },
         look::{look_at_fixture, look_at_npc, look_at_room},
         loot::{loot_fixture, loot_npc, FixtureLooted, NpcLooted},
