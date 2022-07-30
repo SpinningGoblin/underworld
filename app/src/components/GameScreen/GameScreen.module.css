@@ -10,17 +10,12 @@
 
 .side {
   @apply overflow-y-auto overflow-x-hidden pr-1 pl-1;
-  border-left: 0.5px solid #9bbc0fbf;
+  border-left: 0.5px solid;
 }
 
 .events-list {
   @apply p-1.5;
-  border: 0.5px solid #9bbc0fbf;
-}
-
-.events-title {
-  @apply mb-1.5 block;
-  color: #9bbc0f;
+  border: 0.5px solid;
 }
 
 .events-container {
@@ -29,6 +24,8 @@
 
 .generate-button {
   @apply pl-1 pr-1 w-fit text-center;
-  background-color: #9bbc0f;
-  color: #0f380f;
+}
+
+.all-events {
+  @apply mt-3;
 }

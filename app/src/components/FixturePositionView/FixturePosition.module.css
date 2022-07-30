@@ -1,8 +1,5 @@
 .fixture-position {
-  @apply p-2 flex flex-col items-baseline;
-  color: #9bbc0f;
-  border-right: 0.5px solid #9bbc0fbf;
-  border-bottom: 0.5px solid #9bbc0fbf;
+  @apply pl-4 pb-4 pr-4 flex flex-col items-baseline;
 }
 
 .label {
@@ -35,13 +32,4 @@
 
 .hidden-search {
   @apply flex justify-between items-center gap-1;
-}
-
-.card {
-  color: #9bbc0f;
-  border: 0.5px solid #0f380f;
-}
-
-.card:hover {
-  border: 0.5px solid #9bbc0fbf;
 }

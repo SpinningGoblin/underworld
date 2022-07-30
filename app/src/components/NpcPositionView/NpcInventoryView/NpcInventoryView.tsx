@@ -1,10 +1,11 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import {
   Inventory,
   Item,
   ItemDescriptor,
   ItemType,
 } from "../../../generated-api";
+import { Colors, useTheme } from "../../../themes";
 import { LootNpcView } from "../../actions/LootNpcView";
 
 import styles from "./NpcInventoryView.module.css";
@@ -23,30 +24,47 @@ interface ItemViewProps {
   item: Item;
   npcId: string;
   canLoot: boolean;
+  colors: Colors;
 }
 
 const ItemView: FunctionComponent<ItemViewProps> = ({
   item,
   npcId,
   canLoot,
-}) => (
-  <div className={[styles.item, styles.card].join(" ")}>
-    <div className={styles["item-name"]}>
-      {[
-        ...item.descriptors.map(descriptorText),
-        item.material ? item.material : "",
-        itemTypeText(item.item_type),
-      ].join(" ")}
+  colors,
+}) => {
+  const { theme } = useTheme();
+  const [hovering, setHovering] = useState(false);
+
+  return (
+    <div
+      className={[styles.item, styles.card].join(" ")}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+      style={{
+        color: colors.secondary,
+        borderColor: hovering ? theme.colors.tertiary : theme.colors.primary,
+      }}
+    >
+      <div className={styles["item-name"]}>
+        {[
+          ...item.descriptors.map(descriptorText),
+          item.material ? item.material : "",
+          itemTypeText(item.item_type),
+        ].join(" ")}
+      </div>
+      {canLoot && <LootNpcView args={{ npc_id: npcId, item_ids: [item.id] }} />}
     </div>
-    {canLoot && <LootNpcView args={{ npc_id: npcId, item_ids: [item.id] }} />}
-  </div>
-);
+  );
+};
 
 export const NpcInventoryView: FunctionComponent<NpcInventoryViewProps> = ({
   npcId,
   inventory,
   canLoot,
 }) => {
+  const { theme } = useTheme();
+
   if (!inventory.equipment.length) {
     return <div>They have no items on them.</div>;
   }
@@ -64,6 +82,7 @@ export const NpcInventoryView: FunctionComponent<NpcInventoryViewProps> = ({
           item={characterItem.item}
           npcId={npcId}
           canLoot={canLoot}
+          colors={theme.colors}
         />
       ))}
       <div className={styles["equipped-text"]}>Unequipped Items</div>
@@ -74,6 +93,7 @@ export const NpcInventoryView: FunctionComponent<NpcInventoryViewProps> = ({
           item={characterItem.item}
           npcId={npcId}
           canLoot={canLoot}
+          colors={theme.colors}
         />
       ))}
     </div>

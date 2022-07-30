@@ -1,24 +1,13 @@
 .App {
   @apply text-center min-h-screen h-screen w-screen;
-  background-color: #0f380f;
-}
-
-button {
-  @apply cursor-pointer;
 }
 
 .name-input {
   @apply max-h-10 p-0.5;
 }
 
-.title {
-  @apply mb-0.5 underline;
-  color: #9bbc0f;
-}
-
 .options-button {
   @apply p-1;
-  background-color: #9bbc0f;
 }
 
 .options-icon {

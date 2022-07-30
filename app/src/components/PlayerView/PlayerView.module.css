@@ -1,7 +1,6 @@
 .player {
   @apply pt-3 pl-3 pr-3 pb-4 relative;
-  color: #9bbc0f;
-  border-bottom: 0.5px solid #9bbc0f;
+  border-bottom: 0.5px solid;
 }
 
 .description {
@@ -10,12 +9,10 @@
 
 .health {
   @apply font-medium flex items-center gap-1;
-  color: #d70505;
 }
 
 .gold {
   @apply flex items-center gap-1;
-  color: #ffdf00;
 }
 
 .health-and-gold {
@@ -32,15 +29,10 @@
 
 .collapse {
   @apply p-0.5;
-  background: #9bbc0f;
 }
 
 .collapse-icon {
   @apply h-6;
-}
-
-.collapse svg {
-  fill: #0f380f;
 }
 
 .showing {

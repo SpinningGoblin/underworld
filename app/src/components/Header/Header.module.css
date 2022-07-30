@@ -2,8 +2,7 @@
   @apply flex items-center justify-between p-1.5 text-white;
   height: 5vh;
   font-size: calc(10px + 3vmin);
-  color: #9bbc0f;
-  border-bottom: 0.5px solid #9bbc0f;
+  border-bottom: 0.5px solid;
 }
 
 .title {

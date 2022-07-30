@@ -1,10 +1,5 @@
-.room {
-  color: #9bbc0f;
-}
-
 .description {
   @apply mt-1 mb-1 p-2 block text-left;
-  color: #9bbc0f;
 }
 
 .exits {
@@ -13,11 +8,6 @@
 
 .exit-title {
   @apply font-normal;
-}
-
-.divider {
-  @apply mt-2 mb-2;
-  border-top: 0.5px solid #9bbc0f;
 }
 
 .description-button {
@@ -30,7 +20,6 @@
 
 .close-button {
   @apply p-1 mr-1;
-  background-color: #9bbc0f;
 }
 
 .close-icon {

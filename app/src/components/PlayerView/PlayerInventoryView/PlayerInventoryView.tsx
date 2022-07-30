@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import {
   Attack,
   CharacterItem,
@@ -11,6 +11,7 @@ import {
   PerformAction,
   UseItemOnPlayer,
 } from "../../../generated-api";
+import { useTheme } from "../../../themes/context";
 import { MovePlayerItemView } from "../../actions";
 import { SellPlayerItemView } from "../../actions/SellPlayerItemView";
 import { UseItemOnPlayerView } from "../../actions/UseItemOnPlayerView";
@@ -54,6 +55,9 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
   characterItem,
   itemActions,
 }) => {
+  const { theme } = useTheme();
+  const [hovering, setHovering] = useState(false);
+
   const equipActions = itemActions.filter(
     (action) =>
       action.name === "move_player_item" &&
@@ -71,24 +75,27 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
   );
 
   const renderAttack = (attack: Attack) => (
-    <div className={styles.attack}>
+    <div>
       <span>{`${attack.num_rolls}d6 ${
         attack.modifier !== 0 ? `+${attack.modifier}` : ""
       }`}</span>
-      {attack.effects.length > 0 && (
-        <span className={styles.effects}>{attack.effects.join(", ")}</span>
-      )}
+      {attack.effects.length > 0 && <span>{attack.effects.join(", ")}</span>}
     </div>
   );
 
   const renderDefense = (defense: Defense) => (
-    <div className={styles.defense}>
-      <span>{`${defense.damage_resistance} damage resistance`}</span>
-    </div>
+    <span>{`${defense.damage_resistance} damage resistance`}</span>
   );
 
   return (
-    <div className={[styles.item, styles.card].join(" ")}>
+    <div
+      className={[styles.item, styles.card].join(" ")}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+      style={{
+        borderColor: hovering ? theme.colors.tertiary : theme.colors.primary,
+      }}
+    >
       <div className={styles["item-name"]}>
         {[
           ...characterItem.item.descriptors.map(descriptorText),
@@ -163,13 +170,14 @@ export const PlayerInventoryView: FunctionComponent<
 > = ({ inventory, actions }) => {
   const equippedItems = inventory.equipment.filter((c) => c.at_the_ready);
   const unequippedItems = inventory.equipment.filter((c) => !c.at_the_ready);
+  const { theme } = useTheme();
 
   return (
-    <div className={styles.inventory}>
-      <span className="title">Inventory</span>
+    <div className={styles.inventory} style={{ color: theme.colors.secondary }}>
+      <h2>Inventory</h2>
       <div className={styles.equipment}>
         <div className={styles["item-group"]}>
-          <span className="title">Equipped Items</span>
+          <h3>Equipped Items</h3>
           <div className={styles["item-list"]}>
             {equippedItems.length > 0 &&
               equippedItems.map((characterItem) => {
@@ -188,7 +196,7 @@ export const PlayerInventoryView: FunctionComponent<
           </div>
         </div>
         <div className={styles["item-group"]}>
-          <span className="title">Unequipped Items</span>
+          <h3>Unequipped Items</h3>
           <div className={styles["item-list"]}>
             {unequippedItems.length > 0 &&
               unequippedItems.map((characterItem) => {

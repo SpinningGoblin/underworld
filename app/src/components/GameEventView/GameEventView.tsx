@@ -1,5 +1,6 @@
 import { FunctionComponent } from "react";
 import { EventName, GameEvent } from "../../generated-api";
+import { useTheme } from "../../themes";
 
 import styles from "./GameEventView.module.css";
 
@@ -115,6 +116,8 @@ const nameText = (eventName: EventName): string => {
 export const GameEventView: FunctionComponent<GameEventViewProps> = ({
   event,
 }) => {
+  const { theme } = useTheme();
+
   const onClick = () => {
     if (event.data) {
       alert(JSON.stringify(event.data, null, 2));
@@ -122,7 +125,14 @@ export const GameEventView: FunctionComponent<GameEventViewProps> = ({
   };
 
   return (
-    <button onClick={onClick} className={styles.event}>
+    <button
+      onClick={onClick}
+      className={styles.event}
+      style={{
+        color: theme.colors.secondary,
+        backgroundColor: theme.colors.primary,
+      }}
+    >
       {nameText(event.name)}
     </button>
   );
