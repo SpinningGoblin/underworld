@@ -1,7 +1,8 @@
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent } from "react";
 import { CastSpellOnPlayer, Spell, SpellMemory } from "../../../generated-api";
 import { useTheme } from "../../../themes/context";
 import { CastSpellOnPlayerView } from "../../actions";
+import { Card } from "../../Card";
 
 import styles from "./PlayerSpellMemoryView.module.css";
 
@@ -17,27 +18,15 @@ interface PlayerSpellViewProps {
 const PlayerSpellView: FunctionComponent<PlayerSpellViewProps> = ({
   spell,
   castArgs,
-}) => {
-  const { theme } = useTheme();
-  const [hovering, setHovering] = useState(false);
-
-  return (
-    <div
-      className={[styles.spell, styles.card].join(" ")}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-      style={{
-        borderColor: hovering ? theme.colors.tertiary : theme.colors.primary,
-      }}
-    >
-      <div className={styles["spell-name"]}>{spell.name}</div>
-      <div className={styles.uses}>
-        <span>{spell.uses} uses remain</span>
-        {castArgs && <CastSpellOnPlayerView args={castArgs} />}
-      </div>
+}) => (
+  <Card className={styles.spell}>
+    <div className={styles["spell-name"]}>{spell.name}</div>
+    <div className={styles.uses}>
+      <span>{spell.uses} uses remain</span>
+      {castArgs && <CastSpellOnPlayerView args={castArgs} />}
     </div>
-  );
-};
+  </Card>
+);
 
 export const PlayerSpellMemoryView: FunctionComponent<
   PlayerSpellMemoryViewProps
