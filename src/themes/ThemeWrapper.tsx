@@ -7,10 +7,25 @@ interface ThemeWrapperProps {
   children?: ReactNode;
 }
 
+const THEME_KEY = "underworld_theme";
+
+const startingThemeName = localStorage.getItem(THEME_KEY);
+
 export const ThemeWrapper: FunctionComponent<ThemeWrapperProps> = ({
   children,
 }) => {
-  const [theme, setTheme] = useState<Theme>(themes[0]);
+  const startingTheme =
+    themes.find((t) => t.name === startingThemeName) ?? themes[0];
+  const [theme, setTheme] = useState<Theme>(startingTheme);
 
-  return <ThemeProvider value={{ theme, setTheme }}>{children}</ThemeProvider>;
+  const onThemeChange = (newTheme: Theme) => {
+    localStorage.setItem(THEME_KEY, newTheme.name);
+    setTheme(newTheme);
+  };
+
+  return (
+    <ThemeProvider value={{ theme, setTheme: onThemeChange }}>
+      {children}
+    </ThemeProvider>
+  );
 };
