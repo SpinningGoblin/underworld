@@ -105,20 +105,22 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
       </div>
       {characterItem.item.attack && renderAttack(characterItem.item.attack)}
       {characterItem.item.defense && renderDefense(characterItem.item.defense)}
-      {equipActions.length > 0 && (
-        <div className={styles.equip}>
-          <span>Equip to </span>
-          <div className={styles.actions}>
-            {equipActions.map((action, index) => (
-              <MovePlayerItemView
-                key={index}
-                args={action.args! as MovePlayerItem}
-              />
-            ))}
-            <SellPlayerItemView itemId={characterItem.item.id} />
-          </div>
-        </div>
-      )}
+      <div className={styles.actions}>
+        {equipActions.length > 0 && (
+          <>
+            <span>Equip to </span>
+            <div>
+              {equipActions.map((action, index) => (
+                <MovePlayerItemView
+                  key={index}
+                  args={action.args! as MovePlayerItem}
+                />
+              ))}
+            </div>
+          </>
+        )}
+        <SellPlayerItemView itemId={characterItem.item.id} />
+      </div>
       {unequipActions.length > 0 && (
         <div className={styles.equip}>
           <span>Unequip to </span>

@@ -18,7 +18,7 @@
   @apply p-2 flex flex-col items-start gap-0.5;
 }
 
-.equip {
+.actions {
   @apply flex pt-0.5 gap-1 items-center;
 }
 
