@@ -7,7 +7,7 @@
 }
 
 .item {
-  @apply p-2 items-center gap-1.5;
+  @apply p-2 items-center gap-1.5 flex justify-between;
 }
 
 .loot {
@@ -16,9 +16,4 @@
 
 .equipped-text {
   @apply underline mb-1;
-}
-
-.card {
-  @apply flex justify-between;
-  border: 0.5px solid;
 }

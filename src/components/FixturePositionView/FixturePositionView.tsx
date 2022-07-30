@@ -13,6 +13,7 @@ import { InspectFixtureView } from "../actions/InspectFixtureView";
 import { LootFixtureView } from "../actions/LootFixtureView";
 import { OpenFixtureHiddenCompartmentView } from "../actions/OpenFixtureHiddenCompartment";
 import { OpenFixtureView } from "../actions/OpenFixtureView";
+import { Card } from "../Card";
 
 import styles from "./FixturePosition.module.css";
 
@@ -68,7 +69,7 @@ interface ItemViewProps {
 }
 
 const ItemView: FunctionComponent<ItemViewProps> = ({ item, fixtureId }) => (
-  <div className={[styles.item, styles.card].join(" ")}>
+  <Card className={styles.item}>
     <div className={styles["item-name"]}>
       {[
         ...item.descriptors.map(descriptorText),
@@ -78,7 +79,7 @@ const ItemView: FunctionComponent<ItemViewProps> = ({ item, fixtureId }) => (
     </div>
 
     <LootFixtureView args={{ fixture_id: fixtureId, item_ids: [item.id] }} />
-  </div>
+  </Card>
 );
 
 const isFixtureOpen = (fixture: Fixture): boolean => {

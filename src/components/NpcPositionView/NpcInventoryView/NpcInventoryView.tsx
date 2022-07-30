@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent } from "react";
 import {
   Inventory,
   Item,
@@ -7,6 +7,7 @@ import {
 } from "../../../generated-api";
 import { Colors, useTheme } from "../../../themes";
 import { LootNpcView } from "../../actions/LootNpcView";
+import { Card } from "../../Card";
 
 import styles from "./NpcInventoryView.module.css";
 
@@ -31,32 +32,18 @@ const ItemView: FunctionComponent<ItemViewProps> = ({
   item,
   npcId,
   canLoot,
-  colors,
-}) => {
-  const { theme } = useTheme();
-  const [hovering, setHovering] = useState(false);
-
-  return (
-    <div
-      className={[styles.item, styles.card].join(" ")}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-      style={{
-        color: colors.secondary,
-        borderColor: hovering ? theme.colors.tertiary : theme.colors.primary,
-      }}
-    >
-      <div className={styles["item-name"]}>
-        {[
-          ...item.descriptors.map(descriptorText),
-          item.material ? item.material : "",
-          itemTypeText(item.item_type),
-        ].join(" ")}
-      </div>
-      {canLoot && <LootNpcView args={{ npc_id: npcId, item_ids: [item.id] }} />}
+}) => (
+  <Card className={styles.item}>
+    <div className={styles["item-name"]}>
+      {[
+        ...item.descriptors.map(descriptorText),
+        item.material ? item.material : "",
+        itemTypeText(item.item_type),
+      ].join(" ")}
     </div>
-  );
-};
+    {canLoot && <LootNpcView args={{ npc_id: npcId, item_ids: [item.id] }} />}
+  </Card>
+);
 
 export const NpcInventoryView: FunctionComponent<NpcInventoryViewProps> = ({
   npcId,

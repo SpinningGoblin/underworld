@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent } from "react";
 import {
   Attack,
   CharacterItem,
@@ -15,6 +15,7 @@ import { useTheme } from "../../../themes/context";
 import { MovePlayerItemView } from "../../actions";
 import { SellPlayerItemView } from "../../actions/SellPlayerItemView";
 import { UseItemOnPlayerView } from "../../actions/UseItemOnPlayerView";
+import { Card } from "../../Card";
 
 import styles from "./PlayerInventoryView.module.css";
 
@@ -55,9 +56,6 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
   characterItem,
   itemActions,
 }) => {
-  const { theme } = useTheme();
-  const [hovering, setHovering] = useState(false);
-
   const equipActions = itemActions.filter(
     (action) =>
       action.name === "move_player_item" &&
@@ -88,14 +86,7 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
   );
 
   return (
-    <div
-      className={[styles.item, styles.card].join(" ")}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-      style={{
-        borderColor: hovering ? theme.colors.tertiary : theme.colors.primary,
-      }}
-    >
+    <Card className={styles.item}>
       <div className={styles["item-name"]}>
         {[
           ...characterItem.item.descriptors.map(descriptorText),
@@ -144,7 +135,7 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
         )}
         <SellPlayerItemView itemId={characterItem.item.id} />
       </div>
-    </div>
+    </Card>
   );
 };
 
