@@ -1,6 +1,5 @@
 .items {
   @apply flex flex-col gap-0.5 items-baseline;
-  color: #9bbc0f;
 }
 
 .item-name {
@@ -9,7 +8,6 @@
 
 .item {
   @apply p-2 items-center gap-1.5;
-  color: #9bbc0f;
 }
 
 .loot {
@@ -22,10 +20,5 @@
 
 .card {
   @apply flex justify-between;
-  color: #9bbc0f;
-  border: 0.5px solid #0f380f;
-}
-
-.card:hover {
-  border: 0.5px solid #9bbc0fbf;
+  border: 0.5px solid;
 }

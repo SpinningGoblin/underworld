@@ -154,6 +154,7 @@ export const FixturePositionView: FunctionComponent<
 
   return (
     <div className={styles["fixture-position"]}>
+      <h1>{fixtureTypeText(fixturePosition.fixture.fixture_type)}</h1>
       <div>
         <span className={styles.label}>Description: </span>
         {descriptionText(fixturePosition)}
@@ -180,7 +181,7 @@ export const FixturePositionView: FunctionComponent<
         </div>
       )}
       <div className={styles.items}>
-        <span className="title">Hidden Compartment</span>
+        <h2>Hidden Compartment</h2>
         {renderHiddenCompartment(
           fixturePosition.fixture.items.filter(
             (i) => i.is_in_hidden_compartment,

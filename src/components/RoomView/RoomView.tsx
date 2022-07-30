@@ -21,6 +21,7 @@ import { NpcPositionView } from "../NpcPositionView";
 import CloseIcon from "../../images/close.svg";
 
 import styles from "./RoomView.module.css";
+import { useTheme } from "../../themes/context";
 
 export interface RoomViewProps {
   room: Room;
@@ -116,6 +117,7 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
   room,
   player,
 }) => {
+  const { theme } = useTheme();
   const [showExits, setShowExits] = useState<boolean>(false);
   const [shownNpcId, setShownNpcId] = useState<string | undefined>();
   const [shownFixtureId, setShownFixtureId] = useState<string | undefined>();
@@ -263,7 +265,10 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
   };
 
   const descriptionView = () => (
-    <span className={styles.description}>
+    <span
+      className={styles.description}
+      style={{ color: theme.colors.secondary }}
+    >
       {`You are in a ${description(room)} `}
       <br />
       {exitText()}
@@ -288,7 +293,7 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
   const showClose = showExits || !!shownNpcId || !!shownFixtureId;
 
   return (
-    <div className={styles.room}>
+    <div style={{ color: theme.colors.secondary }}>
       {showClose && (
         <div className={styles.close}>
           <button
@@ -298,6 +303,7 @@ export const RoomView: FunctionComponent<RoomViewProps> = ({
               setShownNpcId(undefined);
             }}
             className={styles["close-button"]}
+            style={{ backgroundColor: theme.colors.secondary }}
           >
             <img className={styles["close-icon"]} src={CloseIcon} alt="close" />
           </button>

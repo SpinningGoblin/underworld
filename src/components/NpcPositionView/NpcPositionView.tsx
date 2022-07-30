@@ -159,7 +159,7 @@ export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
         )}
         {throwables.length > 0 && (
           <ThrowItemAtNpcView
-            items={throwables.map(t => t.item)}
+            items={throwables.map((t) => t.item)}
             npcId={npcPosition.npc.id}
           />
         )}

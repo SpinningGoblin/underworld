@@ -1,6 +1,7 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { performCastSpellOnNpc } from "../../api/actions";
 import { CastSpellOnNpc, LearnedSpell, SpellName } from "../../generated-api";
+import { useTheme } from "../../themes";
 
 import styles from "./styles.module.css";
 
@@ -28,6 +29,7 @@ export const CastSpellOnNpcView: FunctionComponent<CastSpellOnNpcViewProps> = ({
   learnedSpells,
   npcId,
 }) => {
+  const { theme } = useTheme();
   const [spellId, setSpellId] = useState<string>(learnedSpells[0].id);
 
   useEffect(() => {
@@ -58,10 +60,21 @@ export const CastSpellOnNpcView: FunctionComponent<CastSpellOnNpcViewProps> = ({
       <select
         value={value}
         onChange={(event) => setSpellId(event.currentTarget.value)}
+        style={{
+          backgroundColor: theme.colors.secondary,
+          color: theme.colors.primary,
+        }}
       >
         {options}
       </select>
-      <button onClick={onClick} className={styles["action-button"]}>
+      <button
+        onClick={onClick}
+        className={styles["action-button"]}
+        style={{
+          backgroundColor: theme.colors.secondary,
+          color: theme.colors.primary,
+        }}
+      >
         Cast
       </button>
     </div>

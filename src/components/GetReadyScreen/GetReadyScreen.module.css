@@ -1,17 +1,9 @@
 .input {
   @apply max-h-8 p-0.5;
-  background-color: #9bbc0f;
-  color: #0f380f;
 }
 
 .ready {
   @apply p-1 ml-2;
-  background-color: #9bbc0f;
-  color: #0f380f;
-}
-
-.ready:disabled {
-  background-color: #aaaaaa;
 }
 
 .container {

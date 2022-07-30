@@ -26,3 +26,25 @@ code {
 #root {
   line-height: normal;
 }
+
+h1 {
+  @apply p-1 mb-0.5 underline;
+
+  font-size: calc(10px + 3vmin);
+}
+
+h2 {
+  @apply p-1 mb-0.5 underline;
+
+  font-size: calc(10px + 2.5vmin);
+}
+
+h3 {
+  @apply p-1 mb-0.5;
+
+  font-size: calc(10px + 2vmin);
+}
+
+button {
+  @apply cursor-pointer;
+}

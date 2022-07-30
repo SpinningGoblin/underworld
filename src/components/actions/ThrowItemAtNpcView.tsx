@@ -7,6 +7,7 @@ import {
   ThrowableEffect,
   ThrowItemAtNpc,
 } from "../../generated-api";
+import { useTheme } from "../../themes";
 
 import styles from "./styles.module.css";
 
@@ -31,6 +32,7 @@ export const ThrowItemAtNpcView: FunctionComponent<ThrowItemAtNpcViewProps> = ({
   items,
   npcId,
 }) => {
+  const { theme } = useTheme();
   const [itemId, setItemId] = useState<string>(items[0].id);
 
   useEffect(() => {
@@ -61,10 +63,21 @@ export const ThrowItemAtNpcView: FunctionComponent<ThrowItemAtNpcViewProps> = ({
       <select
         value={value}
         onChange={(event) => setItemId(event.currentTarget.value)}
+        style={{
+          backgroundColor: theme.colors.secondary,
+          color: theme.colors.primary,
+        }}
       >
         {options}
       </select>
-      <button onClick={onClick} className={styles["action-button"]}>
+      <button
+        onClick={onClick}
+        className={styles["action-button"]}
+        style={{
+          backgroundColor: theme.colors.secondary,
+          color: theme.colors.primary,
+        }}
+      >
         Throw
       </button>
     </div>

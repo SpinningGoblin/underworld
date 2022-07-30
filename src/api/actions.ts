@@ -151,7 +151,9 @@ export const performExitRoom = async (args: ExitRoom): Promise<void> => {
   }
 };
 
-export const performThrowItemAtNpc = async (args: ThrowItemAtNpc): Promise<void> => {
+export const performThrowItemAtNpc = async (
+  args: ThrowItemAtNpc,
+): Promise<void> => {
   try {
     const { username, gameId } = getBasicParams();
     const api = getGameActionsApi();

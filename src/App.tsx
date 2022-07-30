@@ -25,6 +25,7 @@ import { OptionsScreen } from "./components/OptionsScreen";
 
 import OptionsIcon from "./images/options.svg";
 import CloseIcon from "./images/close.svg";
+import { useTheme } from "./themes/context";
 
 type OpeningPromises = [
   Promise<PlayerCharacter>,
@@ -34,6 +35,7 @@ type OpeningPromises = [
 ];
 
 export const App = () => {
+  const { theme } = useTheme();
   const [gameIds, setGameIds] = useState<Array<string>>([]);
   const [gameId, setGameId] = useState<string | undefined>(getCurrentGameId());
   const [room, setRoom] = useState<Room | undefined>();
@@ -44,6 +46,7 @@ export const App = () => {
   const [ready, setReady] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const firstPlayerLoadDone = useRef<boolean>(false);
+  const [error, setError] = useState<string>();
 
   const onClickGenerateGame = () => {
     generateGame()
@@ -99,6 +102,7 @@ export const App = () => {
 
   useEffect(() => {
     const callback = (error: string) => {
+      setError(error);
       console.error(error);
       if (error === "PlayerIsDeadError") {
         alert("You can't do that with a dead character.");
@@ -111,6 +115,7 @@ export const App = () => {
 
   useEffect(() => {
     const callback = (actionPerformed: ActionPerformed) => {
+      setError(undefined);
       if (actionPerformed.room) {
         setRoom(actionPerformed.room);
       }
@@ -165,6 +170,7 @@ export const App = () => {
   } else if (room && player && !showOptions) {
     body = (
       <GameScreen
+        error={error}
         room={room}
         player={player}
         lastEvents={lastEvents}
@@ -197,13 +203,18 @@ export const App = () => {
         <button
           onClick={() => setShowOptions(false)}
           className="options-button"
+          style={{ backgroundColor: theme.colors.secondary }}
         >
           <img className="options-icon" src={CloseIcon} alt="close" />
         </button>
       );
     } else {
       return (
-        <button onClick={() => setShowOptions(true)} className="options-button">
+        <button
+          onClick={() => setShowOptions(true)}
+          className="options-button"
+          style={{ backgroundColor: theme.colors.secondary }}
+        >
           <img className="options-icon" src={OptionsIcon} alt="options" />
         </button>
       );
@@ -211,7 +222,7 @@ export const App = () => {
   };
 
   return (
-    <div className="App">
+    <div className="App" style={{ backgroundColor: theme.colors.primary }}>
       <Header>{headerButton()}</Header>
       {body}
     </div>

@@ -1,23 +1,9 @@
 .exit-button {
   @apply p-1;
-  background-color: #9bbc0f;
 }
 
 .action-button {
   @apply w-fit text-center pl-1 pr-1;
-  background-color: #9bbc0f;
-  color: #0f380f;
-}
-
-.inspect-button {
-  @apply w-fit text-center pl-1 pr-1;
-  background-color: #9bbc0f;
-  color: #0f380f;
-}
-
-.attack-button:hover {
-  background-color: darkred;
-  color: #9bbc0f;
 }
 
 .spells-on-npc {

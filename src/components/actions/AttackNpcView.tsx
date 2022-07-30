@@ -1,8 +1,9 @@
 import styles from "./styles.module.css";
 
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import { AttackNpc } from "../../generated-api";
 import { performAttackNpc } from "../../api/actions";
+import { useTheme } from "../../themes";
 
 export interface AttackNpcViewProps {
   args: AttackNpc;
@@ -11,14 +12,23 @@ export interface AttackNpcViewProps {
 export const AttackNpcView: FunctionComponent<AttackNpcViewProps> = ({
   args,
 }) => {
+  const { theme } = useTheme();
   const onClick = () => {
     performAttackNpc(args);
   };
 
+  const [hovering, setHovering] = useState(false);
+
   return (
     <button
       onClick={onClick}
-      className={[styles["action-button"], styles["attack-button"]].join(" ")}
+      className={styles["action-button"]}
+      style={{
+        backgroundColor: hovering ? theme.colors.red : theme.colors.secondary,
+        color: hovering ? theme.colors.secondary : theme.colors.primary,
+      }}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
     >
       Attack
     </button>

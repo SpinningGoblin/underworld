@@ -5,6 +5,7 @@ import {
   PlayerCharacter,
   Room,
 } from "../../generated-api";
+import { useTheme } from "../../themes/context";
 import { GameEventView } from "../GameEventView";
 import { PlayerView } from "../PlayerView";
 import { RoomView } from "../RoomView";
@@ -19,6 +20,7 @@ export interface GameScreenProps {
   onClickGeneratePlayer: () => void;
   player: PlayerCharacter;
   room: Room;
+  error?: string;
 }
 
 export const GameScreen: FunctionComponent<GameScreenProps> = ({
@@ -29,14 +31,16 @@ export const GameScreen: FunctionComponent<GameScreenProps> = ({
   onClickGeneratePlayer,
   player,
   room,
+  error,
 }) => {
+  const { theme } = useTheme();
   const [showFullPlayer, setShowFullPlayer] = useState(false);
   const [showAllEvents, setShowAllEvents] = useState(false);
 
   const showText = showAllEvents ? "Hide" : "Show all events";
 
   return (
-    <div className={styles.screen}>
+    <div className={styles.screen} style={{ color: theme.colors.secondary }}>
       <div className={styles.game}>
         <PlayerView
           player={player}
@@ -53,26 +57,49 @@ export const GameScreen: FunctionComponent<GameScreenProps> = ({
           <button
             className={styles["generate-button"]}
             onClick={onClickGeneratePlayer}
+            style={{
+              backgroundColor: theme.colors.secondary,
+              color: theme.colors.primary,
+            }}
           >
             Generate new PC
           </button>
         )}
         <div className={styles["events-container"]}>
-          <span className={["title", styles["events-title"]].join(" ")}>
-            Last Game Events
-          </span>
-          <div className={styles["events-list"]}>
+          {error && (
+            <>
+              <h2>Error</h2>
+              <div
+                className={[styles["events-list"]].join(" ")}
+                style={{ color: theme.colors.error }}
+              >
+                {error}
+              </div>
+            </>
+          )}
+          <h2>Last Game Events</h2>
+          <div
+            className={styles["events-list"]}
+            style={{ borderColor: theme.colors.secondary }}
+          >
             {lastEvents.map((event, index) => (
               <GameEventView key={index} event={event} />
             ))}
           </div>
-          <div className={styles["events-list"]}>
-            <button className={styles["generate-button"]} onClick={() => setShowAllEvents((current) => !current)}>
+          <div
+            className={[styles["events-list"], styles["all-events"]].join(" ")}
+            style={{ borderColor: theme.colors.secondary }}
+          >
+            <button
+              className={styles["generate-button"]}
+              onClick={() => setShowAllEvents((current) => !current)}
+            >
               {showText}
             </button>
-            {showAllEvents && events.map((event, index) => (
-              <GameEventView key={index} event={event} />
-            ))}
+            {showAllEvents &&
+              events.map((event, index) => (
+                <GameEventView key={index} event={event} />
+              ))}
           </div>
         </div>
       </div>
