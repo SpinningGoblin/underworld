@@ -109,7 +109,7 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
         {equipActions.length > 0 && (
           <>
             <span>Equip to </span>
-            <div>
+            <div className={styles.actions}>
               {equipActions.map((action, index) => (
                 <MovePlayerItemView
                   key={index}
@@ -119,29 +119,31 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
             </div>
           </>
         )}
+        {unequipActions.length > 0 && (
+          <>
+            <span>Unequip to </span>
+            <div className={styles.actions}>
+              {unequipActions.map((action, index) => (
+                <MovePlayerItemView
+                  key={index}
+                  args={action.args! as MovePlayerItem}
+                />
+              ))}
+            </div>
+          </>
+        )}
+        {useActions.length > 0 && characterItem.item.consumable && (
+          <>
+            <span>{effectText(characterItem.item.consumable)}</span>
+            <div className={styles.actions}>
+              {useActions.map((action, index) => (
+                <UseItemOnPlayerView key={index} args={action.args} />
+              ))}
+            </div>
+          </>
+        )}
         <SellPlayerItemView itemId={characterItem.item.id} />
       </div>
-      {unequipActions.length > 0 && (
-        <div className={styles.equip}>
-          <span>Unequip to </span>
-          <div className={styles.actions}>
-            {unequipActions.map((action, index) => (
-              <MovePlayerItemView
-                key={index}
-                args={action.args! as MovePlayerItem}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-      {useActions.length > 0 && characterItem.item.consumable && (
-        <div className={styles.equip}>
-          <span>{effectText(characterItem.item.consumable)}</span>
-          {useActions.map((action, index) => (
-            <UseItemOnPlayerView key={index} args={action.args} />
-          ))}
-        </div>
-      )}
     </div>
   );
 };

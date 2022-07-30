@@ -19,11 +19,7 @@
 }
 
 .actions {
-  @apply flex pt-0.5 gap-1 items-center;
-}
-
-.actions {
-  @apply flex gap-1;
+  @apply flex gap-1 items-center;
 }
 
 .card {
