@@ -86,21 +86,29 @@ export const GameScreen: FunctionComponent<GameScreenProps> = ({
               <GameEventView key={index} event={event} />
             ))}
           </div>
-          <div
-            className={[styles["events-list"], styles["all-events"]].join(" ")}
-            style={{ borderColor: theme.colors.secondary }}
-          >
-            <button
-              className={styles["generate-button"]}
-              onClick={() => setShowAllEvents((current) => !current)}
+          {events.length > 0 && (
+            <div
+              className={[styles["events-list"], styles["all-events"]].join(
+                " ",
+              )}
+              style={{ borderColor: theme.colors.secondary }}
             >
-              {showText}
-            </button>
-            {showAllEvents &&
-              events.map((event, index) => (
-                <GameEventView key={index} event={event} />
-              ))}
-          </div>
+              <button
+                className={styles["generate-button"]}
+                onClick={() => setShowAllEvents((current) => !current)}
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                  color: theme.colors.primary,
+                }}
+              >
+                {showText}
+              </button>
+              {showAllEvents &&
+                events.map((event, index) => (
+                  <GameEventView key={index} event={event} />
+                ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
