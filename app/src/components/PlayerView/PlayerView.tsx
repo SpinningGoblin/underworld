@@ -34,48 +34,46 @@ export const PlayerView: FunctionComponent<PlayerViewProps> = ({
       className={styles.player}
       style={{ borderBottomColor: theme.colors.secondary }}
     >
-      <div className={styles.details}>
-        <div className={styles.basics}>
-          <div className={styles.description}>{description}</div>
-          <div className={styles["health-and-gold"]}>
-            <div className={styles.health} style={{ color: theme.colors.red }}>
-              <img src={Heart} alt="heart" height={16} width={16} />
-              {`${health.current} / ${health.max}`}
-            </div>
-            <div className={styles.gold} style={{ color: theme.colors.yellow }}>
-              <img src={GoldCoin} alt="gold coin" height={16} width={16} />
-              {player.gold}
-            </div>
-            <button
-              className={styles.collapse}
-              onClick={toggleShowFullPlayer}
-              style={{ background: theme.colors.secondary }}
-            >
-              <img
-                className={[collapsedClass, styles["collapse-icon"]].join(" ")}
-                src={chevron}
-                alt="chevron"
-              />
-            </button>
+      <div className={styles.basics}>
+        <div className={styles.description}>{description}</div>
+        <div className={styles["health-and-gold"]}>
+          <div className={styles.health} style={{ color: theme.colors.red }}>
+            <img src={Heart} alt="heart" height={16} width={16} />
+            {`${health.current} / ${health.max}`}
           </div>
+          <div className={styles.gold} style={{ color: theme.colors.yellow }}>
+            <img src={GoldCoin} alt="gold coin" height={16} width={16} />
+            {player.gold}
+          </div>
+          <button
+            className={styles.collapse}
+            onClick={toggleShowFullPlayer}
+            style={{ background: theme.colors.secondary }}
+          >
+            <img
+              className={[collapsedClass, styles["collapse-icon"]].join(" ")}
+              src={chevron}
+              alt="chevron"
+            />
+          </button>
         </div>
-        {showFullPlayer && (
-          <>
-            <EffectsView effects={player.character.current_effects!} />
-            {actions.length > 0 && (
-              <PlayerSpellMemoryView
-                spellMemory={player.character.spell_memory!}
-              />
-            )}
-            {actions.length > 0 && player.character.inventory && (
-              <PlayerInventoryView
-                inventory={player.character.inventory}
-                actions={actions}
-              />
-            )}
-          </>
-        )}
       </div>
+      {showFullPlayer && (
+        <>
+          <EffectsView effects={player.character.current_effects!} />
+          {actions.length > 0 && (
+            <PlayerSpellMemoryView
+              spellMemory={player.character.spell_memory!}
+            />
+          )}
+          {actions.length > 0 && player.character.inventory && (
+            <PlayerInventoryView
+              inventory={player.character.inventory}
+              actions={actions}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 };

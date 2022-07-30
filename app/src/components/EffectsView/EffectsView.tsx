@@ -15,7 +15,7 @@ export const EffectsView: FunctionComponent<EffectsViewProps> = ({
 
   return (
     <div className={styles.effects}>
-      <h1 style={{ color: theme.colors.secondary }}>Current Effects</h1>
+      <h2 style={{ color: theme.colors.secondary }}>Current Effects</h2>
       {!effects.resurrection_aura &&
         !effects.retribution_aura &&
         !effects.shield_aura &&

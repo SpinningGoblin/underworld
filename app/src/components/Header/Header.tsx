@@ -18,7 +18,7 @@ export const Header: FunctionComponent<PropsWithChildren> = ({ children }) => {
     >
       <div className={styles.title}>
         <img src={goblin} className={styles.logo} alt="logo" />
-        <p>Underworld Server</p>
+        <h1>Underworld Server</h1>
       </div>
       {children}
     </header>

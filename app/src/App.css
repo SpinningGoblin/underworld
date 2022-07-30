@@ -2,10 +2,6 @@
   @apply text-center min-h-screen h-screen w-screen;
 }
 
-.name-input {
-  @apply max-h-10 p-0.5;
-}
-
 .options-button {
   @apply p-1;
 }

@@ -8,3 +8,7 @@
 .title {
   @apply flex items-center justify-center;
 }
+
+.title > h1 {
+  @apply no-underline;
+}
