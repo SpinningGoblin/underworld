@@ -6,9 +6,9 @@ import {
   Room,
 } from "../../generated-api";
 import { useTheme } from "../../themes/context";
-import { GameEventView } from "../GameEventView";
-import { PlayerView } from "../PlayerView";
-import { RoomView } from "../RoomView";
+import { GameEventView } from "../../components/GameEventView";
+import { PlayerView } from "../../components/PlayerView";
+import { RoomView } from "../../components/RoomView";
 
 import styles from "./GameScreen.module.css";
 

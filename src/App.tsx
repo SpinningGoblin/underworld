@@ -18,10 +18,8 @@ import {
   removeErrorListener,
 } from "./api/actions";
 import { generatePlayer, getCurrentPlayer } from "./api/player";
-import { GetReadyScreen } from "./components/GetReadyScreen";
-import { GameScreen } from "./components/GameScreen";
+import { GameScreen, GetReadyScreen, OptionsScreen } from "./screens";
 import { Header } from "./components/Header";
-import { OptionsScreen } from "./components/OptionsScreen";
 
 import OptionsIcon from "./images/options.svg";
 import CloseIcon from "./images/close.svg";
