@@ -62,7 +62,7 @@ export const OptionsScreen: FunctionComponent<OptionsScreenProps> = ({
       </div>
       <div className={openingPage ? "" : styles["id-section"]}>
         <div className={styles.section}>
-          <h1>Current Game</h1>
+          <h2>Current Game</h2>
           <div className={styles["id-and-generate"]}>
             {gameIds.length > 0 && (
               <select
@@ -92,7 +92,7 @@ export const OptionsScreen: FunctionComponent<OptionsScreenProps> = ({
       </div>
       <div className={openingPage ? "" : styles["id-section"]}>
         <div className={styles.section}>
-          <h1>Site Theme</h1>
+          <h2>Site Theme</h2>
           <select
             className={styles.select}
             value={theme.name}
