@@ -4,7 +4,6 @@ import { generateGame, getGameIds } from "./api/game";
 import { getCurrentGameId, setCurrentGameId } from "./api/current-game";
 import {
   GameEvent,
-  PerformAction,
   PlayerCharacter,
   Room,
 } from "./generated-api";
@@ -28,7 +27,6 @@ import { useTheme } from "./themes/context";
 type OpeningPromises = [
   Promise<PlayerCharacter>,
   Promise<string[]>,
-  Promise<PerformAction[]>,
   Promise<Room | undefined>,
 ];
 
@@ -37,7 +35,6 @@ export const App = () => {
   const [gameIds, setGameIds] = useState<Array<string>>([]);
   const [gameId, setGameId] = useState<string | undefined>(getCurrentGameId());
   const [room, setRoom] = useState<Room | undefined>();
-  const [actions, setActions] = useState<Array<PerformAction>>([]);
   const [player, setPlayer] = useState<PlayerCharacter | undefined>();
   const [events, setEvents] = useState<Array<GameEvent>>([]);
   const [lastEvents, setLastEvents] = useState<Array<GameEvent>>([]);
@@ -63,7 +60,6 @@ export const App = () => {
         setPlayer(generatedPlayer);
         return getCurrentActions();
       })
-      .then((currentActions) => setActions(currentActions))
       .catch((e) => console.error(e));
   };
 
@@ -74,23 +70,18 @@ export const App = () => {
       const roomPromise: Promise<Room | undefined> = gameId
         ? getCurrentRoom()
         : Promise.resolve(undefined);
-      const actionsPromise: Promise<PerformAction[]> = gameId
-        ? getCurrentActions()
-        : Promise.resolve([]);
 
       const promises: OpeningPromises = [
         getCurrentPlayer(),
         getGameIds(),
-        actionsPromise,
         roomPromise,
       ];
 
       Promise.all(promises)
-        .then(([pl, ids, actions, room]) => {
+        .then(([pl, ids, room]) => {
           console.log(ids);
           setPlayer(pl);
           setGameIds(ids);
-          setActions(actions);
           setRoom(room);
         })
         .catch((e) => console.error(e))
@@ -120,7 +111,6 @@ export const App = () => {
       if (actionPerformed.player) {
         setPlayer(actionPerformed.player);
       }
-      setActions(actionPerformed.actions);
 
       const events = actionPerformed.events.slice();
       events.reverse();
@@ -145,17 +135,14 @@ export const App = () => {
       setCurrentGameId(gameId);
       Promise.all([
         getCurrentRoom(),
-        getCurrentActions(),
         getCurrentPlayer(),
-      ]).then(([room, actions, player]) => {
+      ]).then(([room, player]) => {
         setRoom(room);
-        setActions(actions);
         setPlayer(player);
       });
     } else {
       setCurrentGameId("");
       setRoom(undefined);
-      setActions([]);
     }
   }, [gameId]);
 
@@ -173,7 +160,6 @@ export const App = () => {
         player={player}
         lastEvents={lastEvents}
         events={events}
-        actions={actions}
         allowGeneratePlayer={allowGeneratePlayer}
         onClickGeneratePlayer={onClickGeneratePlayer}
       />

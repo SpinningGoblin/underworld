@@ -6,14 +6,17 @@ import { performUseItemOnPlayer } from "../../api/actions";
 import { useTheme } from "../../themes";
 
 export interface UseItemOnPlayerViewProps {
-  args: UseItemOnPlayer;
+  itemId: string;
 }
 
 export const UseItemOnPlayerView: FunctionComponent<
   UseItemOnPlayerViewProps
-> = ({ args }) => {
+> = ({ itemId }) => {
   const { theme } = useTheme();
   const onClick = () => {
+    const args: UseItemOnPlayer = {
+      item_id: itemId,
+    };
     performUseItemOnPlayer(args);
   };
 

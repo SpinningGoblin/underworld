@@ -158,6 +158,12 @@ export interface Item {
      * @memberof Item
      */
     throwable?: Throwable;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Item
+     */
+    is_equippable: boolean;
 }
 
 export function ItemFromJSON(json: any): Item {
@@ -185,6 +191,7 @@ export function ItemFromJSONTyped(json: any, ignoreDiscriminator: boolean): Item
         'consumable': !exists(json, 'consumable') ? undefined : ConsumableFromJSON(json['consumable']),
         'knows_consumable': json['knows_consumable'],
         'throwable': !exists(json, 'throwable') ? undefined : ThrowableFromJSON(json['throwable']),
+        'is_equippable': json['is_equippable'],
     };
 }
 
@@ -212,6 +219,7 @@ export function ItemToJSON(value?: Item | null): any {
         'consumable': ConsumableToJSON(value.consumable),
         'knows_consumable': value.knows_consumable,
         'throwable': ThrowableToJSON(value.throwable),
+        'is_equippable': value.is_equippable,
     };
 }
 
