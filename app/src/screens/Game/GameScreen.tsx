@@ -1,7 +1,6 @@
 import { FunctionComponent, useState } from "react";
 import {
   GameEvent,
-  PerformAction,
   PlayerCharacter,
   Room,
 } from "../../generated-api";
@@ -13,7 +12,6 @@ import { RoomView } from "../../components/RoomView";
 import styles from "./GameScreen.module.css";
 
 export interface GameScreenProps {
-  actions: Array<PerformAction>;
   allowGeneratePlayer: boolean;
   lastEvents: Array<GameEvent>;
   events: Array<GameEvent>;
@@ -24,7 +22,6 @@ export interface GameScreenProps {
 }
 
 export const GameScreen: FunctionComponent<GameScreenProps> = ({
-  actions,
   allowGeneratePlayer,
   lastEvents,
   events,
@@ -44,12 +41,11 @@ export const GameScreen: FunctionComponent<GameScreenProps> = ({
       <div className={styles.game}>
         <PlayerView
           player={player}
-          actions={actions}
           toggleShowFullPlayer={() => setShowFullPlayer((current) => !current)}
           showFullPlayer={showFullPlayer}
         />
         {!showFullPlayer && (
-          <RoomView room={room} actions={actions} player={player} />
+          <RoomView room={room} player={player} />
         )}
       </div>
       <div className={styles.side}>

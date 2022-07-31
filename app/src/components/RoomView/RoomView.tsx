@@ -11,7 +11,6 @@ import {
   FixtureType,
   FlavourText,
   NpcPosition,
-  PerformAction,
   PlayerCharacter,
   Room,
 } from "../../generated-api";
@@ -25,7 +24,6 @@ import { useTheme } from "../../themes/context";
 
 export interface RoomViewProps {
   room: Room;
-  actions: Array<PerformAction>;
   player: PlayerCharacter;
 }
 

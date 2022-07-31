@@ -7,9 +7,6 @@ import {
   Inventory,
   ItemDescriptor,
   ItemType,
-  MovePlayerItem,
-  PerformAction,
-  UseItemOnPlayer,
 } from "../../../generated-api";
 import { useTheme } from "../../../themes/context";
 import { MovePlayerItemView } from "../../actions";
@@ -21,12 +18,10 @@ import styles from "./PlayerInventoryView.module.css";
 
 export interface PlayerInventoryViewProps {
   inventory: Inventory;
-  actions: Array<PerformAction>;
 }
 
 interface CharacterItemViewProps {
   characterItem: CharacterItem;
-  itemActions: Array<PerformAction>;
 }
 
 const itemTypeText = (itemType: ItemType): string => itemType.replace("_", " ");
@@ -45,6 +40,10 @@ const effectText = (consumable: Consumable): string => {
           " ",
         )}`,
       );
+      break;
+    case "healing_grog":
+      parts.push("healing grog");
+      break;
   }
 
   parts.push(`(${consumable.uses} uses remaining)`);
@@ -54,24 +53,7 @@ const effectText = (consumable: Consumable): string => {
 
 const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
   characterItem,
-  itemActions,
 }) => {
-  const equipActions = itemActions.filter(
-    (action) =>
-      action.name === "move_player_item" &&
-      (action.args! as MovePlayerItem).put_at_the_ready,
-  );
-
-  const unequipActions = itemActions.filter(
-    (action) =>
-      action.name === "move_player_item" &&
-      !(action.args! as MovePlayerItem).put_at_the_ready,
-  );
-
-  const useActions = itemActions.filter(
-    (action) => action.name === "use_item_on_player",
-  );
-
   const renderAttack = (attack: Attack) => (
     <div>
       <span>{`${attack.num_rolls}d6 ${
@@ -97,39 +79,17 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
       {characterItem.item.attack && renderAttack(characterItem.item.attack)}
       {characterItem.item.defense && renderDefense(characterItem.item.defense)}
       <div className={styles.actions}>
-        {equipActions.length > 0 && (
-          <>
-            <span>Equip to </span>
-            <div className={styles.actions}>
-              {equipActions.map((action, index) => (
-                <MovePlayerItemView
-                  key={index}
-                  args={action.args! as MovePlayerItem}
-                />
-              ))}
-            </div>
-          </>
+        {characterItem.at_the_ready && (
+          <MovePlayerItemView itemId={characterItem.item.id} equip={false} />
         )}
-        {unequipActions.length > 0 && (
-          <>
-            <span>Unequip to </span>
-            <div className={styles.actions}>
-              {unequipActions.map((action, index) => (
-                <MovePlayerItemView
-                  key={index}
-                  args={action.args! as MovePlayerItem}
-                />
-              ))}
-            </div>
-          </>
+        {!characterItem.at_the_ready && characterItem.item.is_equippable && (
+          <MovePlayerItemView itemId={characterItem.item.id} equip />
         )}
-        {useActions.length > 0 && characterItem.item.consumable && (
+        {characterItem.item.consumable && (
           <>
             <span>{effectText(characterItem.item.consumable)}</span>
             <div className={styles.actions}>
-              {useActions.map((action, index) => (
-                <UseItemOnPlayerView key={index} args={action.args} />
-              ))}
+              <UseItemOnPlayerView itemId={characterItem.item.id} />
             </div>
           </>
         )}
@@ -139,30 +99,9 @@ const CharacterItemView: FunctionComponent<CharacterItemViewProps> = ({
   );
 };
 
-const actionForItem = (
-  action: PerformAction,
-  characterItem: CharacterItem,
-): boolean => {
-  if (
-    action.name === "move_player_item" &&
-    (action.args! as MovePlayerItem).item_id === characterItem.item.id
-  ) {
-    return true;
-  }
-
-  if (
-    action.name === "use_item_on_player" &&
-    (action.args! as UseItemOnPlayer).item_id === characterItem.item.id
-  ) {
-    return true;
-  }
-
-  return false;
-};
-
 export const PlayerInventoryView: FunctionComponent<
   PlayerInventoryViewProps
-> = ({ inventory, actions }) => {
+> = ({ inventory }) => {
   const equippedItems = inventory.equipment.filter((c) => c.at_the_ready);
   const unequippedItems = inventory.equipment.filter((c) => !c.at_the_ready);
   const { theme } = useTheme();
@@ -175,38 +114,24 @@ export const PlayerInventoryView: FunctionComponent<
           <h3>Equipped Items</h3>
           <div className={styles["item-list"]}>
             {equippedItems.length > 0 &&
-              equippedItems.map((characterItem) => {
-                const itemActions = actions.filter((action) =>
-                  actionForItem(action, characterItem),
-                );
-
-                return (
-                  <CharacterItemView
-                    key={characterItem.item.id}
-                    itemActions={itemActions}
-                    characterItem={characterItem}
-                  />
-                );
-              })}
+              equippedItems.map((characterItem) => (
+                <CharacterItemView
+                  key={characterItem.item.id}
+                  characterItem={characterItem}
+                />
+              ))}
           </div>
         </div>
         <div className={styles["item-group"]}>
           <h3>Unequipped Items</h3>
           <div className={styles["item-list"]}>
             {unequippedItems.length > 0 &&
-              unequippedItems.map((characterItem) => {
-                const itemActions = actions.filter((action) =>
-                  actionForItem(action, characterItem),
-                );
-
-                return (
-                  <CharacterItemView
-                    key={characterItem.item.id}
-                    itemActions={itemActions}
-                    characterItem={characterItem}
-                  />
-                );
-              })}
+              unequippedItems.map((characterItem) => (
+                <CharacterItemView
+                  key={characterItem.item.id}
+                  characterItem={characterItem}
+                />
+              ))}
           </div>
         </div>
       </div>

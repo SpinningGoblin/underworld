@@ -35,7 +35,6 @@ export const NpcPositionDescriptor = {
     IsCrouchedOverChest: 'is_crouched_over_chest',
     IsRummagingThroughAChest: 'is_rummaging_through_a_chest',
     IsCrouchedInTheCenterOfRoom: 'is_crouched_in_the_center_of_room',
-    IsSittingAndDozingInCenterOfRoom: 'is_sitting_and_dozing_in_center_of_room',
     SittingInAChairIs: 'sitting_in_a_chair_is',
     IsLyingInPoolBlood: 'is_lying_in_pool_blood'
 } as const;

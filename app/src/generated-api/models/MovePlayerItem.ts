@@ -37,7 +37,7 @@ export interface MovePlayerItem {
      * @type {EquipLocationTag}
      * @memberof MovePlayerItem
      */
-    location_tag: EquipLocationTag;
+    location_tag?: EquipLocationTag;
     /**
      * 
      * @type {boolean}
@@ -57,7 +57,7 @@ export function MovePlayerItemFromJSONTyped(json: any, ignoreDiscriminator: bool
     return {
         
         'item_id': json['item_id'],
-        'location_tag': EquipLocationTagFromJSON(json['location_tag']),
+        'location_tag': !exists(json, 'location_tag') ? undefined : EquipLocationTagFromJSON(json['location_tag']),
         'put_at_the_ready': json['put_at_the_ready'],
     };
 }

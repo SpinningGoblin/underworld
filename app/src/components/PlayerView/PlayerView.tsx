@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { PerformAction, PlayerCharacter } from "../../generated-api";
+import { PlayerCharacter } from "../../generated-api";
 import { EffectsView } from "../EffectsView";
 import { PlayerInventoryView } from "./PlayerInventoryView";
 import { PlayerSpellMemoryView } from "./PlayerSpellMemoryView";
@@ -12,14 +12,12 @@ import { useTheme } from "../../themes";
 
 export interface PlayerViewProps {
   player: PlayerCharacter;
-  actions: Array<PerformAction>;
   toggleShowFullPlayer: () => void;
   showFullPlayer: boolean;
 }
 
 export const PlayerView: FunctionComponent<PlayerViewProps> = ({
   player,
-  actions,
   toggleShowFullPlayer,
   showFullPlayer,
 }) => {
@@ -28,6 +26,7 @@ export const PlayerView: FunctionComponent<PlayerViewProps> = ({
 
   const collapsedClass = showFullPlayer ? "" : styles.showing;
   const health = player.character.stats.health!;
+  const spellMemory = player.character.spell_memory;
 
   return (
     <div
@@ -61,16 +60,11 @@ export const PlayerView: FunctionComponent<PlayerViewProps> = ({
       {showFullPlayer && (
         <>
           <EffectsView effects={player.character.current_effects!} />
-          {actions.length > 0 && (
-            <PlayerSpellMemoryView
-              spellMemory={player.character.spell_memory!}
-            />
+          {spellMemory && spellMemory.spells.length > 0 && (
+            <PlayerSpellMemoryView spellMemory={spellMemory} />
           )}
-          {actions.length > 0 && player.character.inventory && (
-            <PlayerInventoryView
-              inventory={player.character.inventory}
-              actions={actions}
-            />
+          {player.character.inventory && (
+            <PlayerInventoryView inventory={player.character.inventory} />
           )}
         </>
       )}

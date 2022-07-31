@@ -1,26 +1,25 @@
 import styles from "./styles.module.css";
 
 import { FunctionComponent } from "react";
-import { EquipLocationTag, MovePlayerItem } from "../../generated-api";
+import { MovePlayerItem } from "../../generated-api";
 import { performMovePlayerItem } from "../../api/actions";
 import { useTheme } from "../../themes";
 
 export interface MovePlayerItemViewProps {
-  args: MovePlayerItem;
+  itemId: string,
+  equip: boolean;
 }
 
-const tagText = (locationTag: EquipLocationTag): string => {
-  const text = locationTag.replace("_", " ");
-
-  const upper = text[0].toLocaleUpperCase();
-  return `${upper}${text.substring(1)}`;
-};
-
 export const MovePlayerItemView: FunctionComponent<MovePlayerItemViewProps> = ({
-  args,
+  itemId,
+  equip,
 }) => {
   const { theme } = useTheme();
   const onClick = () => {
+    const args: MovePlayerItem = {
+      item_id: itemId,
+      put_at_the_ready: equip,
+    };
     performMovePlayerItem(args);
   };
 
@@ -33,7 +32,7 @@ export const MovePlayerItemView: FunctionComponent<MovePlayerItemViewProps> = ({
         color: theme.colors.primary,
       }}
     >
-      {tagText(args.location_tag)}
+      {equip ? "Equip" : "Unequip"}
     </button>
   );
 };
