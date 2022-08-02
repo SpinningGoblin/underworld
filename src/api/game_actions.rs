@@ -139,7 +139,7 @@ impl UnderworldGameActionApi {
         args: Json<ExitRoom>,
     ) -> Result<ExitRoomResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let exit_result = exit_room(&mut transaction, &auth.0.username, &game_id, &args).await?;
+        let exit_result = exit_room(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
         Ok(ExitRoomResponse::RoomExited(Json(exit_result)))
     }
@@ -154,7 +154,7 @@ impl UnderworldGameActionApi {
         args: Json<AttackNpc>,
     ) -> Result<AttackNpcResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let attack_result = attack_npc(&mut transaction, &auth.0.username, &game_id, &args).await?;
+        let attack_result = attack_npc(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(AttackNpcResponse::NpcAttacked(Json(attack_result)))
@@ -175,7 +175,7 @@ impl UnderworldGameActionApi {
     ) -> Result<CastSpellResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let cast_result =
-            cast_spell_on_player(&mut transaction, &auth.0.username, &game_id, &args).await?;
+            cast_spell_on_player(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(CastSpellResponse::SpellCast(Json(cast_result)))
@@ -196,7 +196,7 @@ impl UnderworldGameActionApi {
     ) -> Result<CastSpellResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let cast_result =
-            cast_spell_on_npc(&mut transaction, &auth.0.username, &game_id, &args).await?;
+            cast_spell_on_npc(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(CastSpellResponse::SpellCast(Json(cast_result)))
@@ -217,7 +217,7 @@ impl UnderworldGameActionApi {
     ) -> Result<UseItemResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let use_item_result =
-            use_item_on_player(&mut transaction, &auth.0.username, &game_id, &args).await?;
+            use_item_on_player(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(UseItemResponse::ItemUsed(Json(use_item_result)))
@@ -238,7 +238,7 @@ impl UnderworldGameActionApi {
     ) -> Result<UseItemResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let use_item_result =
-            throw_item_at_npc(&mut transaction, &auth.0.username, &game_id, &args).await?;
+            throw_item_at_npc(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(UseItemResponse::ItemUsed(Json(use_item_result)))
@@ -259,7 +259,7 @@ impl UnderworldGameActionApi {
     ) -> Result<MoveItemResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let move_item_result =
-            move_player_item(&mut transaction, &auth.0.username, &game_id, &args).await?;
+            move_player_item(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(MoveItemResponse::ItemMoved(Json(move_item_result)))
@@ -280,7 +280,7 @@ impl UnderworldGameActionApi {
     ) -> Result<SellItemResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let sell_item_result =
-            sell_player_item(&mut transaction, &auth.0.username, &game_id, &args).await?;
+            sell_player_item(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(SellItemResponse::ItemSold(Json(sell_item_result)))
@@ -296,7 +296,7 @@ impl UnderworldGameActionApi {
         args: Json<LootNpc>,
     ) -> Result<LootNpcResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let loot_result = loot_npc(&mut transaction, &auth.0.username, &game_id, &args).await?;
+        let loot_result = loot_npc(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(LootNpcResponse::NpcLooted(Json(loot_result)))
@@ -312,7 +312,7 @@ impl UnderworldGameActionApi {
         args: Json<LootFixture>,
     ) -> Result<LootFixtureResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let loot_result = loot_fixture(&mut transaction, &auth.0.username, &game_id, &args).await?;
+        let loot_result = loot_fixture(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(LootFixtureResponse::FixtureLooted(Json(loot_result)))
@@ -328,7 +328,7 @@ impl UnderworldGameActionApi {
         args: Json<OpenFixture>,
     ) -> Result<FixtureOpenedResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let loot_result = open_fixture(&mut transaction, &auth.0.username, &game_id, &args).await?;
+        let loot_result = open_fixture(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
 
         Ok(FixtureOpenedResponse::FixtureOpened(Json(loot_result)))
@@ -349,7 +349,7 @@ impl UnderworldGameActionApi {
     ) -> Result<FixtureOpenedResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let loot_result =
-            open_fixture_hidden_compartment(&mut transaction, &auth.0.username, &game_id, &args)
+            open_fixture_hidden_compartment(&mut transaction, &auth.0.email, &game_id, &args)
                 .await?;
         transaction.commit().await.unwrap();
 
@@ -369,7 +369,7 @@ impl UnderworldGameActionApi {
         game_id: Path<String>,
     ) -> Result<LookResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let view_result = look_at_room(&mut transaction, &auth.0.username, &game_id).await?;
+        let view_result = look_at_room(&mut transaction, &auth.0.email, &game_id).await?;
         transaction.commit().await.unwrap();
 
         Ok(LookResponse::LookAtRoom(Json(view_result)))
@@ -389,7 +389,7 @@ impl UnderworldGameActionApi {
         args: Json<LookAtFixture>,
     ) -> Result<LookFixtureResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let view = look_at_fixture(&mut transaction, &auth.0.username, &game_id, &args).await?;
+        let view = look_at_fixture(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
         Ok(LookFixtureResponse::FixtureViewed(Json(view)))
     }
@@ -404,7 +404,7 @@ impl UnderworldGameActionApi {
         args: Json<LookAtNpc>,
     ) -> Result<LookNpcResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let view = look_at_npc(&mut transaction, &auth.0.username, &game_id, &args).await?;
+        let view = look_at_npc(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
         Ok(LookNpcResponse::NpcViewed(Json(view)))
     }
@@ -425,7 +425,7 @@ impl UnderworldGameActionApi {
     ) -> Result<InspectFixtureResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let inspection =
-            inspect_fixture(&mut transaction, &auth.0.username, &game_id, &args).await?;
+            inspect_fixture(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
         Ok(InspectFixtureResponse::FixtureInspected(Json(inspection)))
     }
@@ -441,7 +441,7 @@ impl UnderworldGameActionApi {
         args: Json<InspectNpc>,
     ) -> Result<InspectNpcResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let inspection = inspect_npc(&mut transaction, &auth.0.username, &game_id, &args).await?;
+        let inspection = inspect_npc(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
         Ok(InspectNpcResponse::NpcInspected(Json(inspection)))
     }
@@ -459,7 +459,7 @@ impl UnderworldGameActionApi {
         game_id: Path<String>,
     ) -> Result<GameActionsResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let actions = game_actions(&mut transaction, &auth.0.username, &game_id).await?;
+        let actions = game_actions(&mut transaction, &auth.0.email, &game_id).await?;
         Ok(GameActionsResponse::GameActions(Json(actions)))
     }
 }

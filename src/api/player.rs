@@ -57,7 +57,7 @@ impl UnderworldPlayerApi {
         args: Json<GeneratePlayerCharacter>,
     ) -> Result<PlayerCharacterGeneratedResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let result = generate_player_character(&mut transaction, &auth.0.username, &args).await;
+        let result = generate_player_character(&mut transaction, &auth.0.email, &args).await;
         transaction.commit().await.unwrap();
         Ok(PlayerCharacterGeneratedResponse::PlayerCharacterGenerated(
             Json(result),
@@ -77,7 +77,7 @@ impl UnderworldPlayerApi {
         auth: UnderworldApiKeyAuthorization,
     ) -> Result<PlayerCharacterIdsResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let result = player_character_ids(&mut transaction, &auth.0.username).await;
+        let result = player_character_ids(&mut transaction, &auth.0.email).await;
         transaction.commit().await.unwrap();
         Ok(PlayerCharacterIdsResponse::PlayerCharacterIds(Json(result)))
     }
@@ -91,7 +91,7 @@ impl UnderworldPlayerApi {
         id: Path<String>,
     ) -> Result<PlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let result = get_player_character(&mut transaction, &auth.0.username, &id).await;
+        let result = get_player_character(&mut transaction, &auth.0.email, &id).await;
         transaction.commit().await.unwrap();
 
         match result {
@@ -100,7 +100,7 @@ impl UnderworldPlayerApi {
             ))),
             None => Ok(PlayerCharacterResponse::NotFound(PlainText(format!(
                 "No player character found for user {} id {}",
-                &auth.0.username, &id.0
+                &auth.0.email, &id.0
             )))),
         }
     }
@@ -114,7 +114,7 @@ impl UnderworldPlayerApi {
     ) -> Result<PlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let player_character_result =
-            get_current_player_character(&mut transaction, &auth.0.username).await?;
+            get_current_player_character(&mut transaction, &auth.0.email).await?;
         transaction.commit().await.unwrap();
         Ok(PlayerCharacterResponse::PlayerCharacter(Json(
             player::check(player_character_result),
@@ -134,7 +134,7 @@ impl UnderworldPlayerApi {
         id: Path<String>,
     ) -> Result<SetCurrentPlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        set_current_player_character(&mut transaction, &auth.0.username, &id).await?;
+        set_current_player_character(&mut transaction, &auth.0.email, &id).await?;
         transaction.commit().await.unwrap();
         Ok(SetCurrentPlayerCharacterResponse::PlayerCharacterSet(
             PlainText("Good to go".to_string()),

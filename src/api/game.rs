@@ -39,7 +39,7 @@ impl UnderworldGameApi {
         auth: UnderworldApiKeyAuthorization,
     ) -> Result<GenerateGameResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let generated_result = generate_game(&mut transaction, &auth.0.username).await?;
+        let generated_result = generate_game(&mut transaction, &auth.0.email).await?;
         transaction.commit().await.unwrap();
 
         Ok(GenerateGameResponse::GameGenerated(Json(generated_result)))
@@ -57,7 +57,7 @@ impl UnderworldGameApi {
         auth: UnderworldApiKeyAuthorization,
     ) -> Result<GameIdResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let result = game_ids(&mut transaction, &auth.0.username).await;
+        let result = game_ids(&mut transaction, &auth.0.email).await;
         transaction.commit().await.unwrap();
         Ok(GameIdResponse::GameIds(Json(result)))
     }

@@ -7,7 +7,6 @@ use crate::error::AuthError;
 use super::User;
 
 pub struct UserDetails {
-    pub username: String,
     pub email: String,
 }
 
@@ -43,10 +42,9 @@ pub async fn fetch_details_from_mail_token(
     transaction: &mut Transaction<'_, Postgres>,
     token: &str,
 ) -> Result<Option<UserDetails>, AuthError> {
-    let result = sqlx::query("select username, email from mail_tokens where token = $1")
+    let result = sqlx::query("select email from mail_tokens where token = $1")
         .bind(&token)
         .map(|row: PgRow| UserDetails {
-            username: row.get("username"),
             email: row.get("email"),
         })
         .fetch_optional(transaction)
@@ -61,12 +59,11 @@ pub async fn fetch_details_from_mail_token(
 
 pub async fn valid_api_token(pool: &PgPool, token: &str) -> Result<User, AuthError> {
     let select_token_query =
-        "select username, email from api_tokens where token = $1 and deleted_after >= $2";
+        "select email from api_tokens where token = $1 and deleted_after >= $2";
     let result: Option<User> = sqlx::query(select_token_query)
         .bind(&token)
         .bind(Utc::now())
         .map(|row: PgRow| User {
-            username: row.get("username"),
             email: row.get("email"),
         })
         .fetch_optional(pool)
@@ -84,9 +81,8 @@ async fn try_get_api_token(
     user_details: &UserDetails,
 ) -> Result<Option<String>, AuthError> {
     let select_token_query =
-        "select token from api_tokens where username = $1 and email = $2 and deleted_after >= $3";
+        "select token from api_tokens where email = $1 and deleted_after >= $2";
     let result: Option<String> = sqlx::query(select_token_query)
-        .bind(&user_details.username)
         .bind(&user_details.email)
         .bind(Utc::now())
         .map(|row: PgRow| row.get("token"))
@@ -104,9 +100,8 @@ async fn insert_new_token(
     let token = Uuid::new_v4().to_string();
     let deleted_after = Utc::now() + Duration::days(90);
     sqlx::query(
-        "insert into api_tokens (username, email, token, deleted_after) values ($1, $2, $3, $4)",
+        "insert into api_tokens (email, token, deleted_after) values ($1, $2, $3)",
     )
-    .bind(&user_details.username)
     .bind(&user_details.email)
     .bind(&token)
     .bind(&deleted_after)
@@ -140,9 +135,8 @@ pub async fn get_mail_token(
     let created_at = Utc::now();
     let deleted_after = created_at + Duration::minutes(1);
     let query =
-        "insert into mail_tokens (username, email, token, created_at, deleted_after) values ($1, $2, $3, $4, $5)";
+        "insert into mail_tokens (email, token, created_at, deleted_after) values ($1, $2, $3, $4)";
     sqlx::query(query)
-        .bind(&user_details.username)
         .bind(&user_details.email)
         .bind(&token)
         .bind(&created_at)

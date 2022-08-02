@@ -31,17 +31,6 @@ impl UnderworldAuthApi {
         pool: Data<&PgPool>,
         login: Form<HashMap<String, String>>,
     ) -> Result<poem_openapi::payload::Response<PlainText<String>>> {
-        let username = match login.get("username") {
-            Some(it) => it,
-            None => {
-                return Ok(poem_openapi::payload::Response::new(PlainText(
-                    "UsernameRequired".to_string(),
-                ))
-                .header("Location", "/sign-in#username_required")
-                .status(StatusCode::FOUND))
-            }
-        };
-
         let email = match login.get("email") {
             Some(it) => it,
             None => {
@@ -66,7 +55,6 @@ impl UnderworldAuthApi {
 
         let mut transaction = pool.0.begin().await.unwrap();
         let user_details = UserDetails {
-            username: username.to_string(),
             email: email.to_string(),
         };
         let db_token = crate::auth::repository::get_mail_token(&mut transaction, &user_details)
