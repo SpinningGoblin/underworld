@@ -94,3 +94,18 @@ impl ResponseError for GameError {
         }
     }
 }
+
+#[derive(Debug, thiserror::Error, strum_macros::Display)]
+pub enum AuthError {
+    GeneralError(String),
+    InvalidToken,
+}
+
+impl ResponseError for AuthError {
+    fn status(&self) -> poem::http::StatusCode {
+        match self {
+            AuthError::GeneralError(_) => poem::http::StatusCode::BAD_REQUEST,
+            AuthError::InvalidToken => poem::http::StatusCode::BAD_REQUEST,
+        }
+    }
+}
