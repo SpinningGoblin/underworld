@@ -133,7 +133,7 @@ pub async fn get_mail_token(
 
     let token = Uuid::new_v4().to_string();
     let created_at = Utc::now();
-    let deleted_after = created_at + Duration::minutes(1);
+    let deleted_after = created_at + Duration::minutes(30);
     let query =
         "insert into mail_tokens (email, token, created_at, deleted_after) values ($1, $2, $3, $4)";
     sqlx::query(query)
