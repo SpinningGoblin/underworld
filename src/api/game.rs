@@ -1,5 +1,5 @@
 use poem::{web::Data, Result};
-use poem_openapi::{param::Header, payload::Json, ApiResponse, OpenApi};
+use poem_openapi::{payload::Json, ApiResponse, OpenApi};
 use sqlx::PgPool;
 
 use crate::game::{
@@ -7,6 +7,8 @@ use crate::game::{
     get::game_ids,
 };
 use crate::tags::UnderworldApiTags;
+
+use super::security::UnderworldApiKeyAuthorization;
 
 #[derive(ApiResponse)]
 pub enum GenerateGameResponse {
@@ -34,10 +36,10 @@ impl UnderworldGameApi {
     async fn generate_game(
         &self,
         pool: Data<&PgPool>,
-        #[oai(name = "underworld-username")] username: Header<String>,
+        auth: UnderworldApiKeyAuthorization,
     ) -> Result<GenerateGameResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let generated_result = generate_game(&mut transaction, &username).await?;
+        let generated_result = generate_game(&mut transaction, &auth.0.username).await?;
         transaction.commit().await.unwrap();
 
         Ok(GenerateGameResponse::GameGenerated(Json(generated_result)))
@@ -52,10 +54,10 @@ impl UnderworldGameApi {
     async fn list_games(
         &self,
         pool: Data<&PgPool>,
-        #[oai(name = "underworld-username")] username: Header<String>,
+        auth: UnderworldApiKeyAuthorization,
     ) -> Result<GameIdResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let result = game_ids(&mut transaction, &username).await;
+        let result = game_ids(&mut transaction, &auth.0.username).await;
         transaction.commit().await.unwrap();
         Ok(GameIdResponse::GameIds(Json(result)))
     }

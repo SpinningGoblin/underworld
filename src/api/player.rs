@@ -1,6 +1,6 @@
 use poem::{web::Data, Result};
 use poem_openapi::{
-    param::{Header, Path},
+    param::Path,
     payload::{Json, PlainText},
     ApiResponse, OpenApi,
 };
@@ -13,6 +13,8 @@ use crate::player_characters::{
     get::{get_player_character, player_character_ids},
 };
 use crate::tags::UnderworldApiTags;
+
+use super::security::UnderworldApiKeyAuthorization;
 
 #[derive(ApiResponse)]
 enum PlayerCharacterResponse {
@@ -51,11 +53,11 @@ impl UnderworldPlayerApi {
     async fn generate_player_character(
         &self,
         pool: Data<&PgPool>,
-        #[oai(name = "underworld-username")] username: Header<String>,
+        auth: UnderworldApiKeyAuthorization,
         args: Json<GeneratePlayerCharacter>,
     ) -> Result<PlayerCharacterGeneratedResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let result = generate_player_character(&mut transaction, &username, &args).await;
+        let result = generate_player_character(&mut transaction, &auth.0.username, &args).await;
         transaction.commit().await.unwrap();
         Ok(PlayerCharacterGeneratedResponse::PlayerCharacterGenerated(
             Json(result),
@@ -72,10 +74,10 @@ impl UnderworldPlayerApi {
     async fn list_player_characters(
         &self,
         pool: Data<&PgPool>,
-        #[oai(name = "underworld-username")] username: Header<String>,
+        auth: UnderworldApiKeyAuthorization,
     ) -> Result<PlayerCharacterIdsResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let result = player_character_ids(&mut transaction, &username).await;
+        let result = player_character_ids(&mut transaction, &auth.0.username).await;
         transaction.commit().await.unwrap();
         Ok(PlayerCharacterIdsResponse::PlayerCharacterIds(Json(result)))
     }
@@ -85,11 +87,11 @@ impl UnderworldPlayerApi {
     async fn check_player_character(
         &self,
         pool: Data<&PgPool>,
-        #[oai(name = "underworld-username")] username: Header<String>,
+        auth: UnderworldApiKeyAuthorization,
         id: Path<String>,
     ) -> Result<PlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let result = get_player_character(&mut transaction, &username, &id).await;
+        let result = get_player_character(&mut transaction, &auth.0.username, &id).await;
         transaction.commit().await.unwrap();
 
         match result {
@@ -98,7 +100,7 @@ impl UnderworldPlayerApi {
             ))),
             None => Ok(PlayerCharacterResponse::NotFound(PlainText(format!(
                 "No player character found for user {} id {}",
-                &username.0, &id.0
+                &auth.0.username, &id.0
             )))),
         }
     }
@@ -108,11 +110,11 @@ impl UnderworldPlayerApi {
     async fn check_current_player_character(
         &self,
         pool: Data<&PgPool>,
-        #[oai(name = "underworld-username")] username: Header<String>,
+        auth: UnderworldApiKeyAuthorization,
     ) -> Result<PlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
         let player_character_result =
-            get_current_player_character(&mut transaction, &username).await?;
+            get_current_player_character(&mut transaction, &auth.0.username).await?;
         transaction.commit().await.unwrap();
         Ok(PlayerCharacterResponse::PlayerCharacter(Json(
             player::check(player_character_result),
@@ -128,11 +130,11 @@ impl UnderworldPlayerApi {
     async fn set_current_player_character(
         &self,
         pool: Data<&PgPool>,
-        #[oai(name = "underworld-username")] username: Header<String>,
+        auth: UnderworldApiKeyAuthorization,
         id: Path<String>,
     ) -> Result<SetCurrentPlayerCharacterResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        set_current_player_character(&mut transaction, &username, &id).await?;
+        set_current_player_character(&mut transaction, &auth.0.username, &id).await?;
         transaction.commit().await.unwrap();
         Ok(SetCurrentPlayerCharacterResponse::PlayerCharacterSet(
             PlainText("Good to go".to_string()),
