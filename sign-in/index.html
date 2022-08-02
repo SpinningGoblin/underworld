@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Log into Underworld Server</title>
+    <link rel="stylesheet" href="/sign-in/style.css" />
+    <script src="/sign-in/index.js"></script>
+  </head>
+  <body>
+    <!-- partial:index.partial.html -->
+    <div id="login-form-wrap">
+      <h2>Login</h2>
+      <form id="login-form" action="auth/login" method="post">
+        <p>
+          <label for="token_type">Play game or get token?</label>
+          <select id="token_type" name="token_type">
+            <option value="play_the_game">Play the game</option>
+            <option value="api_token">Get API Token</option>
+          </select>
+        </p>
+        <p>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Username"
+            required
+          /><i class="validation"><span></span><span></span></i>
+        </p>
+        <p>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Email"
+            required
+          /><i class="validation"><span></span><span></span></i>
+        </p>
+        <p>
+          <input type="submit" id="login" value="Login" />
+        </p>
+      </form>
+      <!--create-account-wrap-->
+    </div>
+    <!--login-form-wrap-->
+    <!-- partial -->
+  </body>
+</html>
