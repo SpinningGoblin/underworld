@@ -111,107 +111,89 @@ import {
 } from '../models';
 
 export interface AttackNpcRequest {
-    underworldUsername: string;
     gameId: string;
     attackNpc: AttackNpc;
 }
 
 export interface CastSpellOnNpcRequest {
-    underworldUsername: string;
     gameId: string;
     castSpellOnNpc: CastSpellOnNpc;
 }
 
 export interface CastSpellOnPlayerRequest {
-    underworldUsername: string;
     gameId: string;
     castSpellOnPlayer: CastSpellOnPlayer;
 }
 
 export interface CurrentActionsRequest {
-    underworldUsername: string;
     gameId: string;
 }
 
 export interface ExitRoomRequest {
-    underworldUsername: string;
     gameId: string;
     exitRoom: ExitRoom;
 }
 
 export interface InspectFixtureRequest {
-    underworldUsername: string;
     gameId: string;
     inspectFixture: InspectFixture;
 }
 
 export interface InspectNpcRequest {
-    underworldUsername: string;
     gameId: string;
     inspectNpc: InspectNpc;
 }
 
 export interface LookAroundRoomRequest {
-    underworldUsername: string;
     gameId: string;
 }
 
 export interface LookAtFixtureRequest {
-    underworldUsername: string;
     gameId: string;
     lookAtFixture: LookAtFixture;
 }
 
 export interface LookAtNpcRequest {
-    underworldUsername: string;
     gameId: string;
     lookAtNpc: LookAtNpc;
 }
 
 export interface LootFixtureRequest {
-    underworldUsername: string;
     gameId: string;
     lootFixture: LootFixture;
 }
 
 export interface LootNpcRequest {
-    underworldUsername: string;
     gameId: string;
     lootNpc: LootNpc;
 }
 
 export interface MovePlayerItemRequest {
-    underworldUsername: string;
     gameId: string;
     movePlayerItem: MovePlayerItem;
 }
 
 export interface OpenFixtureRequest {
-    underworldUsername: string;
     gameId: string;
     openFixture: OpenFixture;
 }
 
 export interface OpenFixtureHiddenCompartmentRequest {
-    underworldUsername: string;
     gameId: string;
     openFixtureHiddenCompartment: OpenFixtureHiddenCompartment;
 }
 
 export interface SellPlayerItemRequest {
-    underworldUsername: string;
     gameId: string;
     sellPlayerItem: SellPlayerItem;
 }
 
 export interface ThrowItemAtNpcRequest {
-    underworldUsername: string;
     gameId: string;
     throwItemAtNpc: ThrowItemAtNpc;
 }
 
 export interface UseItemOnPlayerRequest {
-    underworldUsername: string;
     gameId: string;
     useItemOnPlayer: UseItemOnPlayer;
 }
@@ -226,7 +208,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Attack a specific NPC inside the current room of the specified game.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {AttackNpc} attackNpc 
      * @param {*} [options] Override http request option.
@@ -243,7 +224,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Cast a spell on your player character.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {CastSpellOnNpc} castSpellOnNpc 
      * @param {*} [options] Override http request option.
@@ -260,7 +240,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Cast a spell on your player character.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {CastSpellOnPlayer} castSpellOnPlayer 
      * @param {*} [options] Override http request option.
@@ -277,7 +256,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Get the current actions available for the game.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -293,7 +271,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Exit the current room of the specified game through the specified exit.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {ExitRoom} exitRoom 
      * @param {*} [options] Override http request option.
@@ -310,7 +287,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Inspect a fixture to find out more information about them when looking at them next. After completing an inspect, look at the fixture to see new information.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {InspectFixture} inspectFixture 
      * @param {*} [options] Override http request option.
@@ -327,7 +303,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Inspect an NPC to find out more information about them when looking at them next. After completing an inspect, look at the NPC to see new information.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {InspectNpc} inspectNpc 
      * @param {*} [options] Override http request option.
@@ -344,7 +319,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Take a closer look at the current room.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -360,7 +334,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Look at a specific Fixture in the current room.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {LookAtFixture} lookAtFixture 
      * @param {*} [options] Override http request option.
@@ -377,7 +350,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Look at a specific NPC in the current room.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {LookAtNpc} lookAtNpc 
      * @param {*} [options] Override http request option.
@@ -394,7 +366,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Loot some items from a fixture.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {LootFixture} lootFixture 
      * @param {*} [options] Override http request option.
@@ -411,7 +382,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Loot some items from an NPC.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {LootNpc} lootNpc 
      * @param {*} [options] Override http request option.
@@ -428,7 +398,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Use an item on your player character.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {MovePlayerItem} movePlayerItem 
      * @param {*} [options] Override http request option.
@@ -445,7 +414,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Open a fixture.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {OpenFixture} openFixture 
      * @param {*} [options] Override http request option.
@@ -462,7 +430,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Open hidden compartment of fixture.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {OpenFixtureHiddenCompartment} openFixtureHiddenCompartment 
      * @param {*} [options] Override http request option.
@@ -479,7 +446,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Sell an item on your player.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {SellPlayerItem} sellPlayerItem 
      * @param {*} [options] Override http request option.
@@ -496,7 +462,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Use an item on your player character.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {ThrowItemAtNpc} throwItemAtNpc 
      * @param {*} [options] Override http request option.
@@ -513,7 +478,6 @@ export interface GameActionsApiInterface {
     /**
      * 
      * @summary Use an item on your player character.
-     * @param {string} underworldUsername 
      * @param {string} gameId 
      * @param {UseItemOnPlayer} useItemOnPlayer 
      * @param {*} [options] Override http request option.
@@ -538,10 +502,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Attack a specific NPC inside the current room of the specified game.
      */
     async attackNpcRaw(requestParameters: AttackNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<NpcAttacked>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling attackNpc.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling attackNpc.');
         }
@@ -556,8 +516,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -583,10 +543,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Cast a spell on your player character.
      */
     async castSpellOnNpcRaw(requestParameters: CastSpellOnNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<SpellCast>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling castSpellOnNpc.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling castSpellOnNpc.');
         }
@@ -601,8 +557,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -628,10 +584,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Cast a spell on your player character.
      */
     async castSpellOnPlayerRaw(requestParameters: CastSpellOnPlayerRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<SpellCast>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling castSpellOnPlayer.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling castSpellOnPlayer.');
         }
@@ -646,8 +598,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -673,10 +625,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Get the current actions available for the game.
      */
     async currentActionsRaw(requestParameters: CurrentActionsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<Array<PerformAction>>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling currentActions.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling currentActions.');
         }
@@ -685,8 +633,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -711,10 +659,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Exit the current room of the specified game through the specified exit.
      */
     async exitRoomRaw(requestParameters: ExitRoomRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<RoomExited>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling exitRoom.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling exitRoom.');
         }
@@ -729,8 +673,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -756,10 +700,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Inspect a fixture to find out more information about them when looking at them next. After completing an inspect, look at the fixture to see new information.
      */
     async inspectFixtureRaw(requestParameters: InspectFixtureRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<FixtureInspected>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling inspectFixture.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling inspectFixture.');
         }
@@ -774,8 +714,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -801,10 +741,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Inspect an NPC to find out more information about them when looking at them next. After completing an inspect, look at the NPC to see new information.
      */
     async inspectNpcRaw(requestParameters: InspectNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<NpcInspected>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling inspectNpc.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling inspectNpc.');
         }
@@ -819,8 +755,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -846,10 +782,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Take a closer look at the current room.
      */
     async lookAroundRoomRaw(requestParameters: LookAroundRoomRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<Room>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling lookAroundRoom.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling lookAroundRoom.');
         }
@@ -858,8 +790,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -884,10 +816,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Look at a specific Fixture in the current room.
      */
     async lookAtFixtureRaw(requestParameters: LookAtFixtureRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<Fixture>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling lookAtFixture.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling lookAtFixture.');
         }
@@ -902,8 +830,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -929,10 +857,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Look at a specific NPC in the current room.
      */
     async lookAtNpcRaw(requestParameters: LookAtNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<NonPlayer>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling lookAtNpc.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling lookAtNpc.');
         }
@@ -947,8 +871,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -974,10 +898,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Loot some items from a fixture.
      */
     async lootFixtureRaw(requestParameters: LootFixtureRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<FixtureLooted>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling lootFixture.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling lootFixture.');
         }
@@ -992,8 +912,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -1019,10 +939,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Loot some items from an NPC.
      */
     async lootNpcRaw(requestParameters: LootNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<NpcLooted>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling lootNpc.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling lootNpc.');
         }
@@ -1037,8 +953,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -1064,10 +980,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Use an item on your player character.
      */
     async movePlayerItemRaw(requestParameters: MovePlayerItemRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<ItemMoved>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling movePlayerItem.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling movePlayerItem.');
         }
@@ -1082,8 +994,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -1109,10 +1021,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Open a fixture.
      */
     async openFixtureRaw(requestParameters: OpenFixtureRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<FixtureOpened>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling openFixture.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling openFixture.');
         }
@@ -1127,8 +1035,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -1154,10 +1062,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Open hidden compartment of fixture.
      */
     async openFixtureHiddenCompartmentRaw(requestParameters: OpenFixtureHiddenCompartmentRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<FixtureOpened>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling openFixtureHiddenCompartment.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling openFixtureHiddenCompartment.');
         }
@@ -1172,8 +1076,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -1199,10 +1103,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Sell an item on your player.
      */
     async sellPlayerItemRaw(requestParameters: SellPlayerItemRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<ItemSold>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling sellPlayerItem.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling sellPlayerItem.');
         }
@@ -1217,8 +1117,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -1244,10 +1144,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Use an item on your player character.
      */
     async throwItemAtNpcRaw(requestParameters: ThrowItemAtNpcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<ItemUsed>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling throwItemAtNpc.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling throwItemAtNpc.');
         }
@@ -1262,8 +1158,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -1289,10 +1185,6 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
      * Use an item on your player character.
      */
     async useItemOnPlayerRaw(requestParameters: UseItemOnPlayerRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<ItemUsed>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling useItemOnPlayer.');
-        }
-
         if (requestParameters.gameId === null || requestParameters.gameId === undefined) {
             throw new runtime.RequiredError('gameId','Required parameter requestParameters.gameId was null or undefined when calling useItemOnPlayer.');
         }
@@ -1307,8 +1199,8 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
