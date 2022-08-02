@@ -5,6 +5,7 @@ pub mod config;
 mod error;
 mod event;
 mod game;
+mod mail;
 mod player_characters;
 pub mod tags;
 
