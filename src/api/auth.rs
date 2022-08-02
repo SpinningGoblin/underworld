@@ -8,7 +8,10 @@ use poem_openapi::{
 };
 use sqlx::PgPool;
 
-use crate::{auth::repository::UserDetails, config::get_server_auth_url, tags::UnderworldApiTags};
+use crate::{
+    auth::repository::UserDetails, config::get_server_auth_url, mail::send_mail,
+    tags::UnderworldApiTags,
+};
 
 pub struct UnderworldAuthApi;
 
@@ -74,24 +77,22 @@ impl UnderworldAuthApi {
             Some(token) => {
                 let server_url = get_server_auth_url();
                 let callback = format!("{}/{}?token={}", server_url, callback_api, token);
+                println!("{}", &callback);
+                // TODO call our email service to send out the email with the callback url inside.
+
+                send_mail(
+                    email,
+                    &env::var("FROM_EMAIL").unwrap(),
+                    &callback,
+                )
+                .await;
 
                 poem_openapi::payload::Response::new(PlainText("Success".to_string()))
                     .header("Location", "/success")
-                    .header(
-                        "Set-Cookie",
-                        format!("underworldCallback={}; Path=/; SameSite=Lax", callback),
-                    )
                     .status(StatusCode::FOUND)
             }
             None => poem_openapi::payload::Response::new(PlainText("Success".to_string()))
                 .header("Location", "/success")
-                .header(
-                    "Set-Cookie",
-                    format!(
-                        "underworldCallback={}; Path=/; SameSite=Lax; HttpOnly",
-                        "mail_already_sent"
-                    ),
-                )
                 .status(StatusCode::FOUND),
         };
 
