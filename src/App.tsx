@@ -2,11 +2,7 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { generateGame, getGameIds } from "./api/game";
 import { getCurrentGameId, setCurrentGameId } from "./api/current-game";
-import {
-  GameEvent,
-  PlayerCharacter,
-  Room,
-} from "./generated-api";
+import { GameEvent, PlayerCharacter, Room } from "./generated-api";
 import {
   ActionPerformed,
   getCurrentActions,
@@ -133,13 +129,12 @@ export const App = () => {
     if (gameId) {
       console.log(`here ${gameId}`);
       setCurrentGameId(gameId);
-      Promise.all([
-        getCurrentRoom(),
-        getCurrentPlayer(),
-      ]).then(([room, player]) => {
-        setRoom(room);
-        setPlayer(player);
-      });
+      Promise.all([getCurrentRoom(), getCurrentPlayer()]).then(
+        ([room, player]) => {
+          setRoom(room);
+          setPlayer(player);
+        },
+      );
     } else {
       setCurrentGameId("");
       setRoom(undefined);

@@ -1,5 +1,5 @@
 export const getBasePath = (): string => {
-  if (window.location.href === "http://localhost:5173/") {
+  if (window.location.origin === "http://localhost:5173") {
     return "http://localhost:8080/api";
   }
 
