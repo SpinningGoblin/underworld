@@ -20,14 +20,6 @@ import {
     GeneratedGameToJSON,
 } from '../models';
 
-export interface GenerateGameRequest {
-    underworldUsername: string;
-}
-
-export interface GetGameIdsRequest {
-    underworldUsername: string;
-}
-
 /**
  * GamesApi - interface
  * 
@@ -38,34 +30,32 @@ export interface GamesApiInterface {
     /**
      * # Example  POST `/my_username/games/generate` to generate and save a new game for my_username
      * @summary Generate and persist a new game.
-     * @param {string} underworldUsername 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof GamesApiInterface
      */
-    generateGameRaw(requestParameters: GenerateGameRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<GeneratedGame>>;
+    generateGameRaw(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<GeneratedGame>>;
 
     /**
      * # Example  POST `/my_username/games/generate` to generate and save a new game for my_username
      * Generate and persist a new game.
      */
-    generateGame(requestParameters: GenerateGameRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<GeneratedGame>;
+    generateGame(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<GeneratedGame>;
 
     /**
      * # Example  Call `/my_username/games/ids` to retrieve all game ids for my_username
      * @summary Get IDs of all current games
-     * @param {string} underworldUsername 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof GamesApiInterface
      */
-    getGameIdsRaw(requestParameters: GetGameIdsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+    getGameIdsRaw(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<Array<string>>>;
 
     /**
      * # Example  Call `/my_username/games/ids` to retrieve all game ids for my_username
      * Get IDs of all current games
      */
-    getGameIds(requestParameters: GetGameIdsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<Array<string>>;
+    getGameIds(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<Array<string>>;
 
 }
 
@@ -78,17 +68,13 @@ export class GamesApi extends runtime.BaseAPI implements GamesApiInterface {
      * # Example  POST `/my_username/games/generate` to generate and save a new game for my_username
      * Generate and persist a new game.
      */
-    async generateGameRaw(requestParameters: GenerateGameRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<GeneratedGame>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling generateGame.');
-        }
-
+    async generateGameRaw(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<GeneratedGame>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -105,8 +91,8 @@ export class GamesApi extends runtime.BaseAPI implements GamesApiInterface {
      * # Example  POST `/my_username/games/generate` to generate and save a new game for my_username
      * Generate and persist a new game.
      */
-    async generateGame(requestParameters: GenerateGameRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<GeneratedGame> {
-        const response = await this.generateGameRaw(requestParameters, initOverrides);
+    async generateGame(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<GeneratedGame> {
+        const response = await this.generateGameRaw(initOverrides);
         return await response.value();
     }
 
@@ -114,17 +100,13 @@ export class GamesApi extends runtime.BaseAPI implements GamesApiInterface {
      * # Example  Call `/my_username/games/ids` to retrieve all game ids for my_username
      * Get IDs of all current games
      */
-    async getGameIdsRaw(requestParameters: GetGameIdsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<Array<string>>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling getGameIds.');
-        }
-
+    async getGameIdsRaw(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<Array<string>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -141,8 +123,8 @@ export class GamesApi extends runtime.BaseAPI implements GamesApiInterface {
      * # Example  Call `/my_username/games/ids` to retrieve all game ids for my_username
      * Get IDs of all current games
      */
-    async getGameIds(requestParameters: GetGameIdsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<Array<string>> {
-        const response = await this.getGameIdsRaw(requestParameters, initOverrides);
+    async getGameIds(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<Array<string>> {
+        const response = await this.getGameIdsRaw(initOverrides);
         return await response.value();
     }
 

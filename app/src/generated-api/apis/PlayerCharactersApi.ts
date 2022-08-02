@@ -27,25 +27,14 @@ import {
 } from '../models';
 
 export interface GeneratePcRequest {
-    underworldUsername: string;
     generatePlayerCharacter: GeneratePlayerCharacter;
 }
 
-export interface GetCurrentPcRequest {
-    underworldUsername: string;
-}
-
 export interface GetPcRequest {
-    underworldUsername: string;
     id: string;
 }
 
-export interface GetPcIdsRequest {
-    underworldUsername: string;
-}
-
 export interface SetPcAsCurrentRequest {
-    underworldUsername: string;
     id: string;
 }
 
@@ -59,7 +48,6 @@ export interface PlayerCharactersApiInterface {
     /**
      * 
      * @summary Generate and save a new player_character for the user. If user has no player set as current, this one gets set as the current.
-     * @param {string} underworldUsername 
      * @param {GeneratePlayerCharacter} generatePlayerCharacter 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -75,22 +63,20 @@ export interface PlayerCharactersApiInterface {
     /**
      * 
      * @summary Check the status of the current player character.
-     * @param {string} underworldUsername 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PlayerCharactersApiInterface
      */
-    getCurrentPcRaw(requestParameters: GetCurrentPcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<PlayerCharacter>>;
+    getCurrentPcRaw(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<PlayerCharacter>>;
 
     /**
      * Check the status of the current player character.
      */
-    getCurrentPc(requestParameters: GetCurrentPcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<PlayerCharacter>;
+    getCurrentPc(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<PlayerCharacter>;
 
     /**
      * 
      * @summary Check the player character for the user with specified ID.
-     * @param {string} underworldUsername 
      * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -106,23 +92,21 @@ export interface PlayerCharactersApiInterface {
     /**
      * # Example  Call `/my_username/player_characters` to retrieve all player character ids for my_username
      * @summary Get IDs of all player characters
-     * @param {string} underworldUsername 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PlayerCharactersApiInterface
      */
-    getPcIdsRaw(requestParameters: GetPcIdsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+    getPcIdsRaw(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<Array<string>>>;
 
     /**
      * # Example  Call `/my_username/player_characters` to retrieve all player character ids for my_username
      * Get IDs of all player characters
      */
-    getPcIds(requestParameters: GetPcIdsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<Array<string>>;
+    getPcIds(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<Array<string>>;
 
     /**
      * 
      * @summary Set the specified player character as the current one for any actions in a game.
-     * @param {string} underworldUsername 
      * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -146,10 +130,6 @@ export class PlayerCharactersApi extends runtime.BaseAPI implements PlayerCharac
      * Generate and save a new player_character for the user. If user has no player set as current, this one gets set as the current.
      */
     async generatePcRaw(requestParameters: GeneratePcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<GeneratedPlayerCharacter>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling generatePc.');
-        }
-
         if (requestParameters.generatePlayerCharacter === null || requestParameters.generatePlayerCharacter === undefined) {
             throw new runtime.RequiredError('generatePlayerCharacter','Required parameter requestParameters.generatePlayerCharacter was null or undefined when calling generatePc.');
         }
@@ -160,8 +140,8 @@ export class PlayerCharactersApi extends runtime.BaseAPI implements PlayerCharac
 
         headerParameters['Content-Type'] = 'application/json';
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -186,17 +166,13 @@ export class PlayerCharactersApi extends runtime.BaseAPI implements PlayerCharac
     /**
      * Check the status of the current player character.
      */
-    async getCurrentPcRaw(requestParameters: GetCurrentPcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<PlayerCharacter>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling getCurrentPc.');
-        }
-
+    async getCurrentPcRaw(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<PlayerCharacter>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -212,8 +188,8 @@ export class PlayerCharactersApi extends runtime.BaseAPI implements PlayerCharac
     /**
      * Check the status of the current player character.
      */
-    async getCurrentPc(requestParameters: GetCurrentPcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<PlayerCharacter> {
-        const response = await this.getCurrentPcRaw(requestParameters, initOverrides);
+    async getCurrentPc(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<PlayerCharacter> {
+        const response = await this.getCurrentPcRaw(initOverrides);
         return await response.value();
     }
 
@@ -221,10 +197,6 @@ export class PlayerCharactersApi extends runtime.BaseAPI implements PlayerCharac
      * Check the player character for the user with specified ID.
      */
     async getPcRaw(requestParameters: GetPcRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<PlayerCharacter>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling getPc.');
-        }
-
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling getPc.');
         }
@@ -233,8 +205,8 @@ export class PlayerCharactersApi extends runtime.BaseAPI implements PlayerCharac
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -259,17 +231,13 @@ export class PlayerCharactersApi extends runtime.BaseAPI implements PlayerCharac
      * # Example  Call `/my_username/player_characters` to retrieve all player character ids for my_username
      * Get IDs of all player characters
      */
-    async getPcIdsRaw(requestParameters: GetPcIdsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<Array<string>>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling getPcIds.');
-        }
-
+    async getPcIdsRaw(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<Array<string>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
@@ -286,8 +254,8 @@ export class PlayerCharactersApi extends runtime.BaseAPI implements PlayerCharac
      * # Example  Call `/my_username/player_characters` to retrieve all player character ids for my_username
      * Get IDs of all player characters
      */
-    async getPcIds(requestParameters: GetPcIdsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<Array<string>> {
-        const response = await this.getPcIdsRaw(requestParameters, initOverrides);
+    async getPcIds(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<Array<string>> {
+        const response = await this.getPcIdsRaw(initOverrides);
         return await response.value();
     }
 
@@ -295,10 +263,6 @@ export class PlayerCharactersApi extends runtime.BaseAPI implements PlayerCharac
      * Set the specified player character as the current one for any actions in a game.
      */
     async setPcAsCurrentRaw(requestParameters: SetPcAsCurrentRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<string>> {
-        if (requestParameters.underworldUsername === null || requestParameters.underworldUsername === undefined) {
-            throw new runtime.RequiredError('underworldUsername','Required parameter requestParameters.underworldUsername was null or undefined when calling setPcAsCurrent.');
-        }
-
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling setPcAsCurrent.');
         }
@@ -307,8 +271,8 @@ export class PlayerCharactersApi extends runtime.BaseAPI implements PlayerCharac
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        if (requestParameters.underworldUsername !== undefined && requestParameters.underworldUsername !== null) {
-            headerParameters['underworld-username'] = String(requestParameters.underworldUsername);
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
         }
 
         const response = await this.request({
