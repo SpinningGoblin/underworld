@@ -101,26 +101,26 @@ const notifyError = (error: string) => {
 };
 
 export const getCurrentRoom = async (): Promise<Room> => {
-  const { gameId, username } = getBasicParams();
+  const { gameId } = getBasicParams();
 
   const api = getGameActionsApi();
 
-  return api.lookAroundRoom({ underworldUsername: username, gameId });
+  return api.lookAroundRoom({ gameId });
 };
 
 export const getCurrentActions = async (): Promise<Array<PerformAction>> => {
-  const { username, gameId } = getBasicParams();
+  const { gameId } = getBasicParams();
 
   const api = getGameActionsApi();
-  return api.currentActions({ underworldUsername: username, gameId });
+  return api.currentActions({ gameId });
 };
 
 export const performExitRoom = async (args: ExitRoom): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
+
     const { events } = await api.exitRoom({
-      underworldUsername: username,
       gameId,
       exitRoom: args,
     });
@@ -128,7 +128,7 @@ export const performExitRoom = async (args: ExitRoom): Promise<void> => {
     const playerApi = getPlayerApi();
     const [room, player] = await Promise.all([
       getCurrentRoom(),
-      playerApi.getCurrentPc({ underworldUsername: username }),
+      playerApi.getCurrentPc(),
     ]);
 
     const actionPerformed: ActionPerformed = {
@@ -153,10 +153,9 @@ export const performThrowItemAtNpc = async (
   args: ThrowItemAtNpc,
 ): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
     const { events } = await api.throwItemAtNpc({
-      underworldUsername: username,
       gameId,
       throwItemAtNpc: args,
     });
@@ -164,7 +163,7 @@ export const performThrowItemAtNpc = async (
     const playerApi = getPlayerApi();
     const [room, player] = await Promise.all([
       getCurrentRoom(),
-      playerApi.getCurrentPc({ underworldUsername: username }),
+      playerApi.getCurrentPc(),
     ]);
 
     notifyListeners({
@@ -185,10 +184,9 @@ export const performThrowItemAtNpc = async (
 
 export const performAttackNpc = async (args: AttackNpc): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
     const { events } = await api.attackNpc({
-      underworldUsername: username,
       gameId,
       attackNpc: args,
     });
@@ -196,7 +194,7 @@ export const performAttackNpc = async (args: AttackNpc): Promise<void> => {
     const playerApi = getPlayerApi();
     const [room, player] = await Promise.all([
       getCurrentRoom(),
-      playerApi.getCurrentPc({ underworldUsername: username }),
+      playerApi.getCurrentPc(),
     ]);
 
     notifyListeners({
@@ -219,10 +217,9 @@ export const performCastSpellOnNpc = async (
   args: CastSpellOnNpc,
 ): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
     const { events } = await api.castSpellOnNpc({
-      underworldUsername: username,
       gameId,
       castSpellOnNpc: args,
     });
@@ -230,7 +227,7 @@ export const performCastSpellOnNpc = async (
     const playerApi = getPlayerApi();
     const [room, player] = await Promise.all([
       getCurrentRoom(),
-      playerApi.getCurrentPc({ underworldUsername: username }),
+      playerApi.getCurrentPc(),
     ]);
 
     notifyListeners({
@@ -253,18 +250,15 @@ export const performCastSpellOnPlayer = async (
   args: CastSpellOnPlayer,
 ): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
     const { events } = await api.castSpellOnPlayer({
-      underworldUsername: username,
       gameId,
       castSpellOnPlayer: args,
     });
 
     const playerApi = getPlayerApi();
-    const player = await playerApi.getCurrentPc({
-      underworldUsername: username,
-    });
+    const player = await playerApi.getCurrentPc();
 
     notifyListeners({
       events,
@@ -285,18 +279,15 @@ export const performUseItemOnPlayer = async (
   args: UseItemOnPlayer,
 ): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
     const { events } = await api.useItemOnPlayer({
-      underworldUsername: username,
       gameId,
       useItemOnPlayer: args,
     });
 
     const playerApi = getPlayerApi();
-    const player = await playerApi.getCurrentPc({
-      underworldUsername: username,
-    });
+    const player = await playerApi.getCurrentPc();
 
     notifyListeners({
       events,
@@ -315,19 +306,16 @@ export const performUseItemOnPlayer = async (
 
 export const performOpenFixture = async (args: OpenFixture): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
     const response = await api.openFixture({
-      underworldUsername: username,
       gameId,
       openFixture: args,
     });
 
     const room = await getCurrentRoom();
     const playerApi = getPlayerApi();
-    const player = await playerApi.getCurrentPc({
-      underworldUsername: username,
-    });
+    const player = await playerApi.getCurrentPc();
 
     notifyListeners({
       events: response.events,
@@ -349,19 +337,16 @@ export const performOpenFixtureHiddenCompartment = async (
   args: OpenFixtureHiddenCompartment,
 ): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
     const response = await api.openFixtureHiddenCompartment({
-      underworldUsername: username,
       gameId,
       openFixtureHiddenCompartment: args,
     });
 
     const room = await getCurrentRoom();
     const playerApi = getPlayerApi();
-    const player = await playerApi.getCurrentPc({
-      underworldUsername: username,
-    });
+    const player = await playerApi.getCurrentPc();
 
     notifyListeners({
       events: response.events,
@@ -383,19 +368,16 @@ export const performInspectFixture = async (
   args: InspectFixture,
 ): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
     const response = await api.inspectFixture({
-      underworldUsername: username,
       gameId,
       inspectFixture: args,
     });
 
     const room = await getCurrentRoom();
     const playerApi = getPlayerApi();
-    const player = await playerApi.getCurrentPc({
-      underworldUsername: username,
-    });
+    const player = await playerApi.getCurrentPc();
 
     notifyListeners({
       events: response.events,
@@ -417,11 +399,10 @@ export const performMovePlayerItem = async (
   args: MovePlayerItem,
 ): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
 
     const { events } = await api.movePlayerItem({
-      underworldUsername: username,
       gameId,
       movePlayerItem: args,
     });
@@ -429,7 +410,7 @@ export const performMovePlayerItem = async (
     const playerApi = getPlayerApi();
     const [room, player] = await Promise.all([
       getCurrentRoom(),
-      playerApi.getCurrentPc({ underworldUsername: username }),
+      playerApi.getCurrentPc(),
     ]);
 
     notifyListeners({
@@ -453,11 +434,10 @@ export const performSellPlayerItem = async (
   args: SellPlayerItem,
 ): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
 
     const { events } = await api.sellPlayerItem({
-      underworldUsername: username,
       gameId,
       sellPlayerItem: args,
     });
@@ -465,7 +445,7 @@ export const performSellPlayerItem = async (
     const playerApi = getPlayerApi();
     const [room, player] = await Promise.all([
       getCurrentRoom(),
-      playerApi.getCurrentPc({ underworldUsername: username }),
+      playerApi.getCurrentPc(),
     ]);
 
     notifyListeners({
@@ -487,11 +467,10 @@ export const performSellPlayerItem = async (
 
 export const performInspectNpc = async (args: InspectNpc): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
 
     const response = await api.inspectNpc({
-      underworldUsername: username,
       gameId,
       inspectNpc: args,
     });
@@ -499,7 +478,7 @@ export const performInspectNpc = async (args: InspectNpc): Promise<void> => {
     const playerApi = getPlayerApi();
     const [room, player] = await Promise.all([
       getCurrentRoom(),
-      playerApi.getCurrentPc({ underworldUsername: username }),
+      playerApi.getCurrentPc(),
     ]);
 
     notifyListeners({
@@ -520,10 +499,9 @@ export const performInspectNpc = async (args: InspectNpc): Promise<void> => {
 
 export const performLootNpc = async (args: LootNpc): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
     const { events } = await api.lootNpc({
-      underworldUsername: username,
       gameId,
       lootNpc: args,
     });
@@ -532,7 +510,7 @@ export const performLootNpc = async (args: LootNpc): Promise<void> => {
 
     const [room, player] = await Promise.all([
       getCurrentRoom(),
-      playerApi.getCurrentPc({ underworldUsername: username }),
+      playerApi.getCurrentPc(),
     ]);
 
     notifyListeners({
@@ -553,10 +531,9 @@ export const performLootNpc = async (args: LootNpc): Promise<void> => {
 
 export const performLootFixture = async (args: LootFixture): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
     const { events } = await api.lootFixture({
-      underworldUsername: username,
       gameId,
       lootFixture: args,
     });
@@ -564,7 +541,7 @@ export const performLootFixture = async (args: LootFixture): Promise<void> => {
     const playerApi = getPlayerApi();
     const [room, player] = await Promise.all([
       getCurrentRoom(),
-      playerApi.getCurrentPc({ underworldUsername: username }),
+      playerApi.getCurrentPc(),
     ]);
 
     notifyListeners({
@@ -585,11 +562,10 @@ export const performLootFixture = async (args: LootFixture): Promise<void> => {
 
 export const performLookAtNpc = async (args: LookAtNpc): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
 
     const response = await api.lookAtNpc({
-      underworldUsername: username,
       gameId,
       lookAtNpc: args,
     });
@@ -619,11 +595,10 @@ export const performLookAtFixture = async (
   args: LookAtFixture,
 ): Promise<void> => {
   try {
-    const { username, gameId } = getBasicParams();
+    const { gameId } = getBasicParams();
     const api = getGameActionsApi();
 
     const response = await api.lookAtFixture({
-      underworldUsername: username,
       gameId,
       lookAtFixture: args,
     });

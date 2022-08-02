@@ -6,7 +6,7 @@ import { performMovePlayerItem } from "../../api/actions";
 import { useTheme } from "../../themes";
 
 export interface MovePlayerItemViewProps {
-  itemId: string,
+  itemId: string;
   equip: boolean;
 }
 
