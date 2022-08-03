@@ -1,3 +1,3 @@
 export { GameScreen } from "./Game";
-export { GetReadyScreen } from "./GetReady";
+export { LoadingScreen } from "./Loading";
 export { OptionsScreen } from "./Options";

@@ -13,7 +13,7 @@ import {
   removeErrorListener,
 } from "./api/actions";
 import { generatePlayer, getCurrentPlayer } from "./api/player";
-import { GameScreen, GetReadyScreen, OptionsScreen } from "./screens";
+import { GameScreen, LoadingScreen, OptionsScreen } from "./screens";
 import { Header } from "./components/Header";
 
 import OptionsIcon from "./images/options.svg";
@@ -34,7 +34,6 @@ export const App = () => {
   const [player, setPlayer] = useState<PlayerCharacter | undefined>();
   const [events, setEvents] = useState<Array<GameEvent>>([]);
   const [lastEvents, setLastEvents] = useState<Array<GameEvent>>([]);
-  const [ready, setReady] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const firstPlayerLoadDone = useRef<boolean>(false);
   const [error, setError] = useState<string>();
@@ -60,7 +59,7 @@ export const App = () => {
   };
 
   useEffect(() => {
-    if (ready && !firstPlayerLoadDone.current) {
+    if (!firstPlayerLoadDone.current) {
       console.log("getting initial");
       console.log(gameId);
       const roomPromise: Promise<Room | undefined> = gameId
@@ -83,7 +82,7 @@ export const App = () => {
         .catch((e) => console.error(e))
         .finally(() => (firstPlayerLoadDone.current = true));
     }
-  }, [ready]);
+  }, []);
 
   useEffect(() => {
     const callback = (error: string) => {
@@ -145,8 +144,8 @@ export const App = () => {
     !player || player.character.stats.health!.current === 0;
 
   let body: ReactNode;
-  if (!ready) {
-    body = <GetReadyScreen onReadyClicked={() => setReady(true)} />;
+  if (!firstPlayerLoadDone.current) {
+    body = <LoadingScreen />;
   } else if (room && player && !showOptions) {
     body = (
       <GameScreen
@@ -173,7 +172,7 @@ export const App = () => {
   }
 
   const headerButton = () => {
-    if (!ready || !player || !room) {
+    if (!firstPlayerLoadDone.current || !player || !room) {
       return <></>;
     }
 
