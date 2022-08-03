@@ -11,7 +11,8 @@
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
     "**/target": true,
-    "app/dist": true
+    "app/dist": true,
+    "**/node_modules": true
   },
   "rust-analyzer.procMacro.attributes.enable": true
 }
