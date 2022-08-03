@@ -1,11 +1,3 @@
-.input {
-  @apply max-h-8 p-0.5;
-}
-
-.ready {
-  @apply p-1 ml-2;
-}
-
 .container {
   @apply fixed top-1/2 left-1/2;
   transform: translate(-50%, -50%);
@@ -13,4 +5,8 @@
 
 .body {
   @apply mt-6;
+}
+
+.loading {
+  @apply no-underline;
 }

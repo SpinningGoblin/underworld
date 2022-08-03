@@ -23,10 +23,8 @@ import {
 } from "../generated-api";
 import { getCurrentGameId } from "./current-game";
 import { getGameActionsApi, getPlayerApi } from "./factory";
-import { getUsername } from "./username";
 
 interface BasicParams {
-  username: string;
   gameId: string;
 }
 
@@ -38,14 +36,12 @@ export interface ActionPerformed {
 
 const getBasicParams = (): BasicParams => {
   const gameId = getCurrentGameId();
-  const username = getUsername();
 
-  if (!gameId || !username) {
+  if (!gameId) {
     throw new Error("Missing required parameters");
   }
 
   return {
-    username,
     gameId,
   };
 };
