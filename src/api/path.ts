@@ -1,7 +1,7 @@
-export const getBasePath = (): string => {
-  if (window.location.origin === "http://localhost:5173") {
-    return "http://localhost:8080/api";
-  }
+const backendUrl = import.meta.env.VITE_UNDERWORLD_URL;
 
-  return `${window.location.href}api`;
-};
+export const getBasePath = (): string => `${backendUrl}/api`;
+export const getSignInUrl = () => `${backendUrl}/sign-in`;
+export const getApiLoginUrl = () => `${backendUrl}/auth/login`;
+export const getMailCallbackUrl = (mailToken: string) =>
+  `${backendUrl}/auth/enter_the_underworld?token=${mailToken}`;
