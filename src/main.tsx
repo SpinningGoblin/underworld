@@ -27,16 +27,6 @@ import { ResponseError } from "./generated-api";
   if (apiToken) {
     setAuthToken(apiToken);
   }
-  // else if (
-  //   window.location.hash !== "#/sign-in" &&
-  //   window.location.hash !== "#/success"
-  // ) {
-  //   const signInUrl = getSignInUrl();
-  //   console.log(signInUrl);
-  //   window.location.assign(getSignInUrl());
-  //   window.location.reload();
-  //   return;
-  // }
 
   const queryClient = new QueryClient({
     defaultOptions: {
