@@ -40,7 +40,7 @@ impl UnderworldAuthApi {
                 ))
                 .header(
                     "Location",
-                    format!("{}/sign-in?error=email_required", &frontend_url),
+                    format!("{}#/sign-in?error=email_required", &frontend_url),
                 )
                 .status(StatusCode::FOUND));
             }
@@ -76,11 +76,11 @@ impl UnderworldAuthApi {
                 send_mail(email, &env::var("FROM_EMAIL").unwrap(), &callback).await;
 
                 poem_openapi::payload::Response::new(PlainText("Success".to_string()))
-                    .header("Location", format!("{}/success", &frontend_url))
+                    .header("Location", format!("{}#/success", &frontend_url))
                     .status(StatusCode::FOUND)
             }
             None => poem_openapi::payload::Response::new(PlainText("Success".to_string()))
-                .header("Location", format!("{}/success", &frontend_url))
+                .header("Location", format!("{}#/success", &frontend_url))
                 .status(StatusCode::FOUND),
         };
 
@@ -128,7 +128,7 @@ impl UnderworldAuthApi {
         );
 
         let response = poem_openapi::payload::Response::new(PlainText("Success".to_string()))
-            .header("Location", format!("{}#{}", &frontend_url, &api_token))
+            .header("Location", format!("{}?token={}", &frontend_url, &api_token))
             .header("Set-Cookie", cookie)
             .status(StatusCode::FOUND);
         transaction.commit().await.unwrap();
