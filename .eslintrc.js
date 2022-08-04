@@ -30,6 +30,8 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": "off",
     "arrow-body-style": ["error", "as-needed"],
     "multiline-ternary": ["error", "always-multiline"],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error", { varsIgnorePattern: "^_" }],
   },
   ignorePatterns: ["src/generated-api/**/*.*", "*.svg", "*.css"],
 };
