@@ -15,10 +15,10 @@ use crate::{
 
 pub struct UnderworldAuthApi;
 
-fn frontend_url(api_token: &str) -> (String, String) {
+fn frontend_url() -> Option<String> {
     match env::var("FRONTEND_URL") {
-        Ok(it) => (format!("{}#{}", it, api_token), "SameSite=None".to_string()),
-        Err(_) => ("/".to_string(), "SameSite=Lax".to_string()),
+        Ok(it) => Some(it),
+        Err(_) => None,
     }
 }
 
@@ -34,11 +34,15 @@ impl UnderworldAuthApi {
         let email = match login.get("email") {
             Some(it) => it,
             None => {
+                let frontend_url = frontend_url().unwrap_or("/".to_string());
                 return Ok(poem_openapi::payload::Response::new(PlainText(
                     "EmailRequired".to_string(),
                 ))
-                .header("Location", "/sign-in#email_required")
-                .status(StatusCode::FOUND))
+                .header(
+                    "Location",
+                    format!("{}/sign-in?error=email_required", &frontend_url),
+                )
+                .status(StatusCode::FOUND));
             }
         };
 
@@ -46,12 +50,6 @@ impl UnderworldAuthApi {
             .get("token_type")
             .cloned()
             .unwrap_or("play_the_game".to_string());
-
-        let callback_api = if token_type == "play_the_game" {
-            "enter_the_underworld"
-        } else {
-            "enter_the_underworld_api"
-        };
 
         let mut transaction = pool.0.begin().await.unwrap();
         let user_details = UserDetails {
@@ -61,26 +59,28 @@ impl UnderworldAuthApi {
             .await
             .unwrap();
 
+        let frontend_url = frontend_url().unwrap_or("/".to_string());
         let response = match db_token {
             Some(token) => {
-                let server_url = get_server_auth_url();
-                let callback = format!("{}/{}?token={}", server_url, callback_api, token);
-                println!("{}", &callback);
-                // TODO call our email service to send out the email with the callback url inside.
+                let callback = if token_type == "play_the_game" {
+                    format!("{}?mail_token={}", &frontend_url, token)
+                } else {
+                    format!(
+                        "{}/enter_the_underworld_api?token={}",
+                        get_server_auth_url(),
+                        &token
+                    )
+                };
+                // let server_url = get_server_auth_url();
 
-                send_mail(
-                    email,
-                    &env::var("FROM_EMAIL").unwrap(),
-                    &callback,
-                )
-                .await;
+                send_mail(email, &env::var("FROM_EMAIL").unwrap(), &callback).await;
 
                 poem_openapi::payload::Response::new(PlainText("Success".to_string()))
-                    .header("Location", "/success")
+                    .header("Location", format!("{}/success", &frontend_url))
                     .status(StatusCode::FOUND)
             }
             None => poem_openapi::payload::Response::new(PlainText("Success".to_string()))
-                .header("Location", "/success")
+                .header("Location", format!("{}/success", &frontend_url))
                 .status(StatusCode::FOUND),
         };
 
@@ -121,14 +121,14 @@ impl UnderworldAuthApi {
             .await
             .unwrap();
 
-        let (location, same_site) = frontend_url(&api_token);
+        let frontend_url = frontend_url().unwrap_or("/".to_string());
         let cookie = format!(
-            "underworldToken={}; Path=/; {}; HttpOnly",
-            &api_token, &same_site
+            "underworldToken={}; Path=/; SameSite=Lax; HttpOnly",
+            &api_token,
         );
 
         let response = poem_openapi::payload::Response::new(PlainText("Success".to_string()))
-            .header("Location", location)
+            .header("Location", format!("{}#{}", &frontend_url, &api_token))
             .header("Set-Cookie", cookie)
             .status(StatusCode::FOUND);
         transaction.commit().await.unwrap();
