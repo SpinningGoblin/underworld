@@ -1,13 +1,14 @@
 import Cookies from "js-cookie";
 
 export const getApiToken = (): string | undefined => {
-  const hashToken = window.location.hash.replaceAll("#", "");
-  if (hashToken) {
-    Cookies.set("underworldApiToken", hashToken, {
+  const params = (new URL(window.location.href)).searchParams;
+  const paramsToken = params.get("token");
+  if (paramsToken) {
+    Cookies.set("underworldApiToken", paramsToken, {
       expires: 2,
     });
     window.location.assign("/");
-    return hashToken;
+    return paramsToken;
   }
 
   return Cookies.get("underworldApiToken");

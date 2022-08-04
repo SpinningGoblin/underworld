@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 import { setAuthToken } from "./api/configuration";
 import { getApiToken, removeApiToken } from "./api/tokens";
@@ -27,10 +27,11 @@ import { ResponseError } from "./generated-api";
   if (apiToken) {
     setAuthToken(apiToken);
   } else if (
-    window.location.pathname !== "/sign-in" &&
-    window.location.pathname !== "/success"
+    window.location.hash !== "#/sign-in" &&
+    window.location.hash !== "#/success"
   ) {
     window.location.assign(getSignInUrl());
+    window.location.reload();
     return;
   }
 
@@ -53,7 +54,7 @@ import { ResponseError } from "./generated-api";
   ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
+        <HashRouter>
           <ThemeWrapper>
             <Routes>
               <Route path="/" element={<App />}></Route>
@@ -61,7 +62,7 @@ import { ResponseError } from "./generated-api";
               <Route path="/success" element={<EmailSuccessScreen />}></Route>
             </Routes>
           </ThemeWrapper>
-        </BrowserRouter>
+        </HashRouter>
       </QueryClientProvider>
     </React.StrictMode>,
   );
