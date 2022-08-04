@@ -26,16 +26,17 @@ import { ResponseError } from "./generated-api";
   const apiToken = getApiToken();
   if (apiToken) {
     setAuthToken(apiToken);
-  } else if (
-    window.location.hash !== "#/sign-in" &&
-    window.location.hash !== "#/success"
-  ) {
-    const signInUrl = getSignInUrl();
-    console.log(signInUrl);
-    window.location.assign(getSignInUrl());
-    window.location.reload();
-    return;
   }
+  // else if (
+  //   window.location.hash !== "#/sign-in" &&
+  //   window.location.hash !== "#/success"
+  // ) {
+  //   const signInUrl = getSignInUrl();
+  //   console.log(signInUrl);
+  //   window.location.assign(getSignInUrl());
+  //   window.location.reload();
+  //   return;
+  // }
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -59,7 +60,10 @@ import { ResponseError } from "./generated-api";
         <HashRouter>
           <ThemeWrapper>
             <Routes>
-              <Route path="/" element={<App />}></Route>
+              <Route
+                path="/"
+                element={apiToken ? <App /> : <SignInScreen />}
+              ></Route>
               <Route path="/sign-in" element={<SignInScreen />}></Route>
               <Route path="/success" element={<EmailSuccessScreen />}></Route>
             </Routes>
