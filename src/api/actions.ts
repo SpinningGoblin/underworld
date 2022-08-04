@@ -14,7 +14,6 @@ import {
   OpenFixture,
   OpenFixtureHiddenCompartment,
   PerformAction,
-  PlayerCharacter,
   ResponseError,
   Room,
   SellPlayerItem,
@@ -22,7 +21,7 @@ import {
   UseItemOnPlayer,
 } from "../generated-api";
 import { getCurrentGameId } from "./current-game";
-import { getGameActionsApi, getPlayerApi } from "./factory";
+import { getGameActionsApi } from "./factory";
 
 interface BasicParams {
   gameId: string;
@@ -30,8 +29,6 @@ interface BasicParams {
 
 export interface ActionPerformed {
   events: Array<GameEvent>;
-  room?: Room;
-  player?: PlayerCharacter;
 }
 
 const getBasicParams = (): BasicParams => {
@@ -121,16 +118,8 @@ export const performExitRoom = async (args: ExitRoom): Promise<void> => {
       exitRoom: args,
     });
 
-    const playerApi = getPlayerApi();
-    const [room, player] = await Promise.all([
-      getCurrentRoom(),
-      playerApi.getCurrentPc(),
-    ]);
-
     const actionPerformed: ActionPerformed = {
       events,
-      room,
-      player,
     };
 
     notifyListeners(actionPerformed);
@@ -156,16 +145,8 @@ export const performThrowItemAtNpc = async (
       throwItemAtNpc: args,
     });
 
-    const playerApi = getPlayerApi();
-    const [room, player] = await Promise.all([
-      getCurrentRoom(),
-      playerApi.getCurrentPc(),
-    ]);
-
     notifyListeners({
       events,
-      player,
-      room,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -187,16 +168,8 @@ export const performAttackNpc = async (args: AttackNpc): Promise<void> => {
       attackNpc: args,
     });
 
-    const playerApi = getPlayerApi();
-    const [room, player] = await Promise.all([
-      getCurrentRoom(),
-      playerApi.getCurrentPc(),
-    ]);
-
     notifyListeners({
       events,
-      player,
-      room,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -220,16 +193,8 @@ export const performCastSpellOnNpc = async (
       castSpellOnNpc: args,
     });
 
-    const playerApi = getPlayerApi();
-    const [room, player] = await Promise.all([
-      getCurrentRoom(),
-      playerApi.getCurrentPc(),
-    ]);
-
     notifyListeners({
       events,
-      player,
-      room,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -253,12 +218,8 @@ export const performCastSpellOnPlayer = async (
       castSpellOnPlayer: args,
     });
 
-    const playerApi = getPlayerApi();
-    const player = await playerApi.getCurrentPc();
-
     notifyListeners({
       events,
-      player,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -282,12 +243,8 @@ export const performUseItemOnPlayer = async (
       useItemOnPlayer: args,
     });
 
-    const playerApi = getPlayerApi();
-    const player = await playerApi.getCurrentPc();
-
     notifyListeners({
       events,
-      player,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -309,14 +266,8 @@ export const performOpenFixture = async (args: OpenFixture): Promise<void> => {
       openFixture: args,
     });
 
-    const room = await getCurrentRoom();
-    const playerApi = getPlayerApi();
-    const player = await playerApi.getCurrentPc();
-
     notifyListeners({
       events: response.events,
-      room,
-      player,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -340,14 +291,8 @@ export const performOpenFixtureHiddenCompartment = async (
       openFixtureHiddenCompartment: args,
     });
 
-    const room = await getCurrentRoom();
-    const playerApi = getPlayerApi();
-    const player = await playerApi.getCurrentPc();
-
     notifyListeners({
       events: response.events,
-      room,
-      player,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -371,14 +316,8 @@ export const performInspectFixture = async (
       inspectFixture: args,
     });
 
-    const room = await getCurrentRoom();
-    const playerApi = getPlayerApi();
-    const player = await playerApi.getCurrentPc();
-
     notifyListeners({
       events: response.events,
-      room,
-      player,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -403,16 +342,8 @@ export const performMovePlayerItem = async (
       movePlayerItem: args,
     });
 
-    const playerApi = getPlayerApi();
-    const [room, player] = await Promise.all([
-      getCurrentRoom(),
-      playerApi.getCurrentPc(),
-    ]);
-
     notifyListeners({
       events,
-      room,
-      player,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -438,16 +369,8 @@ export const performSellPlayerItem = async (
       sellPlayerItem: args,
     });
 
-    const playerApi = getPlayerApi();
-    const [room, player] = await Promise.all([
-      getCurrentRoom(),
-      playerApi.getCurrentPc(),
-    ]);
-
     notifyListeners({
       events,
-      room,
-      player,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -471,16 +394,8 @@ export const performInspectNpc = async (args: InspectNpc): Promise<void> => {
       inspectNpc: args,
     });
 
-    const playerApi = getPlayerApi();
-    const [room, player] = await Promise.all([
-      getCurrentRoom(),
-      playerApi.getCurrentPc(),
-    ]);
-
     notifyListeners({
       events: response.events,
-      room,
-      player,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -502,17 +417,8 @@ export const performLootNpc = async (args: LootNpc): Promise<void> => {
       lootNpc: args,
     });
 
-    const playerApi = getPlayerApi();
-
-    const [room, player] = await Promise.all([
-      getCurrentRoom(),
-      playerApi.getCurrentPc(),
-    ]);
-
     notifyListeners({
       events,
-      player,
-      room,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -534,16 +440,8 @@ export const performLootFixture = async (args: LootFixture): Promise<void> => {
       lootFixture: args,
     });
 
-    const playerApi = getPlayerApi();
-    const [room, player] = await Promise.all([
-      getCurrentRoom(),
-      playerApi.getCurrentPc(),
-    ]);
-
     notifyListeners({
       events,
-      player,
-      room,
     });
   } catch (e) {
     if (typeof e === "string") {

@@ -1,11 +1,10 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import "./App.css";
 import { generateGame, getGameIds } from "./api/game";
 import { getCurrentGameId, setCurrentGameId } from "./api/current-game";
-import { GameEvent, PlayerCharacter, Room } from "./generated-api";
+import { GameEvent, ResponseError } from "./generated-api";
 import {
   ActionPerformed,
-  getCurrentActions,
   getCurrentRoom,
   listenActionPerformed,
   listenError,
@@ -19,70 +18,51 @@ import { Header } from "./components/Header";
 import OptionsIcon from "./images/options.svg";
 import CloseIcon from "./images/close.svg";
 import { useTheme } from "./themes/context";
-
-type OpeningPromises = [
-  Promise<PlayerCharacter>,
-  Promise<string[]>,
-  Promise<Room | undefined>,
-];
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const App = () => {
   const { theme } = useTheme();
-  const [gameIds, setGameIds] = useState<Array<string>>([]);
+  const queryClient = useQueryClient();
   const [gameId, setGameId] = useState<string | undefined>(getCurrentGameId());
-  const [room, setRoom] = useState<Room | undefined>();
-  const [player, setPlayer] = useState<PlayerCharacter | undefined>();
+  const { data: room, isLoading: loadingRoom } = useQuery(
+    ["room"],
+    getCurrentRoom,
+    {
+      onError: (err) => {
+        if (err instanceof ResponseError && err.response.status === 404) {
+          setGameId(undefined);
+        }
+      },
+    },
+  );
+  const { data: player, isLoading: loadingPlayer } = useQuery(
+    ["player"],
+    getCurrentPlayer,
+  );
+  const { data: gameIds, isLoading: loadingGameIds } = useQuery(
+    ["game-ids"],
+    getGameIds,
+  );
+  const generateGameMutation = useMutation(generateGame, {
+    onSuccess: (game) => {
+      queryClient.invalidateQueries(["game-ids"]);
+      setGameId(game.game_id);
+      setEvents([]);
+      setLastEvents([]);
+    },
+  });
+  const generatePlayerMutation = useMutation(generatePlayer, {
+    onSuccess: (player) => {
+      queryClient.setQueryData(["player"], player);
+    },
+  });
   const [events, setEvents] = useState<Array<GameEvent>>([]);
   const [lastEvents, setLastEvents] = useState<Array<GameEvent>>([]);
   const [showOptions, setShowOptions] = useState<boolean>(false);
-  const firstPlayerLoadDone = useRef<boolean>(false);
   const [error, setError] = useState<string>();
 
-  const onClickGenerateGame = () => {
-    generateGame()
-      .then((generatedGame) => {
-        setGameIds((existing) => [...existing, generatedGame.game_id]);
-        setGameId(generatedGame.game_id);
-        setEvents([]);
-        setLastEvents([]);
-      })
-      .catch((e) => console.error(e));
-  };
-
-  const onClickGeneratePlayer = () => {
-    generatePlayer()
-      .then((generatedPlayer) => {
-        setPlayer(generatedPlayer);
-        return getCurrentActions();
-      })
-      .catch((e) => console.error(e));
-  };
-
-  useEffect(() => {
-    if (!firstPlayerLoadDone.current) {
-      console.log("getting initial");
-      console.log(gameId);
-      const roomPromise: Promise<Room | undefined> = gameId
-        ? getCurrentRoom()
-        : Promise.resolve(undefined);
-
-      const promises: OpeningPromises = [
-        getCurrentPlayer(),
-        getGameIds(),
-        roomPromise,
-      ];
-
-      Promise.all(promises)
-        .then(([pl, ids, room]) => {
-          console.log(ids);
-          setPlayer(pl);
-          setGameIds(ids);
-          setRoom(room);
-        })
-        .catch((e) => console.error(e))
-        .finally(() => (firstPlayerLoadDone.current = true));
-    }
-  }, []);
+  const onClickGenerateGame = () => generateGameMutation.mutate();
+  const onClickGeneratePlayer = () => generatePlayerMutation.mutate();
 
   useEffect(() => {
     const callback = (error: string) => {
@@ -100,12 +80,8 @@ export const App = () => {
   useEffect(() => {
     const callback = (actionPerformed: ActionPerformed) => {
       setError(undefined);
-      if (actionPerformed.room) {
-        setRoom(actionPerformed.room);
-      }
-      if (actionPerformed.player) {
-        setPlayer(actionPerformed.player);
-      }
+      queryClient.invalidateQueries(["player"]);
+      queryClient.invalidateQueries(["room"]);
 
       const events = actionPerformed.events.slice();
       events.reverse();
@@ -126,17 +102,12 @@ export const App = () => {
 
   useEffect(() => {
     if (gameId) {
-      console.log(`here ${gameId}`);
       setCurrentGameId(gameId);
-      Promise.all([getCurrentRoom(), getCurrentPlayer()]).then(
-        ([room, player]) => {
-          setRoom(room);
-          setPlayer(player);
-        },
-      );
+      queryClient.invalidateQueries(["player"]);
+      queryClient.invalidateQueries(["room"]);
+      console.log(`getting current room ${gameId}`);
     } else {
       setCurrentGameId("");
-      setRoom(undefined);
     }
   }, [gameId]);
 
@@ -144,7 +115,7 @@ export const App = () => {
     !player || player.character.stats.health!.current === 0;
 
   let body: ReactNode;
-  if (!firstPlayerLoadDone.current) {
+  if (loadingGameIds && loadingPlayer && loadingRoom) {
     body = <LoadingScreen />;
   } else if (room && player && !showOptions) {
     body = (
@@ -164,7 +135,7 @@ export const App = () => {
         player={player}
         onClickGeneratePlayer={onClickGeneratePlayer}
         onClickGenerateGame={onClickGenerateGame}
-        gameIds={gameIds}
+        gameIds={gameIds ?? []}
         selectedGameId={gameId}
         onGameIdChange={setGameId}
       />
@@ -172,7 +143,7 @@ export const App = () => {
   }
 
   const headerButton = () => {
-    if (!firstPlayerLoadDone.current || !player || !room) {
+    if (!player || !room) {
       return <></>;
     }
 

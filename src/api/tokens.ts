@@ -12,3 +12,7 @@ export const getApiToken = (): string | undefined => {
 
   return Cookies.get("underworldApiToken");
 };
+
+export const removeApiToken = () => {
+  Cookies.remove("underworldApiToken");
+};
