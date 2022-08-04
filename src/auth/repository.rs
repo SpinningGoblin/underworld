@@ -98,7 +98,7 @@ async fn insert_new_token(
     user_details: &UserDetails,
 ) -> Result<String, AuthError> {
     let token = Uuid::new_v4().to_string();
-    let deleted_after = Utc::now() + Duration::days(90);
+    let deleted_after = Utc::now() + Duration::days(5);
     sqlx::query(
         "insert into api_tokens (email, token, deleted_after) values ($1, $2, $3)",
     )
