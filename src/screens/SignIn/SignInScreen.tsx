@@ -1,6 +1,7 @@
 import { FunctionComponent, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getApiLoginUrl } from "../../api/path";
+import { Header } from "../../components/Header";
 import { useTheme } from "../../themes";
 
 import styles from "./SignInScreen.module.css";
@@ -17,6 +18,7 @@ export const SignInScreen: FunctionComponent = () => {
       className={styles.screen}
       style={{ backgroundColor: theme.colors.primary }}
     >
+      <Header />
       <div
         className={styles["login-form-wrap"]}
         style={{ backgroundColor: theme.colors.secondary }}
@@ -50,8 +52,9 @@ export const SignInScreen: FunctionComponent = () => {
                 }
               }}
               style={{
+                backgroundColor: theme.colors.secondary,
                 borderColor: valid ? theme.colors.primary : theme.colors.error,
-                color: theme.colors.secondary,
+                color: theme.colors.primary,
               }}
             />
             <i className={styles.validation}>
