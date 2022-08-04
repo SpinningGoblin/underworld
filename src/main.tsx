@@ -30,6 +30,8 @@ import { ResponseError } from "./generated-api";
     window.location.hash !== "#/sign-in" &&
     window.location.hash !== "#/success"
   ) {
+    const signInUrl = getSignInUrl();
+    console.log(signInUrl);
     window.location.assign(getSignInUrl());
     window.location.reload();
     return;
