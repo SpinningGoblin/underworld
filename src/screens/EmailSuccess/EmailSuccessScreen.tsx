@@ -1,4 +1,5 @@
 import { FunctionComponent } from "react";
+import { Header } from "../../components/Header";
 import { useTheme } from "../../themes";
 
 import styles from "./EmailSuccessScreen.module.css";
@@ -14,6 +15,7 @@ export const EmailSuccessScreen: FunctionComponent = () => {
       className={styles.screen}
       style={{ backgroundColor: theme.colors.primary }}
     >
+      <Header />
       <div
         className={styles["success-wrap"]}
         style={{
