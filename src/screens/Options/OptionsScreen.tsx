@@ -77,16 +77,19 @@ export const OptionsScreen: FunctionComponent<OptionsScreenProps> = ({
                 {options}
               </select>
             )}
-            <button
-              className={styles["generate-button"]}
-              onClick={onClickGenerateGame}
-              style={{
-                backgroundColor: theme.colors.secondary,
-                color: theme.colors.primary,
-              }}
-            >
-              New Game
-            </button>
+            {player && (
+              <button
+                className={styles["generate-button"]}
+                onClick={onClickGenerateGame}
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                  color: theme.colors.primary,
+                }}
+              >
+                New Game
+              </button>
+            )}
+            {!player && <span>Generate a player to generate a game</span>}
           </div>
         </div>
       </div>
