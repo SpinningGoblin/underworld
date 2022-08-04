@@ -1,0 +1,71 @@
+.login-form-wrap {
+  @apply mt-10 p-5 text-center;
+  width: 35%;
+  height: 40%;
+  border-radius: 4px;
+  box-shadow: 0px 30px 50px 0px rgba(0, 0, 0, 0.2);
+}
+
+.screen {
+  @apply min-h-screen h-screen w-screen flex justify-center;
+}
+
+.container {
+  @apply flex flex-col justify-center;
+}
+
+.token-container {
+  @apply mt-5;
+}
+
+.email-container {
+  @apply mt-5;
+}
+
+.submit-container {
+  @apply mt-5;
+}
+
+.email-input {
+  @apply block box-border w-full outline-none h-16 m-0 pl-3 relative;
+  line-height: 60px;
+  border-radius: 4px;
+  font-family: -apple-system, "monogram-extended";
+  font-size: calc(10px + 1.75vmin);
+
+  border: 1px solid;
+  font-style: normal;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: none;
+}
+
+.submit {
+  @apply block box-border w-full outline-none h-16 font-bold uppercase cursor-pointer relative text-center;
+  line-height: 60px;
+  border-radius: 4px;
+  border: 1px solid;
+
+  font-family: -apple-system, "monogram-extended";
+  font-size: calc(10px + 1.75vmin);
+
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  font-size: calc(10px + 1.75vmin);
+}
+
+.validation {
+  @apply hidden absolute h-16 w-8 right-4 top-0;
+  content: " ";
+}
+
+.submit:hover {
+  filter: brightness(85%);
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+.token-type {
+  @apply h-8 ml-3;
+}
