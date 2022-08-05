@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import { getFrontendBaseUrl } from "./path";
 
 export const getApiToken = (): string | undefined => {
-  const params = (new URL(window.location.href)).searchParams;
+  const params = new URL(window.location.href).searchParams;
   const paramsToken = params.get("token");
   if (paramsToken) {
     Cookies.set("underworldApiToken", paramsToken, {
