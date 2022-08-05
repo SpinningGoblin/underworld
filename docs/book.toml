@@ -6,4 +6,4 @@ src = "src"
 title = "Underworld Server"
 
 [build]
-build-dir = "../public_docs"
+build-dir = "../public"

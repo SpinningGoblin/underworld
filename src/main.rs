@@ -23,7 +23,6 @@ use poem::{
     EndpointExt, IntoResponse, Result, Route, Server,
 };
 use poem_openapi::OpenApiService;
-use sqlx::PgPool;
 
 struct UnauthResponse;
 
@@ -56,61 +55,16 @@ async fn main() -> Result<(), std::io::Error> {
         .server(format!("{}/auth", get_server_auth_url()));
 
     let ui = api_service.swagger_ui();
+    let auth_ui = auth_service.swagger_ui();
     let spec = api_service.spec();
     let route = Route::new()
         .nest(
             "/docs",
-            StaticFilesEndpoint::new("./public_docs").index_file("index.html"),
+            StaticFilesEndpoint::new("./public").index_file("index.html"),
         )
         .nest(
             "/",
-            StaticFilesEndpoint::new("./public")
-                .index_file("index.html")
-                .before(|req| async move {
-                    let token_cookie = req.cookie().get("underworldToken");
-                    let token: String = match &token_cookie {
-                        Some(token_cookie) => token_cookie.value_str().to_string(),
-                        None => {
-                            return Err(poem::Error::from_status(StatusCode::UNAUTHORIZED));
-                        }
-                    };
-
-                    let pool_option: Option<&PgPool> = req.data();
-                    let pool = pool_option.unwrap();
-
-                    let valid_token = auth::repository::valid_api_token(pool, &token).await;
-                    match valid_token {
-                        Ok(_) => {}
-                        Err(_) => {
-                            return Err(poem::Error::from_status(StatusCode::UNAUTHORIZED));
-                        }
-                    }
-
-                    Ok(req)
-                })
-                .after(|result| async move {
-                    match result {
-                        Err(e) => {
-                            let response = e.into_response();
-                            match &response.status() {
-                                &StatusCode::UNAUTHORIZED => Ok(poem::Response::builder()
-                                    .header("Location", "/sign-in")
-                                    .status(StatusCode::FOUND)
-                                    .finish()),
-                                _ => Ok(response),
-                            }
-                        }
-                        Ok(response) => Ok(response),
-                    }
-                }),
-        )
-        .nest(
-            "/sign-in",
-            StaticFilesEndpoint::new("./sign-in").index_file("index.html"),
-        )
-        .nest(
-            "/success",
-            StaticFilesEndpoint::new("./success").index_file("index.html"),
+            StaticFilesEndpoint::new("./public").index_file("index.html"),
         )
         .nest(
             "/token",
@@ -119,6 +73,7 @@ async fn main() -> Result<(), std::io::Error> {
         .nest("/api", api_service.with(CookieToTokenMiddleware))
         .nest("/auth", auth_service)
         .nest("/swagger_ui", ui)
+        .nest("/auth/swagger_ui", auth_ui)
         .at("/spec", poem::endpoint::make_sync(move |_| spec.clone()))
         .with(Cors::new())
         .with(CookieSession::new(CookieConfig::default().secure(false)))
