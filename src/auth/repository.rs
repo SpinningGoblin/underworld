@@ -99,15 +99,13 @@ async fn insert_new_token(
 ) -> Result<String, AuthError> {
     let token = Uuid::new_v4().to_string();
     let deleted_after = Utc::now() + Duration::days(5);
-    sqlx::query(
-        "insert into api_tokens (email, token, deleted_after) values ($1, $2, $3)",
-    )
-    .bind(&user_details.email)
-    .bind(&token)
-    .bind(&deleted_after)
-    .execute(transaction)
-    .await
-    .unwrap();
+    sqlx::query("insert into api_tokens (email, token, deleted_after) values ($1, $2, $3)")
+        .bind(&user_details.email)
+        .bind(&token)
+        .bind(&deleted_after)
+        .execute(transaction)
+        .await
+        .unwrap();
     Ok(token)
 }
 

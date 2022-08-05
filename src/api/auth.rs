@@ -128,7 +128,10 @@ impl UnderworldAuthApi {
         );
 
         let response = poem_openapi::payload::Response::new(PlainText("Success".to_string()))
-            .header("Location", format!("{}?token={}", &frontend_url, &api_token))
+            .header(
+                "Location",
+                format!("{}?token={}", &frontend_url, &api_token),
+            )
             .header("Set-Cookie", cookie)
             .status(StatusCode::FOUND);
         transaction.commit().await.unwrap();

@@ -424,8 +424,7 @@ impl UnderworldGameActionApi {
         args: Json<InspectFixture>,
     ) -> Result<InspectFixtureResponse> {
         let mut transaction = pool.0.begin().await.unwrap();
-        let inspection =
-            inspect_fixture(&mut transaction, &auth.0.email, &game_id, &args).await?;
+        let inspection = inspect_fixture(&mut transaction, &auth.0.email, &game_id, &args).await?;
         transaction.commit().await.unwrap();
         Ok(InspectFixtureResponse::FixtureInspected(Json(inspection)))
     }
