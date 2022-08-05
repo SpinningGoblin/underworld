@@ -1,2 +1,0 @@
-cd docs
-mdbook build

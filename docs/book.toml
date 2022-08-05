@@ -1,9 +1,0 @@
-[book]
-authors = ["Derrick Plotsky"]
-language = "en"
-multilingual = false
-src = "src"
-title = "Underworld Server"
-
-[build]
-build-dir = "../public"

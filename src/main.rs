@@ -59,14 +59,6 @@ async fn main() -> Result<(), std::io::Error> {
     let spec = api_service.spec();
     let route = Route::new()
         .nest(
-            "/docs",
-            StaticFilesEndpoint::new("./public").index_file("index.html"),
-        )
-        .nest(
-            "/",
-            StaticFilesEndpoint::new("./public").index_file("index.html"),
-        )
-        .nest(
             "/token",
             StaticFilesEndpoint::new("./token").index_file("index.html"),
         )
