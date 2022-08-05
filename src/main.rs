@@ -48,11 +48,11 @@ async fn main() -> Result<(), std::io::Error> {
             UnderworldGameActionApi,
         ),
         "Underworld",
-        "0.5.0",
+        "0.6.0",
     )
     .server(get_server_api_url());
 
-    let auth_service = OpenApiService::new(UnderworldAuthApi, "UnderworldAuth", "0.5.0")
+    let auth_service = OpenApiService::new(UnderworldAuthApi, "UnderworldAuth", "0.6.0")
         .server(format!("{}/auth", get_server_auth_url()));
 
     let ui = api_service.swagger_ui();
