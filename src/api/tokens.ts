@@ -1,5 +1,4 @@
 import Cookies from "js-cookie";
-import { getFrontendBaseUrl } from "./path";
 
 export const getApiToken = (): string | undefined => {
   const params = new URL(window.location.href).searchParams;
@@ -8,7 +7,7 @@ export const getApiToken = (): string | undefined => {
     Cookies.set("underworldApiToken", paramsToken, {
       expires: 2,
     });
-    window.location.assign(getFrontendBaseUrl());
+    window.history.replaceState(null, "", window.location.pathname);
     return paramsToken;
   }
 
