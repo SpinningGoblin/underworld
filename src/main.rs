@@ -38,6 +38,7 @@ impl IntoResponse for UnauthResponse {
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
     let pool = sqlx::PgPool::connect(&get_psql_url()).await.unwrap();
+    sqlx::migrate!().run(&pool).await.unwrap();
 
     let api_service = OpenApiService::new(
         (
