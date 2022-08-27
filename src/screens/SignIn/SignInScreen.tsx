@@ -25,17 +25,6 @@ export const SignInScreen: FunctionComponent = () => {
       >
         <h2>Login</h2>
         <form id="login-form" action={getApiLoginUrl()} method="post">
-          <p className={styles["token-container"]}>
-            <label htmlFor="token_type">Play game or get token?</label>
-            <select
-              className={styles["token-type"]}
-              id="token_type"
-              name="token_type"
-            >
-              <option value="play_the_game">Play the game</option>
-              <option value="api_token">Get API Token</option>
-            </select>
-          </p>
           <p className={styles["email-container"]}>
             <input
               className={styles["email-input"]}

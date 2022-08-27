@@ -13,10 +13,6 @@
   @apply flex flex-col justify-center;
 }
 
-.token-container {
-  @apply mt-5;
-}
-
 .email-container {
   @apply mt-5;
 }
@@ -63,8 +59,4 @@
   filter: brightness(85%);
   -webkit-transition: all 0.2s ease;
   transition: all 0.2s ease;
-}
-
-.token-type {
-  @apply h-8 ml-3;
 }
