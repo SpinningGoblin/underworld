@@ -118,24 +118,31 @@ export const OptionsScreen: FunctionComponent<OptionsScreenProps> = ({
         </div>
       </div>
       {token && (
-        <div className={styles["token-section"]}>
-          <input
-            className={styles.token}
-            disabled={true}
-            style={{ width: token ? `${token.length}ch` : "" }}
-            type={showToken ? "text" : "password"}
-            value={token}
-          />
-          <button
-            className={styles["show-token"]}
-            onClick={() => setShowToken((current) => !current)}
-            style={{
-              backgroundColor: theme.colors.secondary,
-              color: theme.colors.primary,
-            }}
-          >
-            {showToken ? "Hide token" : "Show token"}
-          </button>
+        <div className={styles["token-container"]}>
+          <div className={styles["token-section"]}>
+            <input
+              className={styles.token}
+              disabled={true}
+              style={{ width: token ? `${token.length}ch` : "" }}
+              type={showToken ? "text" : "password"}
+              value={token}
+            />
+            <button
+              className={styles["show-token"]}
+              onClick={() => setShowToken((current) => !current)}
+              style={{
+                backgroundColor: theme.colors.secondary,
+                color: theme.colors.primary,
+              }}
+            >
+              {showToken ? "Hide token" : "Show token"}
+            </button>
+          </div>
+          <span className={styles.description}>
+            {
+              "Use this token if you would like to try developing against the API."
+            }
+          </span>
         </div>
       )}
     </div>

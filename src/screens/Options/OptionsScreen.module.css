@@ -37,3 +37,11 @@
 .show-token {
   @apply pl-1 pr-1 w-fit text-center;
 }
+
+.token-container {
+  @apply flex flex-col items-center gap-2;
+}
+
+.description {
+  font-size: 0.8em;
+}
