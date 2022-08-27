@@ -34,7 +34,7 @@ impl UnderworldAuthApi {
         let email = match login.get("email") {
             Some(it) => it,
             None => {
-                let frontend_url = frontend_url().unwrap_or("/".to_string());
+                let frontend_url = frontend_url().unwrap_or_else(|| "/".to_string());
                 return Ok(poem_openapi::payload::Response::new(PlainText(
                     "EmailRequired".to_string(),
                 ))
@@ -49,7 +49,7 @@ impl UnderworldAuthApi {
         let token_type = login
             .get("token_type")
             .cloned()
-            .unwrap_or("play_the_game".to_string());
+            .unwrap_or_else(|| "play_the_game".to_string());
 
         let mut transaction = pool.0.begin().await.unwrap();
         let user_details = UserDetails {
@@ -59,7 +59,7 @@ impl UnderworldAuthApi {
             .await
             .unwrap();
 
-        let frontend_url = frontend_url().unwrap_or("/".to_string());
+        let frontend_url = frontend_url().unwrap_or_else(|| "/".to_string());
         let response = match db_token {
             Some(token) => {
                 let callback = if token_type == "play_the_game" {
@@ -121,7 +121,7 @@ impl UnderworldAuthApi {
             .await
             .unwrap();
 
-        let frontend_url = frontend_url().unwrap_or("/".to_string());
+        let frontend_url = frontend_url().unwrap_or_else(|| "/".to_string());
         let cookie = format!(
             "underworldToken={}; Path=/; SameSite=Lax; HttpOnly",
             &api_token,

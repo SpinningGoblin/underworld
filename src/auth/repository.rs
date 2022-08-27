@@ -19,10 +19,7 @@ async fn has_mail_token(transaction: &mut Transaction<'_, Postgres>, email: &str
             .fetch_optional(transaction)
             .await
             .unwrap();
-    match token {
-        Some(_) => true,
-        None => false,
-    }
+    token.is_some()
 }
 
 pub async fn delete_dead_mail_tokens(
