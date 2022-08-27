@@ -4,5 +4,5 @@ target/
 tests/
 Dockerfile
 scripts/
-migrations/
+data/
 derrick_garbage/

@@ -24,6 +24,10 @@ use poem::{
 };
 use poem_openapi::OpenApiService;
 
+use sqlx::migrate::Migrator;
+
+static MIGRATOR: Migrator = sqlx::migrate!();
+
 struct UnauthResponse;
 
 impl IntoResponse for UnauthResponse {
@@ -37,8 +41,9 @@ impl IntoResponse for UnauthResponse {
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
-    let pool = sqlx::PgPool::connect(&get_psql_url()).await.unwrap();
-    sqlx::migrate!().run(&pool).await.unwrap();
+    let db_url = get_psql_url();
+    let pool = sqlx::PgPool::connect(&db_url).await.unwrap();
+    MIGRATOR.run(&pool).await.unwrap();
 
     let api_service = OpenApiService::new(
         (
