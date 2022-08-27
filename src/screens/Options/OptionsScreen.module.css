@@ -23,5 +23,17 @@
 }
 
 .body {
-  @apply mt-6;
+  @apply mt-6 flex flex-col items-center gap-6;
+}
+
+.token-section {
+  @apply flex pt-3 gap-2 items-center;
+}
+
+.token {
+  background: none;
+}
+
+.show-token {
+  @apply pl-1 pr-1 w-fit text-center;
 }

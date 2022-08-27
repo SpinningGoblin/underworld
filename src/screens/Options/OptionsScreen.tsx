@@ -1,5 +1,6 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import { PlayerCharacter } from "../../generated-api";
+import { useApiToken } from "../../hooks/tokens";
 import { themes } from "../../themes";
 import { useTheme } from "../../themes/context";
 
@@ -25,6 +26,8 @@ export const OptionsScreen: FunctionComponent<OptionsScreenProps> = ({
   selectedGameId,
 }) => {
   const { theme, setTheme } = useTheme();
+  const token = useApiToken();
+  const [showToken, setShowToken] = useState(false);
   const options = [<option key="empty" value=""></option>];
 
   const themeOptions = themes.map((theme) => (
@@ -114,6 +117,27 @@ export const OptionsScreen: FunctionComponent<OptionsScreenProps> = ({
           </select>
         </div>
       </div>
+      {token && (
+        <div className={styles["token-section"]}>
+          <input
+            className={styles.token}
+            disabled={true}
+            style={{ width: token ? `${token.length}ch` : "" }}
+            type={showToken ? "text" : "password"}
+            value={token}
+          />
+          <button
+            className={styles["show-token"]}
+            onClick={() => setShowToken((current) => !current)}
+            style={{
+              backgroundColor: theme.colors.secondary,
+              color: theme.colors.primary,
+            }}
+          >
+            {showToken ? "Hide token" : "Show token"}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
