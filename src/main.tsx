@@ -13,6 +13,7 @@ import { EmailSuccessScreen } from "./screens/EmailSuccess";
 import { getMailCallbackUrl, getSignInUrl } from "./api/path";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ResponseError } from "./generated-api";
+import { TokenProvider } from "./hooks/tokens";
 
 (() => {
   const params = new URL(window.location.href).searchParams;
@@ -49,14 +50,16 @@ import { ResponseError } from "./generated-api";
       <QueryClientProvider client={queryClient}>
         <HashRouter>
           <ThemeWrapper>
-            <Routes>
-              <Route
-                path="/"
-                element={apiToken ? <App /> : <SignInScreen />}
-              ></Route>
-              <Route path="/sign-in" element={<SignInScreen />}></Route>
-              <Route path="/success" element={<EmailSuccessScreen />}></Route>
-            </Routes>
+            <TokenProvider value={apiToken}>
+              <Routes>
+                <Route
+                  path="/"
+                  element={apiToken ? <App /> : <SignInScreen />}
+                ></Route>
+                <Route path="/sign-in" element={<SignInScreen />}></Route>
+                <Route path="/success" element={<EmailSuccessScreen />}></Route>
+              </Routes>
+            </TokenProvider>
           </ThemeWrapper>
         </HashRouter>
       </QueryClientProvider>
