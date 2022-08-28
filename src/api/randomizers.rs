@@ -24,16 +24,16 @@ enum CharacterGeneratedResponse {
     CharacterGenerated(Json<GeneratedNpc>),
 }
 
-pub struct UnderworldNpcApi;
+pub struct UnderworldRandomizerApi;
 
-#[OpenApi(tag = "UnderworldApiTags::Npcs")]
-impl UnderworldNpcApi {
+#[OpenApi(tag = "UnderworldApiTags::Randomizers", prefix_path = "/random")]
+impl UnderworldRandomizerApi {
     /// Generate a random NPC.
     ///
     /// # Example
     ///
     /// Call `/npc/random` to generate a completely random character
-    #[oai(path = "/npc/random", method = "get", operation_id = "get_random_npc")]
+    #[oai(path = "/npc", method = "get", operation_id = "get_random_npc")]
     async fn generate_character(&self) -> Result<CharacterGeneratedResponse> {
         let generator = npc_generator(generate_name());
         let non_player = generator.generate();

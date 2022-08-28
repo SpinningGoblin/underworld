@@ -11,7 +11,8 @@ pub mod tags;
 
 use api::{
     auth::UnderworldAuthApi, game::UnderworldGameApi, game_actions::UnderworldGameActionApi,
-    middleware::CookieToTokenMiddleware, npc::UnderworldNpcApi, player::UnderworldPlayerApi,
+    middleware::CookieToTokenMiddleware, player::UnderworldPlayerApi,
+    randomizers::UnderworldRandomizerApi,
 };
 use config::{get_port, get_psql_url, get_server_api_url, get_server_auth_url};
 use poem::{
@@ -47,7 +48,7 @@ async fn main() -> Result<(), std::io::Error> {
 
     let api_service = OpenApiService::new(
         (
-            UnderworldNpcApi,
+            UnderworldRandomizerApi,
             UnderworldPlayerApi,
             UnderworldGameApi,
             UnderworldGameActionApi,
