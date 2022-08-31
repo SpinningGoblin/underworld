@@ -14,5 +14,10 @@
     "app/dist": true,
     "**/node_modules": true
   },
-  "rust-analyzer.procMacro.attributes.enable": true
+  "rust-analyzer.procMacro.attributes.enable": true,
+  "cSpell.words": [
+    "randomizer",
+    "randomizers",
+    "underworldserver"
+  ]
 }
