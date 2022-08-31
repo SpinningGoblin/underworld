@@ -8,6 +8,7 @@ processes = []
 [env]
   FROM_EMAIL="email@spinninggoblin.com"
   FRONTEND_URL="https://www.spinninggoblin.com/underworld"
+  SERVER_URL="https://underworldserver.fly.dev"
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
