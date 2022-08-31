@@ -30,8 +30,6 @@ const nameText = (eventName: EventName): string => {
       return "NPC damaged by poison";
     case "npc_health_discovered":
       return "You discovered the NPCs health";
-    case "npc_hidden_discovered":
-      return "You found out if the NPC has hidden anything";
     case "npc_hit_with_acid":
       return "NPC hit with acid!";
     case "npc_item_destroyed":

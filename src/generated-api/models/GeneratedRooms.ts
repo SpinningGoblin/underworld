@@ -13,35 +13,42 @@
  */
 
 import { exists, mapValues } from '../runtime';
+import {
+    Room,
+    RoomFromJSON,
+    RoomFromJSONTyped,
+    RoomToJSON,
+} from './Room';
+
 /**
  * 
  * @export
- * @interface AttackNpc
+ * @interface GeneratedRooms
  */
-export interface AttackNpc {
+export interface GeneratedRooms {
     /**
      * 
-     * @type {string}
-     * @memberof AttackNpc
+     * @type {Array<Room>}
+     * @memberof GeneratedRooms
      */
-    npc_id: string;
+    rooms: Array<Room>;
 }
 
-export function AttackNpcFromJSON(json: any): AttackNpc {
-    return AttackNpcFromJSONTyped(json, false);
+export function GeneratedRoomsFromJSON(json: any): GeneratedRooms {
+    return GeneratedRoomsFromJSONTyped(json, false);
 }
 
-export function AttackNpcFromJSONTyped(json: any, ignoreDiscriminator: boolean): AttackNpc {
+export function GeneratedRoomsFromJSONTyped(json: any, ignoreDiscriminator: boolean): GeneratedRooms {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'npc_id': json['npc_id'],
+        'rooms': ((json['rooms'] as Array<any>).map(RoomFromJSON)),
     };
 }
 
-export function AttackNpcToJSON(value?: AttackNpc | null): any {
+export function GeneratedRoomsToJSON(value?: GeneratedRooms | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -50,7 +57,7 @@ export function AttackNpcToJSON(value?: AttackNpc | null): any {
     }
     return {
         
-        'npc_id': value.npc_id,
+        'rooms': ((value.rooms as Array<any>).map(RoomToJSON)),
     };
 }
 

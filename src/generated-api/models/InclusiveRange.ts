@@ -14,34 +14,41 @@
 
 import { exists, mapValues } from '../runtime';
 /**
- * 
+ * An inclusive range of integers.
  * @export
- * @interface AttackNpc
+ * @interface InclusiveRange
  */
-export interface AttackNpc {
+export interface InclusiveRange {
     /**
      * 
-     * @type {string}
-     * @memberof AttackNpc
+     * @type {number}
+     * @memberof InclusiveRange
      */
-    npc_id: string;
+    min: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InclusiveRange
+     */
+    max_inclusive: number;
 }
 
-export function AttackNpcFromJSON(json: any): AttackNpc {
-    return AttackNpcFromJSONTyped(json, false);
+export function InclusiveRangeFromJSON(json: any): InclusiveRange {
+    return InclusiveRangeFromJSONTyped(json, false);
 }
 
-export function AttackNpcFromJSONTyped(json: any, ignoreDiscriminator: boolean): AttackNpc {
+export function InclusiveRangeFromJSONTyped(json: any, ignoreDiscriminator: boolean): InclusiveRange {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'npc_id': json['npc_id'],
+        'min': json['min'],
+        'max_inclusive': json['max_inclusive'],
     };
 }
 
-export function AttackNpcToJSON(value?: AttackNpc | null): any {
+export function InclusiveRangeToJSON(value?: InclusiveRange | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -50,7 +57,8 @@ export function AttackNpcToJSON(value?: AttackNpc | null): any {
     }
     return {
         
-        'npc_id': value.npc_id,
+        'min': value.min,
+        'max_inclusive': value.max_inclusive,
     };
 }
 

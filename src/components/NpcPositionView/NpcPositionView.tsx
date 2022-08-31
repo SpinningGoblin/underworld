@@ -67,12 +67,6 @@ const positionText = (npcPosition: NpcPosition): string => {
         return "They are rummaging through a chest";
       case "is_sitting_in_a_chair":
         return "They are sitting in a chair";
-      case "is_sleeping_in_a_cot":
-        return "They are sleeping in a cot";
-      case "is_sleeping_in_sleeping_roll":
-        return "They are sleeping in a sleeping roll";
-      case "is_sleeping_in_the_bed":
-        return "They are sleeping in a bed";
       case "is_standing_around":
         return "They are standing around";
       case "is_standing_in_a_barrel":
@@ -93,7 +87,6 @@ export const NpcPositionView: FunctionComponent<NpcPositionViewProps> = ({
   const inspectArgs: InspectNpc = {
     npc_id: npcPosition.npc.id,
     discover_health: true,
-    discover_hidden_items: true,
     discover_packed_items: true,
   };
 

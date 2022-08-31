@@ -20,6 +20,8 @@ const spellNameText = (spellName: SpellName): string => {
       return "poison dart";
     case "raging_fireball":
       return "raging fireball";
+    case "acid_splash":
+      return "acid splash";
     default:
       return "";
   }

@@ -14,11 +14,11 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    Health,
-    HealthFromJSON,
-    HealthFromJSONTyped,
-    HealthToJSON,
-} from './Health';
+    Dimensions,
+    DimensionsFromJSON,
+    DimensionsFromJSONTyped,
+    DimensionsToJSON,
+} from './Dimensions';
 import {
     Size,
     SizeFromJSON,
@@ -29,46 +29,46 @@ import {
 /**
  * 
  * @export
- * @interface Stats
+ * @interface GenerateSingleRoomDimensions
  */
-export interface Stats {
-    /**
-     * 
-     * @type {Health}
-     * @memberof Stats
-     */
-    health?: Health;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Stats
-     */
-    health_known: boolean;
+export interface GenerateSingleRoomDimensions {
     /**
      * 
      * @type {Size}
-     * @memberof Stats
+     * @memberof GenerateSingleRoomDimensions
      */
     height: Size;
+    /**
+     * 
+     * @type {Size}
+     * @memberof GenerateSingleRoomDimensions
+     */
+    width: Size;
+    /**
+     * 
+     * @type {Size}
+     * @memberof GenerateSingleRoomDimensions
+     */
+    length: Size;
 }
 
-export function StatsFromJSON(json: any): Stats {
-    return StatsFromJSONTyped(json, false);
+export function GenerateSingleRoomDimensionsFromJSON(json: any): GenerateSingleRoomDimensions {
+    return GenerateSingleRoomDimensionsFromJSONTyped(json, false);
 }
 
-export function StatsFromJSONTyped(json: any, ignoreDiscriminator: boolean): Stats {
+export function GenerateSingleRoomDimensionsFromJSONTyped(json: any, ignoreDiscriminator: boolean): GenerateSingleRoomDimensions {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'health': !exists(json, 'health') ? undefined : HealthFromJSON(json['health']),
-        'health_known': json['health_known'],
         'height': SizeFromJSON(json['height']),
+        'width': SizeFromJSON(json['width']),
+        'length': SizeFromJSON(json['length']),
     };
 }
 
-export function StatsToJSON(value?: Stats | null): any {
+export function GenerateSingleRoomDimensionsToJSON(value?: GenerateSingleRoomDimensions | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -77,9 +77,9 @@ export function StatsToJSON(value?: Stats | null): any {
     }
     return {
         
-        'health': HealthToJSON(value.health),
-        'health_known': value.health_known,
         'height': SizeToJSON(value.height),
+        'width': SizeToJSON(value.width),
+        'length': SizeToJSON(value.length),
     };
 }
 
