@@ -108,7 +108,6 @@ impl UnderworldRandomizerApi {
         let character_args = CharacterViewArgs {
             knows_health: true,
             knows_inventory: true,
-            knows_hidden_in_inventory: true,
             knows_packed_in_inventory: true,
         };
         let view = non_player::view(&non_player, &character_args, true);

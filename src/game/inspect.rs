@@ -17,7 +17,6 @@ use crate::{
 pub struct NpcInspected {
     pub health_discovered: bool,
     pub packed_items_discovered: bool,
-    pub hidden_items_discovered: bool,
     pub actions: Vec<PerformAction>,
     pub events: Vec<GameEvent>,
 }
@@ -53,7 +52,6 @@ pub async fn inspect_npc(
     let mut npc_inspected = NpcInspected {
         health_discovered: false,
         packed_items_discovered: false,
-        hidden_items_discovered: false,
         actions: game_actions(&game, username),
         events: game_events,
     };
@@ -62,9 +60,6 @@ pub async fn inspect_npc(
         match event {
             Event::NpcHealthDiscovered(_) => {
                 npc_inspected.health_discovered = true;
-            }
-            Event::NpcHiddenDiscovered(_) => {
-                npc_inspected.hidden_items_discovered = true;
             }
             Event::NpcPackedDiscovered(_) => {
                 npc_inspected.packed_items_discovered = true;
