@@ -74,7 +74,7 @@ const positionText = (npcPosition: NpcPosition): string => {
       case "is_standing_on_the_table":
         return "They are standing on a table";
       default:
-        return "";
+        return npcPosition.position_descriptor ?? "";
     }
   }
   return "";
