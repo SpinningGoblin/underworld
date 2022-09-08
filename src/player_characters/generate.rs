@@ -29,8 +29,8 @@ pub async fn generate_player_character(
 ) -> GeneratedPlayerCharacter {
     let generator = player_generator(
         args.character_name.clone(),
-        args.character_species.clone(),
-        args.character_size.clone(),
+        args.character_species,
+        args.character_size,
     );
 
     let player_character = generator.generate();

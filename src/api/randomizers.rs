@@ -7,10 +7,10 @@ use serde::{Deserialize, Serialize};
 use underworld_core::{
     components::{
         rooms::{self, Dimensions, ExitType, Flavour, RoomType, RoomView},
-        CharacterViewArgs, NonPlayerView,
+        CharacterViewArgs, LifeModifier, NonPlayerView, Species,
     },
     generators::{
-        generator::Generator, name::generate_name, non_players::npc_generator, ExitGenerationArgs,
+        generator::Generator, non_players::NonPlayerGeneratorBuilder, ExitGenerationArgs,
         RoomGeneratorBuilder,
     },
     systems::view::non_player,
@@ -58,6 +58,24 @@ pub struct RoomExitsGenerationArgs {
     pub possible_exit_types: Option<Vec<ExitType>>,
 }
 
+/// Args to modify the NPC generation inside of the room.
+#[derive(Object, Deserialize)]
+pub struct RoomNpcGenerationArgs {
+    /// How many groups of NPCs should be generated.
+    /// The number of NPCs in each group will be random and influenced
+    /// by the species that get chosen.
+    pub num_groups: Option<InclusiveRange>,
+    /// If you want to limit the species that can spawn, set them here.
+    /// Otherwise all species will be used.
+    pub possible_species: Option<Vec<Species>>,
+    /// Limit the life modifiers that NPCs can be.
+    /// This does not guarantee that NPCs will spawn with these modifiers.
+    pub possible_life_modifiers: Option<Vec<LifeModifier>>,
+    /// If you'd like NPCs to not spawn already killed, set this to false.
+    /// Defaults to true.
+    pub allow_npcs_to_spawn_dead: Option<bool>,
+}
+
 /// Args to tweak the room generation.
 #[derive(Object, Deserialize)]
 struct GenerateSingleRoom {
@@ -83,6 +101,8 @@ struct GenerateSingleRoom {
     /// Set this to include or not include flavour text.
     /// If not set, it will be included.
     pub include_flavour_text: Option<bool>,
+    /// Set these options if you want to change any base values for NPC generation.
+    pub room_npcs_generation_args: Option<RoomNpcGenerationArgs>,
 }
 
 #[derive(ApiResponse)]
@@ -102,14 +122,10 @@ impl UnderworldRandomizerApi {
     /// Call `/npc/random` to generate a completely random character
     #[oai(path = "/npc", method = "get", operation_id = "get_random_npc")]
     async fn generate_character(&self) -> Result<CharacterGeneratedResponse> {
-        let generator = npc_generator(generate_name());
+        let generator = NonPlayerGeneratorBuilder::new().build();
         let non_player = generator.generate();
 
-        let character_args = CharacterViewArgs {
-            knows_health: true,
-            knows_inventory: true,
-            knows_packed_in_inventory: true,
-        };
+        let character_args = CharacterViewArgs::knows_all_args();
         let view = non_player::view(&non_player, &character_args, true);
 
         let generated = GeneratedNpc { non_player: view };
@@ -119,11 +135,11 @@ impl UnderworldRandomizerApi {
         )))
     }
 
-    /// Generate a random NPC.
+    /// Generate a random room with NPCs and fixtures inside.
     ///
     /// # Example
     ///
-    /// Call `/npc/random` to generate a completely random character
+    /// Call `/random/rooms` to generate one or more rooms.
     #[oai(path = "/rooms", method = "post", operation_id = "get_random_rooms")]
     async fn generate_rooms(
         &self,
@@ -136,7 +152,7 @@ impl UnderworldRandomizerApi {
                 let mut builder = RoomGeneratorBuilder::new();
 
                 if let Some(room_type) = &room_args.room_type {
-                    builder.room_type(room_type.clone());
+                    builder.room_type(*room_type);
                 }
 
                 if let Some(num_descriptors) = &room_args.num_descriptors {
@@ -148,7 +164,7 @@ impl UnderworldRandomizerApi {
                 }
 
                 if let Some(danger_level) = &room_args.danger_level {
-                    builder.danger_level(danger_level.clone());
+                    builder.danger_level(*danger_level);
                 }
 
                 if let Some(room_exit_args) = &room_args.exit_generation_args {
@@ -165,12 +181,28 @@ impl UnderworldRandomizerApi {
                     builder.exit_generation_args(exit_generation_args);
                 }
 
+                if let Some(room_npc_args) = &room_args.room_npcs_generation_args {
+                    let num_groups = room_npc_args
+                        .num_groups
+                        .as_ref()
+                        .map(|inclusive_range| inclusive_range.min..=inclusive_range.max_inclusive);
+
+                    let core_room_npc_args = underworld_core::generators::RoomNpcGenerationArgs {
+                        num_groups,
+                        possible_species: room_npc_args.possible_species.clone(),
+                        possible_life_modifiers: room_npc_args.possible_life_modifiers.clone(),
+                        allow_npcs_to_spawn_dead: room_npc_args.allow_npcs_to_spawn_dead,
+                    };
+
+                    builder.room_npc_generation_args(core_room_npc_args);
+                }
+
                 if let Some(dimensions) = &room_args.dimensions {
                     builder.dimensions(dimensions.clone());
                 }
 
                 if let Some(name) = &room_args.name {
-                    builder.name(&name);
+                    builder.name(name);
                 }
 
                 if let Some(possible_flavour_texts) = &room_args.possible_flavour_texts {
@@ -178,7 +210,7 @@ impl UnderworldRandomizerApi {
                 }
 
                 if let Some(include_flavour_text) = &room_args.include_flavour_text {
-                    builder.include_flavour_text(include_flavour_text.clone());
+                    builder.include_flavour_text(*include_flavour_text);
                 }
 
                 let room = builder.build().generate();
