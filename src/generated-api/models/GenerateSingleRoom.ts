@@ -38,6 +38,12 @@ import {
     GenerateSingleRoomNumDescriptorsToJSON,
 } from './GenerateSingleRoomNumDescriptors';
 import {
+    GenerateSingleRoomRoomNpcsGenerationArgs,
+    GenerateSingleRoomRoomNpcsGenerationArgsFromJSON,
+    GenerateSingleRoomRoomNpcsGenerationArgsFromJSONTyped,
+    GenerateSingleRoomRoomNpcsGenerationArgsToJSON,
+} from './GenerateSingleRoomRoomNpcsGenerationArgs';
+import {
     RoomDescriptor,
     RoomDescriptorFromJSON,
     RoomDescriptorFromJSONTyped,
@@ -113,6 +119,12 @@ export interface GenerateSingleRoom {
      * @memberof GenerateSingleRoom
      */
     include_flavour_text?: boolean;
+    /**
+     * 
+     * @type {GenerateSingleRoomRoomNpcsGenerationArgs}
+     * @memberof GenerateSingleRoom
+     */
+    room_npcs_generation_args?: GenerateSingleRoomRoomNpcsGenerationArgs;
 }
 
 export function GenerateSingleRoomFromJSON(json: any): GenerateSingleRoom {
@@ -134,6 +146,7 @@ export function GenerateSingleRoomFromJSONTyped(json: any, ignoreDiscriminator: 
         'name': !exists(json, 'name') ? undefined : json['name'],
         'possible_flavour_texts': !exists(json, 'possible_flavour_texts') ? undefined : ((json['possible_flavour_texts'] as Array<any>).map(FlavourTextFromJSON)),
         'include_flavour_text': !exists(json, 'include_flavour_text') ? undefined : json['include_flavour_text'],
+        'room_npcs_generation_args': !exists(json, 'room_npcs_generation_args') ? undefined : GenerateSingleRoomRoomNpcsGenerationArgsFromJSON(json['room_npcs_generation_args']),
     };
 }
 
@@ -155,6 +168,7 @@ export function GenerateSingleRoomToJSON(value?: GenerateSingleRoom | null): any
         'name': value.name,
         'possible_flavour_texts': value.possible_flavour_texts === undefined ? undefined : ((value.possible_flavour_texts as Array<any>).map(FlavourTextToJSON)),
         'include_flavour_text': value.include_flavour_text,
+        'room_npcs_generation_args': GenerateSingleRoomRoomNpcsGenerationArgsToJSON(value.room_npcs_generation_args),
     };
 }
 

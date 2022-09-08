@@ -1,3 +1,4 @@
+.openapi-generator-ignore
 apis/GameActionsApi.ts
 apis/GamesApi.ts
 apis/PlayerCharactersApi.ts
@@ -40,6 +41,7 @@ models/GenerateSingleRoom.ts
 models/GenerateSingleRoomDimensions.ts
 models/GenerateSingleRoomExitGenerationArgs.ts
 models/GenerateSingleRoomNumDescriptors.ts
+models/GenerateSingleRoomRoomNpcsGenerationArgs.ts
 models/GeneratedGame.ts
 models/GeneratedNpc.ts
 models/GeneratedPlayerCharacter.ts
@@ -83,6 +85,8 @@ models/RoomDescriptor.ts
 models/RoomExited.ts
 models/RoomExitsGenerationArgs.ts
 models/RoomExitsGenerationArgsNumExits.ts
+models/RoomNpcGenerationArgs.ts
+models/RoomNpcGenerationArgsNumGroups.ts
 models/RoomType.ts
 models/SellPlayerItem.ts
 models/Size.ts

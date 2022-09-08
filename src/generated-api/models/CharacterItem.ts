@@ -49,12 +49,6 @@ export interface CharacterItem {
      * @type {boolean}
      * @memberof CharacterItem
      */
-    is_multiple: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof CharacterItem
-     */
     at_the_ready: boolean;
 }
 
@@ -70,7 +64,6 @@ export function CharacterItemFromJSONTyped(json: any, ignoreDiscriminator: boole
         
         'item': ItemFromJSON(json['item']),
         'equipped_location': EquipLocationTagFromJSON(json['equipped_location']),
-        'is_multiple': json['is_multiple'],
         'at_the_ready': json['at_the_ready'],
     };
 }
@@ -86,7 +79,6 @@ export function CharacterItemToJSON(value?: CharacterItem | null): any {
         
         'item': ItemToJSON(value.item),
         'equipped_location': EquipLocationTagToJSON(value.equipped_location),
-        'is_multiple': value.is_multiple,
         'at_the_ready': value.at_the_ready,
     };
 }

@@ -38,7 +38,6 @@ export const ItemDescriptor = {
     Rotting: 'rotting',
     Rusty: 'rusty',
     Scuffed: 'scuffed',
-    SetOf: 'set_of',
     Shimmering: 'shimmering',
     Shiny: 'shiny',
     Smoothed: 'smoothed',

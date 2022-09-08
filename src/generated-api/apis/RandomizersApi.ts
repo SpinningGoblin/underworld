@@ -53,8 +53,8 @@ export interface RandomizersApiInterface {
     getRandomNpc(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<GeneratedNpc>;
 
     /**
-     * # Example  Call `/npc/random` to generate a completely random character
-     * @summary Generate a random NPC.
+     * # Example  Call `/random/rooms` to generate one or more rooms.
+     * @summary Generate a random room with NPCs and fixtures inside.
      * @param {GenerateRoomsRequest} generateRoomsRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -63,8 +63,8 @@ export interface RandomizersApiInterface {
     getRandomRoomsRaw(requestParameters: GetRandomRoomsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<GeneratedRooms>>;
 
     /**
-     * # Example  Call `/npc/random` to generate a completely random character
-     * Generate a random NPC.
+     * # Example  Call `/random/rooms` to generate one or more rooms.
+     * Generate a random room with NPCs and fixtures inside.
      */
     getRandomRooms(requestParameters: GetRandomRoomsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<GeneratedRooms>;
 
@@ -104,8 +104,8 @@ export class RandomizersApi extends runtime.BaseAPI implements RandomizersApiInt
     }
 
     /**
-     * # Example  Call `/npc/random` to generate a completely random character
-     * Generate a random NPC.
+     * # Example  Call `/random/rooms` to generate one or more rooms.
+     * Generate a random room with NPCs and fixtures inside.
      */
     async getRandomRoomsRaw(requestParameters: GetRandomRoomsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<GeneratedRooms>> {
         if (requestParameters.generateRoomsRequest === null || requestParameters.generateRoomsRequest === undefined) {
@@ -130,8 +130,8 @@ export class RandomizersApi extends runtime.BaseAPI implements RandomizersApiInt
     }
 
     /**
-     * # Example  Call `/npc/random` to generate a completely random character
-     * Generate a random NPC.
+     * # Example  Call `/random/rooms` to generate one or more rooms.
+     * Generate a random room with NPCs and fixtures inside.
      */
     async getRandomRooms(requestParameters: GetRandomRoomsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<GeneratedRooms> {
         const response = await this.getRandomRoomsRaw(requestParameters, initOverrides);
