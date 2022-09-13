@@ -6,6 +6,7 @@ use poem_openapi::{payload::Json, ApiResponse, Object, OpenApi};
 use serde::{Deserialize, Serialize};
 use underworld_core::{
     components::{
+        fixtures::FixtureType,
         rooms::{self, Dimensions, ExitType, Flavour, RoomType, RoomView},
         CharacterViewArgs, LifeModifier, NonPlayerView, Species,
     },
@@ -58,6 +59,19 @@ pub struct RoomExitsGenerationArgs {
     pub possible_exit_types: Option<Vec<ExitType>>,
 }
 
+/// Args to modify the fixture generation inside of the room.
+#[derive(Object, Deserialize)]
+pub struct RoomFixturesGenerationArgs {
+    /// How many groups of fixtures should be generated.
+    /// The number of fixtures in each group will be random and
+    /// influenced by the room type.
+    pub num_groups: Option<InclusiveRange>,
+    /// If you want to limit the fixture types that can be spawned,
+    /// set them here. Otherwise they will be chosen by the room
+    /// type that is being used.
+    pub possible_fixture_types: Option<Vec<FixtureType>>,
+}
+
 /// Args to modify the NPC generation inside of the room.
 #[derive(Object, Deserialize)]
 pub struct RoomNpcGenerationArgs {
@@ -103,6 +117,8 @@ struct GenerateSingleRoom {
     pub include_flavour_text: Option<bool>,
     /// Set these options if you want to change any base values for NPC generation.
     pub room_npcs_generation_args: Option<RoomNpcGenerationArgs>,
+    /// Set these options if you want to change any base values for fixture generation.
+    pub room_fixtures_generation_args: Option<RoomFixturesGenerationArgs>,
 }
 
 #[derive(ApiResponse)]
@@ -136,8 +152,6 @@ impl UnderworldRandomizerApi {
     }
 
     /// Generate a random room with NPCs and fixtures inside.
-    ///
-    /// # Example
     ///
     /// Call `/random/rooms` to generate one or more rooms.
     #[oai(path = "/rooms", method = "post", operation_id = "get_random_rooms")]
@@ -195,6 +209,20 @@ impl UnderworldRandomizerApi {
                     };
 
                     builder.room_npc_generation_args(core_room_npc_args);
+                }
+
+                if let Some(room_fixture_args) = &room_args.room_fixtures_generation_args {
+                    let num_groups = room_fixture_args
+                        .num_groups
+                        .as_ref()
+                        .map(|inclusive_range| inclusive_range.min..=inclusive_range.max_inclusive);
+                    let core_room_fixtures_args =
+                        underworld_core::generators::RoomFixtureGenerationArgs {
+                            num_groups,
+                            possible_types: room_fixture_args.possible_fixture_types.clone(),
+                        };
+
+                    builder.room_fixture_generation_args(core_room_fixtures_args);
                 }
 
                 if let Some(dimensions) = &room_args.dimensions {
