@@ -58,6 +58,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "android_system_properties"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "819e7219dbd41043ac279b19830f2efc897156490d7fd6ea916720117ee66311"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "async-trait"
 version = "0.1.57"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -148,10 +157,11 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "chrono"
-version = "0.4.20"
+version = "0.4.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6127248204b9aba09a362f6c930ef6a78f2c1b2215f8a7b398c06e1083f17af0"
+checksum = "bfd4d1b31faaa3a89d7934dbded3111da0d2ef28e3ebccdb4f0179f5929d1ef1"
 dependencies = [
+ "iana-time-zone",
  "js-sys",
  "num-integer",
  "num-traits",
@@ -693,6 +703,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "iana-time-zone"
+version = "0.1.48"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "237a0714f28b1ee39ccec0770ccb544eb02c9ef2c82bb096230eefcffa6468b0"
+dependencies = [
+ "android_system_properties",
+ "core-foundation-sys",
+ "js-sys",
+ "once_cell",
+ "wasm-bindgen",
+ "winapi",
+]
+
+[[package]]
 name = "ident_case"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1059,9 +1083,9 @@ checksum = "1df8c4ec4b0627e53bdf214615ad287367e482558cf84b109250b37464dc03ae"
 
 [[package]]
 name = "poem"
-version = "1.3.41"
+version = "1.3.42"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9241e80fc7ce3f3592b544dfa523cc76aa35d2f72f7bc5fc698c56e332791b32"
+checksum = "c4216504241ea26ae80929e341c5b1b6641c324a3ba99c22ea8f4b961a789e04"
 dependencies = [
  "async-trait",
  "bytes 1.2.1",
@@ -1100,9 +1124,9 @@ dependencies = [
 
 [[package]]
 name = "poem-derive"
-version = "1.3.41"
+version = "1.3.42"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7406084ad2202d067d8b94e98f49554c058dbb444f7ce9a32a08ea5d41143ac"
+checksum = "8b9d9ed7ff541340cbbc168a1beb6a34ac08a8956b3f670413f461abaa946b6e"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -1112,9 +1136,9 @@ dependencies = [
 
 [[package]]
 name = "poem-openapi"
-version = "2.0.11"
+version = "2.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e69c569eb0671cc85e65cfb6bd960d0168d24732ff58825227b4d2a10167ba91"
+checksum = "2a48335571a3139209ab826e65790989e09d0e5e8d8070a7a0c54f626ac9886d"
 dependencies = [
  "base64 0.13.0",
  "bytes 1.2.1",
@@ -1136,9 +1160,9 @@ dependencies = [
 
 [[package]]
 name = "poem-openapi-derive"
-version = "2.0.11"
+version = "2.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "274cf13f710999977a3c1e396c2a5000d104075a7127ce6470fbdae4706be621"
+checksum = "355883e212306f10203d9eb9046b64c890671b0013403d0893dcfa8419979cab"
 dependencies = [
  "darling",
  "http",
@@ -1202,9 +1226,9 @@ dependencies = [
 
 [[package]]
 name = "quick-xml"
-version = "0.23.0"
+version = "0.23.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9279fbdacaad3baf559d8cabe0acc3d06e30ea14931af31af79578ac0946decc"
+checksum = "11bafc859c6815fbaffbbbf4229ecb767ac913fecb27f9ad4343662e9ef099ea"
 dependencies = [
  "memchr",
  "serde",
@@ -1909,7 +1933,7 @@ dependencies = [
 [[package]]
 name = "underworld_core"
 version = "0.6.0"
-source = "git+https://github.com/SpinningGoblin/underworld_core?rev=ca7861ce550725d01c153a506c8851e4a451377c#ca7861ce550725d01c153a506c8851e4a451377c"
+source = "git+https://github.com/SpinningGoblin/underworld_core?rev=5d9922e0f4689778a4f92671d87caefcea0c3f90#5d9922e0f4689778a4f92671d87caefcea0c3f90"
 dependencies = [
  "chrono",
  "poem-openapi",
