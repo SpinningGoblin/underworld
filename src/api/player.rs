@@ -96,7 +96,7 @@ impl UnderworldPlayerApi {
 
         match result {
             Some(it) => Ok(PlayerCharacterResponse::PlayerCharacter(Json(
-                player::check(it),
+                player::check(&it),
             ))),
             None => Ok(PlayerCharacterResponse::NotFound(PlainText(format!(
                 "No player character found for user {} id {}",
@@ -117,7 +117,7 @@ impl UnderworldPlayerApi {
             get_current_player_character(&mut transaction, &auth.0.email).await?;
         transaction.commit().await.unwrap();
         Ok(PlayerCharacterResponse::PlayerCharacter(Json(
-            player::check(player_character_result),
+            player::check(&player_character_result),
         )))
     }
 

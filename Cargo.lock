@@ -1933,7 +1933,7 @@ dependencies = [
 [[package]]
 name = "underworld_core"
 version = "0.6.0"
-source = "git+https://github.com/SpinningGoblin/underworld_core?rev=5d9922e0f4689778a4f92671d87caefcea0c3f90#5d9922e0f4689778a4f92671d87caefcea0c3f90"
+source = "git+https://github.com/SpinningGoblin/underworld_core?rev=0b7bbc78370db143f47f2654367385db7254d07a#0b7bbc78370db143f47f2654367385db7254d07a"
 dependencies = [
  "chrono",
  "poem-openapi",
