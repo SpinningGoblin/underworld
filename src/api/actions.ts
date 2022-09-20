@@ -6,14 +6,13 @@ import {
   GameEvent,
   InspectFixture,
   InspectNpc,
-  LookAtFixture,
-  LookAtNpc,
   LootFixture,
   LootNpc,
   MovePlayerItem,
   OpenFixture,
   OpenFixtureHiddenCompartment,
   PerformAction,
+  PlayerCharacter,
   ResponseError,
   Room,
   SellPlayerItem,
@@ -29,6 +28,8 @@ interface BasicParams {
 
 export interface ActionPerformed {
   events: Array<GameEvent>;
+  currentRoom: Room;
+  currentPlayer: PlayerCharacter;
 }
 
 const getBasicParams = (): BasicParams => {
@@ -113,13 +114,19 @@ export const performExitRoom = async (args: ExitRoom): Promise<void> => {
     const { gameId } = getBasicParams();
     const api = getGameActionsApi();
 
-    const { events } = await api.exitRoom({
+    const {
+      events,
+      current_player: currentPlayer,
+      current_room: currentRoom,
+    } = await api.exitRoom({
       gameId,
       exitRoom: args,
     });
 
     const actionPerformed: ActionPerformed = {
       events,
+      currentPlayer,
+      currentRoom,
     };
 
     notifyListeners(actionPerformed);
@@ -140,13 +147,19 @@ export const performThrowItemAtNpc = async (
   try {
     const { gameId } = getBasicParams();
     const api = getGameActionsApi();
-    const { events } = await api.throwItemAtNpc({
+    const {
+      events,
+      current_room: currentRoom,
+      current_player: currentPlayer,
+    } = await api.throwItemAtNpc({
       gameId,
       throwItemAtNpc: args,
     });
 
     notifyListeners({
       events,
+      currentPlayer,
+      currentRoom,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -163,13 +176,19 @@ export const performAttackNpc = async (args: AttackNpc): Promise<void> => {
   try {
     const { gameId } = getBasicParams();
     const api = getGameActionsApi();
-    const { events } = await api.attackNpc({
+    const {
+      events,
+      current_room: currentRoom,
+      current_player: currentPlayer,
+    } = await api.attackNpc({
       gameId,
       attackNpc: args,
     });
 
     notifyListeners({
       events,
+      currentPlayer,
+      currentRoom,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -188,13 +207,19 @@ export const performCastSpellOnNpc = async (
   try {
     const { gameId } = getBasicParams();
     const api = getGameActionsApi();
-    const { events } = await api.castSpellOnNpc({
+    const {
+      events,
+      current_player: currentPlayer,
+      current_room: currentRoom,
+    } = await api.castSpellOnNpc({
       gameId,
       castSpellOnNpc: args,
     });
 
     notifyListeners({
       events,
+      currentPlayer,
+      currentRoom,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -213,13 +238,19 @@ export const performCastSpellOnPlayer = async (
   try {
     const { gameId } = getBasicParams();
     const api = getGameActionsApi();
-    const { events } = await api.castSpellOnPlayer({
+    const {
+      events,
+      current_player: currentPlayer,
+      current_room: currentRoom,
+    } = await api.castSpellOnPlayer({
       gameId,
       castSpellOnPlayer: args,
     });
 
     notifyListeners({
       events,
+      currentPlayer,
+      currentRoom,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -238,13 +269,19 @@ export const performUseItemOnPlayer = async (
   try {
     const { gameId } = getBasicParams();
     const api = getGameActionsApi();
-    const { events } = await api.useItemOnPlayer({
+    const {
+      events,
+      current_player: currentPlayer,
+      current_room: currentRoom,
+    } = await api.useItemOnPlayer({
       gameId,
       useItemOnPlayer: args,
     });
 
     notifyListeners({
       events,
+      currentPlayer,
+      currentRoom,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -268,6 +305,8 @@ export const performOpenFixture = async (args: OpenFixture): Promise<void> => {
 
     notifyListeners({
       events: response.events,
+      currentPlayer: response.current_player,
+      currentRoom: response.current_room,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -293,6 +332,8 @@ export const performOpenFixtureHiddenCompartment = async (
 
     notifyListeners({
       events: response.events,
+      currentPlayer: response.current_player,
+      currentRoom: response.current_room,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -318,6 +359,8 @@ export const performInspectFixture = async (
 
     notifyListeners({
       events: response.events,
+      currentPlayer: response.current_player,
+      currentRoom: response.current_room,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -337,13 +380,19 @@ export const performMovePlayerItem = async (
     const { gameId } = getBasicParams();
     const api = getGameActionsApi();
 
-    const { events } = await api.movePlayerItem({
+    const {
+      events,
+      current_player: currentPlayer,
+      current_room: currentRoom,
+    } = await api.movePlayerItem({
       gameId,
       movePlayerItem: args,
     });
 
     notifyListeners({
       events,
+      currentPlayer,
+      currentRoom,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -364,13 +413,19 @@ export const performSellPlayerItem = async (
     const { gameId } = getBasicParams();
     const api = getGameActionsApi();
 
-    const { events } = await api.sellPlayerItem({
+    const {
+      events,
+      current_player: currentPlayer,
+      current_room: currentRoom,
+    } = await api.sellPlayerItem({
       gameId,
       sellPlayerItem: args,
     });
 
     notifyListeners({
       events,
+      currentPlayer,
+      currentRoom,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -396,6 +451,8 @@ export const performInspectNpc = async (args: InspectNpc): Promise<void> => {
 
     notifyListeners({
       events: response.events,
+      currentPlayer: response.current_player,
+      currentRoom: response.current_room,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -412,13 +469,19 @@ export const performLootNpc = async (args: LootNpc): Promise<void> => {
   try {
     const { gameId } = getBasicParams();
     const api = getGameActionsApi();
-    const { events } = await api.lootNpc({
+    const {
+      events,
+      current_player: currentPlayer,
+      current_room: currentRoom,
+    } = await api.lootNpc({
       gameId,
       lootNpc: args,
     });
 
     notifyListeners({
       events,
+      currentPlayer,
+      currentRoom,
     });
   } catch (e) {
     if (typeof e === "string") {
@@ -435,77 +498,19 @@ export const performLootFixture = async (args: LootFixture): Promise<void> => {
   try {
     const { gameId } = getBasicParams();
     const api = getGameActionsApi();
-    const { events } = await api.lootFixture({
+    const {
+      events,
+      current_player: currentPlayer,
+      current_room: currentRoom,
+    } = await api.lootFixture({
       gameId,
       lootFixture: args,
     });
 
     notifyListeners({
       events,
-    });
-  } catch (e) {
-    if (typeof e === "string") {
-      notifyError(e);
-    } else if (e instanceof ResponseError) {
-      const message = await e.response.text();
-      notifyError(message);
-    }
-    throw e;
-  }
-};
-
-export const performLookAtNpc = async (args: LookAtNpc): Promise<void> => {
-  try {
-    const { gameId } = getBasicParams();
-    const api = getGameActionsApi();
-
-    const response = await api.lookAtNpc({
-      gameId,
-      lookAtNpc: args,
-    });
-
-    const events: Array<GameEvent> = [
-      {
-        name: "npc_viewed",
-        data: response,
-      },
-    ];
-
-    notifyListeners({
-      events,
-    });
-  } catch (e) {
-    if (typeof e === "string") {
-      notifyError(e);
-    } else if (e instanceof ResponseError) {
-      const message = await e.response.text();
-      notifyError(message);
-    }
-    throw e;
-  }
-};
-
-export const performLookAtFixture = async (
-  args: LookAtFixture,
-): Promise<void> => {
-  try {
-    const { gameId } = getBasicParams();
-    const api = getGameActionsApi();
-
-    const response = await api.lookAtFixture({
-      gameId,
-      lookAtFixture: args,
-    });
-
-    const events: Array<GameEvent> = [
-      {
-        name: "fixture_viewed",
-        data: response,
-      },
-    ];
-
-    notifyListeners({
-      events,
+      currentPlayer,
+      currentRoom,
     });
   } catch (e) {
     if (typeof e === "string") {

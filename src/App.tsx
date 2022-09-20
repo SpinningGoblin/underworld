@@ -35,6 +35,7 @@ export const App = () => {
       },
     },
   );
+
   const { data: player, isLoading: loadingPlayer } = useQuery(
     ["player"],
     getCurrentPlayer,
@@ -80,8 +81,8 @@ export const App = () => {
   useEffect(() => {
     const callback = (actionPerformed: ActionPerformed) => {
       setError(undefined);
-      queryClient.invalidateQueries(["player"]);
-      queryClient.invalidateQueries(["room"]);
+      queryClient.setQueryData(["player"], actionPerformed.currentPlayer);
+      queryClient.setQueryData(["room"], actionPerformed.currentRoom);
 
       const events = actionPerformed.events.slice();
       events.reverse();
