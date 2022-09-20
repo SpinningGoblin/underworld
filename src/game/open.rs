@@ -3,6 +3,7 @@ use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{Action, OpenFixture, OpenFixtureHiddenCompartment},
+    components::{rooms::RoomView, PlayerCharacterView},
     Game,
 };
 
@@ -16,6 +17,8 @@ use crate::{
 pub struct FixtureOpened {
     pub events: Vec<GameEvent>,
     pub actions: Vec<PerformAction>,
+    pub current_room: RoomView,
+    pub current_player: PlayerCharacterView,
 }
 
 pub async fn open_fixture(
@@ -43,9 +46,14 @@ pub async fn open_fixture(
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
+    let current_room = game.state.view_current_room();
+    let current_player = underworld_core::systems::view::player::check(&game.player);
+
     Ok(FixtureOpened {
         events: game_events,
         actions: game_actions(&game, username),
+        current_player,
+        current_room,
     })
 }
 
@@ -74,8 +82,13 @@ pub async fn open_fixture_hidden_compartment(
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
+    let current_room = game.state.view_current_room();
+    let current_player = underworld_core::systems::view::player::check(&game.player);
+
     Ok(FixtureOpened {
         events: game_events,
         actions: game_actions(&game, username),
+        current_room,
+        current_player,
     })
 }

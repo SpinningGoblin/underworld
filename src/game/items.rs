@@ -3,6 +3,7 @@ use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{Action, MovePlayerItem, SellPlayerItem, ThrowItemAtNpc, UseItemOnPlayer},
+    components::{rooms::RoomView, PlayerCharacterView},
     Game,
 };
 
@@ -16,9 +17,11 @@ use crate::{
 /// Results from attack on the NPC.
 pub struct ItemUsed {
     /// Events that happened due to the attack.
-    events: Vec<GameEvent>,
+    pub events: Vec<GameEvent>,
     /// Actions that can now be performed after the attack.
-    actions: Vec<PerformAction>,
+    pub actions: Vec<PerformAction>,
+    pub current_room: RoomView,
+    pub current_player: PlayerCharacterView,
 }
 
 pub async fn use_item_on_player(
@@ -49,9 +52,14 @@ pub async fn use_item_on_player(
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
+    let current_room = game.state.view_current_room();
+    let current_player = underworld_core::systems::view::player::check(&game.player);
+
     Ok(ItemUsed {
         events: game_events,
         actions: game_actions(&game, username),
+        current_player,
+        current_room,
     })
 }
 
@@ -59,9 +67,11 @@ pub async fn use_item_on_player(
 /// Results from attack on the NPC.
 pub struct ItemMoved {
     /// Events that happened due to the attack.
-    events: Vec<GameEvent>,
+    pub events: Vec<GameEvent>,
     /// Actions that can now be performed after the attack.
-    actions: Vec<PerformAction>,
+    pub actions: Vec<PerformAction>,
+    pub current_room: RoomView,
+    pub current_player: PlayerCharacterView,
 }
 
 pub async fn move_player_item(
@@ -92,9 +102,14 @@ pub async fn move_player_item(
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
+    let current_room = game.state.view_current_room();
+    let current_player = underworld_core::systems::view::player::check(&game.player);
+
     Ok(ItemMoved {
         events: game_events,
         actions: game_actions(&game, username),
+        current_player,
+        current_room,
     })
 }
 
@@ -102,9 +117,11 @@ pub async fn move_player_item(
 /// Results from attack on the NPC.
 pub struct ItemSold {
     /// Events that happened due to the attack.
-    events: Vec<GameEvent>,
+    pub events: Vec<GameEvent>,
     /// Actions that can now be performed after the attack.
-    actions: Vec<PerformAction>,
+    pub actions: Vec<PerformAction>,
+    pub current_room: RoomView,
+    pub current_player: PlayerCharacterView,
 }
 
 pub async fn sell_player_item(
@@ -135,9 +152,14 @@ pub async fn sell_player_item(
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
+    let current_room = game.state.view_current_room();
+    let current_player = underworld_core::systems::view::player::check(&game.player);
+
     Ok(ItemSold {
         events: game_events,
         actions: game_actions(&game, username),
+        current_player,
+        current_room,
     })
 }
 
@@ -169,8 +191,13 @@ pub async fn throw_item_at_npc(
 
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
+    let current_room = game.state.view_current_room();
+    let current_player = underworld_core::systems::view::player::check(&game.player);
+
     Ok(ItemUsed {
         events: game_events,
         actions: game_actions(&game, username),
+        current_player,
+        current_room,
     })
 }

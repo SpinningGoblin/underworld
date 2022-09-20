@@ -3,6 +3,7 @@ use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{Action, InspectFixture, InspectNpc},
+    components::{rooms::RoomView, PlayerCharacterView},
     events::Event,
     Game,
 };
@@ -19,6 +20,8 @@ pub struct NpcInspected {
     pub packed_items_discovered: bool,
     pub actions: Vec<PerformAction>,
     pub events: Vec<GameEvent>,
+    pub current_room: RoomView,
+    pub current_player: PlayerCharacterView,
 }
 
 pub async fn inspect_npc(
@@ -49,11 +52,16 @@ pub async fn inspect_npc(
 
     let game_events: Vec<GameEvent> = events.iter().cloned().map(GameEvent::from).collect();
 
+    let current_room = game.state.view_current_room();
+    let current_player = underworld_core::systems::view::player::check(&game.player);
+
     let mut npc_inspected = NpcInspected {
         health_discovered: false,
         packed_items_discovered: false,
         actions: game_actions(&game, username),
         events: game_events,
+        current_player,
+        current_room,
     };
 
     for event in events {
@@ -76,6 +84,8 @@ pub struct FixtureInspected {
     pub has_hidden_compartment_discovered: bool,
     pub actions: Vec<PerformAction>,
     pub events: Vec<GameEvent>,
+    pub current_room: RoomView,
+    pub current_player: PlayerCharacterView,
 }
 
 pub async fn inspect_fixture(
@@ -107,10 +117,15 @@ pub async fn inspect_fixture(
     crate::player_characters::repository::save(transaction, username, &game.player).await?;
     let game_events: Vec<GameEvent> = events.iter().cloned().map(GameEvent::from).collect();
 
+    let current_room = game.state.view_current_room();
+    let current_player = underworld_core::systems::view::player::check(&game.player);
+
     let mut fixture_inspected = FixtureInspected {
         actions: game_actions(&game, username),
         has_hidden_compartment_discovered: false,
         events: game_events,
+        current_player,
+        current_room,
     };
 
     fixture_inspected.has_hidden_compartment_discovered = events

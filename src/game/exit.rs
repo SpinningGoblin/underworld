@@ -3,6 +3,7 @@ use serde::Serialize;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{
     actions::{Action, ExitRoom},
+    components::{rooms::RoomView, PlayerCharacterView},
     Game,
 };
 
@@ -17,6 +18,8 @@ use crate::{
 pub struct RoomExited {
     events: Vec<GameEvent>,
     actions: Vec<PerformAction>,
+    current_room: RoomView,
+    current_player: PlayerCharacterView,
 }
 
 pub async fn exit_room(
@@ -46,8 +49,13 @@ pub async fn exit_room(
     crate::player_characters::repository::save(transaction, username, &game.player).await?;
     let game_events: Vec<GameEvent> = events.into_iter().map(GameEvent::from).collect();
 
+    let current_room = game.state.view_current_room();
+    let current_player = underworld_core::systems::view::player::check(&game.player);
+
     Ok(RoomExited {
         events: game_events,
         actions: game_actions(&game, username),
+        current_room,
+        current_player,
     })
 }
