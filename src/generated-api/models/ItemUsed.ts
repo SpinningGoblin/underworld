@@ -25,6 +25,18 @@ import {
     PerformActionFromJSONTyped,
     PerformActionToJSON,
 } from './PerformAction';
+import {
+    PlayerCharacter,
+    PlayerCharacterFromJSON,
+    PlayerCharacterFromJSONTyped,
+    PlayerCharacterToJSON,
+} from './PlayerCharacter';
+import {
+    Room,
+    RoomFromJSON,
+    RoomFromJSONTyped,
+    RoomToJSON,
+} from './Room';
 
 /**
  * Results from attack on the NPC.
@@ -44,6 +56,18 @@ export interface ItemUsed {
      * @memberof ItemUsed
      */
     actions: Array<PerformAction>;
+    /**
+     * 
+     * @type {Room}
+     * @memberof ItemUsed
+     */
+    current_room: Room;
+    /**
+     * 
+     * @type {PlayerCharacter}
+     * @memberof ItemUsed
+     */
+    current_player: PlayerCharacter;
 }
 
 export function ItemUsedFromJSON(json: any): ItemUsed {
@@ -58,6 +82,8 @@ export function ItemUsedFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         
         'events': ((json['events'] as Array<any>).map(GameEventFromJSON)),
         'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
+        'current_room': RoomFromJSON(json['current_room']),
+        'current_player': PlayerCharacterFromJSON(json['current_player']),
     };
 }
 
@@ -72,6 +98,8 @@ export function ItemUsedToJSON(value?: ItemUsed | null): any {
         
         'events': ((value.events as Array<any>).map(GameEventToJSON)),
         'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
+        'current_room': RoomToJSON(value.current_room),
+        'current_player': PlayerCharacterToJSON(value.current_player),
     };
 }
 

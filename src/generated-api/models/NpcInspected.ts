@@ -25,6 +25,18 @@ import {
     PerformActionFromJSONTyped,
     PerformActionToJSON,
 } from './PerformAction';
+import {
+    PlayerCharacter,
+    PlayerCharacterFromJSON,
+    PlayerCharacterFromJSONTyped,
+    PlayerCharacterToJSON,
+} from './PlayerCharacter';
+import {
+    Room,
+    RoomFromJSON,
+    RoomFromJSONTyped,
+    RoomToJSON,
+} from './Room';
 
 /**
  * 
@@ -56,6 +68,18 @@ export interface NpcInspected {
      * @memberof NpcInspected
      */
     events: Array<GameEvent>;
+    /**
+     * 
+     * @type {Room}
+     * @memberof NpcInspected
+     */
+    current_room: Room;
+    /**
+     * 
+     * @type {PlayerCharacter}
+     * @memberof NpcInspected
+     */
+    current_player: PlayerCharacter;
 }
 
 export function NpcInspectedFromJSON(json: any): NpcInspected {
@@ -72,6 +96,8 @@ export function NpcInspectedFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'packed_items_discovered': json['packed_items_discovered'],
         'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
         'events': ((json['events'] as Array<any>).map(GameEventFromJSON)),
+        'current_room': RoomFromJSON(json['current_room']),
+        'current_player': PlayerCharacterFromJSON(json['current_player']),
     };
 }
 
@@ -88,6 +114,8 @@ export function NpcInspectedToJSON(value?: NpcInspected | null): any {
         'packed_items_discovered': value.packed_items_discovered,
         'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
         'events': ((value.events as Array<any>).map(GameEventToJSON)),
+        'current_room': RoomToJSON(value.current_room),
+        'current_player': PlayerCharacterToJSON(value.current_player),
     };
 }
 

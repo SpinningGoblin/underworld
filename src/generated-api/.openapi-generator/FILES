@@ -41,6 +41,7 @@ models/GenerateSingleRoom.ts
 models/GenerateSingleRoomDimensions.ts
 models/GenerateSingleRoomExitGenerationArgs.ts
 models/GenerateSingleRoomNumDescriptors.ts
+models/GenerateSingleRoomRoomFixturesGenerationArgs.ts
 models/GenerateSingleRoomRoomNpcsGenerationArgs.ts
 models/GeneratedGame.ts
 models/GeneratedNpc.ts
@@ -85,6 +86,8 @@ models/RoomDescriptor.ts
 models/RoomExited.ts
 models/RoomExitsGenerationArgs.ts
 models/RoomExitsGenerationArgsNumExits.ts
+models/RoomFixturesGenerationArgs.ts
+models/RoomFixturesGenerationArgsNumGroups.ts
 models/RoomNpcGenerationArgs.ts
 models/RoomNpcGenerationArgsNumGroups.ts
 models/RoomType.ts

@@ -25,6 +25,18 @@ import {
     PerformActionFromJSONTyped,
     PerformActionToJSON,
 } from './PerformAction';
+import {
+    PlayerCharacter,
+    PlayerCharacterFromJSON,
+    PlayerCharacterFromJSONTyped,
+    PlayerCharacterToJSON,
+} from './PlayerCharacter';
+import {
+    Room,
+    RoomFromJSON,
+    RoomFromJSONTyped,
+    RoomToJSON,
+} from './Room';
 
 /**
  * 
@@ -50,6 +62,18 @@ export interface FixtureInspected {
      * @memberof FixtureInspected
      */
     events: Array<GameEvent>;
+    /**
+     * 
+     * @type {Room}
+     * @memberof FixtureInspected
+     */
+    current_room: Room;
+    /**
+     * 
+     * @type {PlayerCharacter}
+     * @memberof FixtureInspected
+     */
+    current_player: PlayerCharacter;
 }
 
 export function FixtureInspectedFromJSON(json: any): FixtureInspected {
@@ -65,6 +89,8 @@ export function FixtureInspectedFromJSONTyped(json: any, ignoreDiscriminator: bo
         'has_hidden_compartment_discovered': json['has_hidden_compartment_discovered'],
         'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
         'events': ((json['events'] as Array<any>).map(GameEventFromJSON)),
+        'current_room': RoomFromJSON(json['current_room']),
+        'current_player': PlayerCharacterFromJSON(json['current_player']),
     };
 }
 
@@ -80,6 +106,8 @@ export function FixtureInspectedToJSON(value?: FixtureInspected | null): any {
         'has_hidden_compartment_discovered': value.has_hidden_compartment_discovered,
         'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
         'events': ((value.events as Array<any>).map(GameEventToJSON)),
+        'current_room': RoomToJSON(value.current_room),
+        'current_player': PlayerCharacterToJSON(value.current_player),
     };
 }
 

@@ -25,6 +25,18 @@ import {
     PerformActionFromJSONTyped,
     PerformActionToJSON,
 } from './PerformAction';
+import {
+    PlayerCharacter,
+    PlayerCharacterFromJSON,
+    PlayerCharacterFromJSONTyped,
+    PlayerCharacterToJSON,
+} from './PlayerCharacter';
+import {
+    Room,
+    RoomFromJSON,
+    RoomFromJSONTyped,
+    RoomToJSON,
+} from './Room';
 
 /**
  * Result of exiting the room.
@@ -44,6 +56,18 @@ export interface RoomExited {
      * @memberof RoomExited
      */
     actions: Array<PerformAction>;
+    /**
+     * 
+     * @type {Room}
+     * @memberof RoomExited
+     */
+    current_room: Room;
+    /**
+     * 
+     * @type {PlayerCharacter}
+     * @memberof RoomExited
+     */
+    current_player: PlayerCharacter;
 }
 
 export function RoomExitedFromJSON(json: any): RoomExited {
@@ -58,6 +82,8 @@ export function RoomExitedFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         
         'events': ((json['events'] as Array<any>).map(GameEventFromJSON)),
         'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
+        'current_room': RoomFromJSON(json['current_room']),
+        'current_player': PlayerCharacterFromJSON(json['current_player']),
     };
 }
 
@@ -72,6 +98,8 @@ export function RoomExitedToJSON(value?: RoomExited | null): any {
         
         'events': ((value.events as Array<any>).map(GameEventToJSON)),
         'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
+        'current_room': RoomToJSON(value.current_room),
+        'current_player': PlayerCharacterToJSON(value.current_player),
     };
 }
 

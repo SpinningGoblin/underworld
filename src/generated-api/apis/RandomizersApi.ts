@@ -53,7 +53,7 @@ export interface RandomizersApiInterface {
     getRandomNpc(initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<GeneratedNpc>;
 
     /**
-     * # Example  Call `/random/rooms` to generate one or more rooms.
+     * Call `/random/rooms` to generate one or more rooms.
      * @summary Generate a random room with NPCs and fixtures inside.
      * @param {GenerateRoomsRequest} generateRoomsRequest 
      * @param {*} [options] Override http request option.
@@ -63,7 +63,7 @@ export interface RandomizersApiInterface {
     getRandomRoomsRaw(requestParameters: GetRandomRoomsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<GeneratedRooms>>;
 
     /**
-     * # Example  Call `/random/rooms` to generate one or more rooms.
+     * Call `/random/rooms` to generate one or more rooms.
      * Generate a random room with NPCs and fixtures inside.
      */
     getRandomRooms(requestParameters: GetRandomRoomsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<GeneratedRooms>;
@@ -104,7 +104,7 @@ export class RandomizersApi extends runtime.BaseAPI implements RandomizersApiInt
     }
 
     /**
-     * # Example  Call `/random/rooms` to generate one or more rooms.
+     * Call `/random/rooms` to generate one or more rooms.
      * Generate a random room with NPCs and fixtures inside.
      */
     async getRandomRoomsRaw(requestParameters: GetRandomRoomsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<runtime.ApiResponse<GeneratedRooms>> {
@@ -130,7 +130,7 @@ export class RandomizersApi extends runtime.BaseAPI implements RandomizersApiInt
     }
 
     /**
-     * # Example  Call `/random/rooms` to generate one or more rooms.
+     * Call `/random/rooms` to generate one or more rooms.
      * Generate a random room with NPCs and fixtures inside.
      */
     async getRandomRooms(requestParameters: GetRandomRoomsRequest, initOverrides?: RequestInit | runtime.InitOverideFunction): Promise<GeneratedRooms> {

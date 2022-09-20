@@ -38,6 +38,12 @@ import {
     GenerateSingleRoomNumDescriptorsToJSON,
 } from './GenerateSingleRoomNumDescriptors';
 import {
+    GenerateSingleRoomRoomFixturesGenerationArgs,
+    GenerateSingleRoomRoomFixturesGenerationArgsFromJSON,
+    GenerateSingleRoomRoomFixturesGenerationArgsFromJSONTyped,
+    GenerateSingleRoomRoomFixturesGenerationArgsToJSON,
+} from './GenerateSingleRoomRoomFixturesGenerationArgs';
+import {
     GenerateSingleRoomRoomNpcsGenerationArgs,
     GenerateSingleRoomRoomNpcsGenerationArgsFromJSON,
     GenerateSingleRoomRoomNpcsGenerationArgsFromJSONTyped,
@@ -125,6 +131,12 @@ export interface GenerateSingleRoom {
      * @memberof GenerateSingleRoom
      */
     room_npcs_generation_args?: GenerateSingleRoomRoomNpcsGenerationArgs;
+    /**
+     * 
+     * @type {GenerateSingleRoomRoomFixturesGenerationArgs}
+     * @memberof GenerateSingleRoom
+     */
+    room_fixtures_generation_args?: GenerateSingleRoomRoomFixturesGenerationArgs;
 }
 
 export function GenerateSingleRoomFromJSON(json: any): GenerateSingleRoom {
@@ -147,6 +159,7 @@ export function GenerateSingleRoomFromJSONTyped(json: any, ignoreDiscriminator: 
         'possible_flavour_texts': !exists(json, 'possible_flavour_texts') ? undefined : ((json['possible_flavour_texts'] as Array<any>).map(FlavourTextFromJSON)),
         'include_flavour_text': !exists(json, 'include_flavour_text') ? undefined : json['include_flavour_text'],
         'room_npcs_generation_args': !exists(json, 'room_npcs_generation_args') ? undefined : GenerateSingleRoomRoomNpcsGenerationArgsFromJSON(json['room_npcs_generation_args']),
+        'room_fixtures_generation_args': !exists(json, 'room_fixtures_generation_args') ? undefined : GenerateSingleRoomRoomFixturesGenerationArgsFromJSON(json['room_fixtures_generation_args']),
     };
 }
 
@@ -169,6 +182,7 @@ export function GenerateSingleRoomToJSON(value?: GenerateSingleRoom | null): any
         'possible_flavour_texts': value.possible_flavour_texts === undefined ? undefined : ((value.possible_flavour_texts as Array<any>).map(FlavourTextToJSON)),
         'include_flavour_text': value.include_flavour_text,
         'room_npcs_generation_args': GenerateSingleRoomRoomNpcsGenerationArgsToJSON(value.room_npcs_generation_args),
+        'room_fixtures_generation_args': GenerateSingleRoomRoomFixturesGenerationArgsToJSON(value.room_fixtures_generation_args),
     };
 }
 

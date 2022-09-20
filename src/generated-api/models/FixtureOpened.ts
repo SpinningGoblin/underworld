@@ -25,6 +25,18 @@ import {
     PerformActionFromJSONTyped,
     PerformActionToJSON,
 } from './PerformAction';
+import {
+    PlayerCharacter,
+    PlayerCharacterFromJSON,
+    PlayerCharacterFromJSONTyped,
+    PlayerCharacterToJSON,
+} from './PlayerCharacter';
+import {
+    Room,
+    RoomFromJSON,
+    RoomFromJSONTyped,
+    RoomToJSON,
+} from './Room';
 
 /**
  * 
@@ -44,6 +56,18 @@ export interface FixtureOpened {
      * @memberof FixtureOpened
      */
     actions: Array<PerformAction>;
+    /**
+     * 
+     * @type {Room}
+     * @memberof FixtureOpened
+     */
+    current_room: Room;
+    /**
+     * 
+     * @type {PlayerCharacter}
+     * @memberof FixtureOpened
+     */
+    current_player: PlayerCharacter;
 }
 
 export function FixtureOpenedFromJSON(json: any): FixtureOpened {
@@ -58,6 +82,8 @@ export function FixtureOpenedFromJSONTyped(json: any, ignoreDiscriminator: boole
         
         'events': ((json['events'] as Array<any>).map(GameEventFromJSON)),
         'actions': ((json['actions'] as Array<any>).map(PerformActionFromJSON)),
+        'current_room': RoomFromJSON(json['current_room']),
+        'current_player': PlayerCharacterFromJSON(json['current_player']),
     };
 }
 
@@ -72,6 +98,8 @@ export function FixtureOpenedToJSON(value?: FixtureOpened | null): any {
         
         'events': ((value.events as Array<any>).map(GameEventToJSON)),
         'actions': ((value.actions as Array<any>).map(PerformActionToJSON)),
+        'current_room': RoomToJSON(value.current_room),
+        'current_player': PlayerCharacterToJSON(value.current_player),
     };
 }
 
