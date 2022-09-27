@@ -14,12 +14,6 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    GroupDescriptor,
-    GroupDescriptorFromJSON,
-    GroupDescriptorFromJSONTyped,
-    GroupDescriptorToJSON,
-} from './GroupDescriptor';
-import {
     NonPlayer,
     NonPlayerFromJSON,
     NonPlayerFromJSONTyped,
@@ -38,12 +32,6 @@ import {
  * @interface NpcPosition
  */
 export interface NpcPosition {
-    /**
-     * 
-     * @type {GroupDescriptor}
-     * @memberof NpcPosition
-     */
-    group_descriptor?: GroupDescriptor;
     /**
      * 
      * @type {NonPlayer}
@@ -68,7 +56,6 @@ export function NpcPositionFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'group_descriptor': !exists(json, 'group_descriptor') ? undefined : GroupDescriptorFromJSON(json['group_descriptor']),
         'npc': NonPlayerFromJSON(json['npc']),
         'position_descriptor': !exists(json, 'position_descriptor') ? undefined : NpcPositionDescriptorFromJSON(json['position_descriptor']),
     };
@@ -83,7 +70,6 @@ export function NpcPositionToJSON(value?: NpcPosition | null): any {
     }
     return {
         
-        'group_descriptor': GroupDescriptorToJSON(value.group_descriptor),
         'npc': NonPlayerToJSON(value.npc),
         'position_descriptor': NpcPositionDescriptorToJSON(value.position_descriptor),
     };

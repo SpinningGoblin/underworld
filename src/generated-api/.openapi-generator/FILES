@@ -47,7 +47,6 @@ models/GeneratedGame.ts
 models/GeneratedNpc.ts
 models/GeneratedPlayerCharacter.ts
 models/GeneratedRooms.ts
-models/GroupDescriptor.ts
 models/HealingEffect.ts
 models/Health.ts
 models/InclusiveRange.ts

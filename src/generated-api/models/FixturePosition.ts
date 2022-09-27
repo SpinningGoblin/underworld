@@ -25,12 +25,6 @@ import {
     FixturePositionDescriptorFromJSONTyped,
     FixturePositionDescriptorToJSON,
 } from './FixturePositionDescriptor';
-import {
-    GroupDescriptor,
-    GroupDescriptorFromJSON,
-    GroupDescriptorFromJSONTyped,
-    GroupDescriptorToJSON,
-} from './GroupDescriptor';
 
 /**
  * 
@@ -38,12 +32,6 @@ import {
  * @interface FixturePosition
  */
 export interface FixturePosition {
-    /**
-     * 
-     * @type {GroupDescriptor}
-     * @memberof FixturePosition
-     */
-    group_descriptor?: GroupDescriptor;
     /**
      * 
      * @type {Fixture}
@@ -68,7 +56,6 @@ export function FixturePositionFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'group_descriptor': !exists(json, 'group_descriptor') ? undefined : GroupDescriptorFromJSON(json['group_descriptor']),
         'fixture': FixtureFromJSON(json['fixture']),
         'position_descriptor': !exists(json, 'position_descriptor') ? undefined : FixturePositionDescriptorFromJSON(json['position_descriptor']),
     };
@@ -83,7 +70,6 @@ export function FixturePositionToJSON(value?: FixturePosition | null): any {
     }
     return {
         
-        'group_descriptor': GroupDescriptorToJSON(value.group_descriptor),
         'fixture': FixtureToJSON(value.fixture),
         'position_descriptor': FixturePositionDescriptorToJSON(value.position_descriptor),
     };

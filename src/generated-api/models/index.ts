@@ -42,7 +42,6 @@ export * from './GeneratedGame';
 export * from './GeneratedNpc';
 export * from './GeneratedPlayerCharacter';
 export * from './GeneratedRooms';
-export * from './GroupDescriptor';
 export * from './HealingEffect';
 export * from './Health';
 export * from './InclusiveRange';
