@@ -9,3 +9,4 @@ pub mod loot;
 pub mod open;
 pub mod repository;
 pub mod spells;
+pub mod unlock;
