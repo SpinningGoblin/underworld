@@ -1,5 +1,6 @@
 use poem::{web::Data, Result};
 use poem_openapi::{param::Path, payload::Json, ApiResponse, OpenApi};
+use serde_json::Value;
 use sqlx::PgPool;
 use underworld_core::components::games::game_state::GameStateView;
 
@@ -27,6 +28,12 @@ enum GameIdResponse {
 enum GameStateResponse {
     #[oai(status = 200)]
     GameState(Json<GameStateView>),
+}
+
+#[derive(ApiResponse)]
+enum RawGameStateResponse {
+    #[oai(status = 200)]
+    GameState(Json<Value>),
 }
 
 pub struct UnderworldGameApi;
@@ -80,5 +87,26 @@ impl UnderworldGameApi {
         let mut transaction = pool.0.begin().await.unwrap();
         let view = game_state(&mut transaction, &auth.0.email, &game_id).await?;
         Ok(GameStateResponse::GameState(Json(view)))
+    }
+
+    /// Get the current state of the game. This is a raw export and the inner structure is
+    /// intentionally not documented in the Open API. It matches the structure of the GameState
+    /// struct inside of the `underworld_core` repository. However, since this is an internal
+    /// structure to the game, it should not be relied on for any use. The documented one
+    /// returned in `/state` is less likely to change drastically.
+    #[oai(
+        path = "/:game_id/raw_export",
+        method = "get",
+        operation_id = "raw_export"
+    )]
+    async fn raw_export(
+        &self,
+        pool: Data<&PgPool>,
+        auth: UnderworldApiKeyAuthorization,
+        game_id: Path<String>,
+    ) -> Result<RawGameStateResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let value = crate::game::get::raw_export(&mut transaction, &auth.0.email, &game_id).await?;
+        Ok(RawGameStateResponse::GameState(Json(value)))
     }
 }

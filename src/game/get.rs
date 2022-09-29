@@ -1,3 +1,4 @@
+use serde_json::Value;
 use sqlx::{Postgres, Transaction};
 use underworld_core::{components::games::game_state::GameStateView, Game};
 
@@ -38,4 +39,19 @@ pub async fn game_state(
 
     let view = underworld_core::systems::view::game_state::view(&state);
     Ok(view)
+}
+
+pub async fn raw_export(
+    transaction: &mut Transaction<'_, Postgres>,
+    username: &str,
+    game_id: &str,
+) -> Result<Value, GameError> {
+    let state = match super::repository::by_id(transaction, username, game_id).await? {
+        Some(game_state) => game_state,
+        None => return Err(GameError::GameNotFoundError),
+    };
+    match serde_json::to_value(&state) {
+        Ok(it) => Ok(it),
+        Err(e) => Err(GameError::JsonProcessingError(e.to_string())),
+    }
 }
