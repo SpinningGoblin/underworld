@@ -1,10 +1,11 @@
 use poem::{web::Data, Result};
-use poem_openapi::{payload::Json, ApiResponse, OpenApi};
+use poem_openapi::{param::Path, payload::Json, ApiResponse, OpenApi};
 use sqlx::PgPool;
+use underworld_core::components::games::game_state::GameStateView;
 
 use crate::game::{
     generate::{generate_game, GeneratedGame},
-    get::game_ids,
+    get::{game_ids, game_state},
 };
 use crate::tags::UnderworldApiTags;
 
@@ -22,6 +23,12 @@ enum GameIdResponse {
     GameIds(Json<Vec<String>>),
 }
 
+#[derive(ApiResponse)]
+enum GameStateResponse {
+    #[oai(status = 200)]
+    GameState(Json<GameStateView>),
+}
+
 pub struct UnderworldGameApi;
 
 #[OpenApi(tag = "UnderworldApiTags::Games", prefix_path = "/games")]
@@ -30,8 +37,7 @@ impl UnderworldGameApi {
     ///
     /// # Example
     ///
-    /// POST `/my_username/games/generate` to generate and save
-    /// a new game for my_username
+    /// POST `/games/generate` to generate and save a new game
     #[oai(path = "/generate", method = "post", operation_id = "generate_game")]
     async fn generate_game(
         &self,
@@ -49,7 +55,7 @@ impl UnderworldGameApi {
     ///
     /// # Example
     ///
-    /// Call `/my_username/games/ids` to retrieve all game ids for my_username
+    /// Call `/games/ids` to retrieve all of you game ids.
     #[oai(path = "/ids", method = "get", operation_id = "get_game_ids")]
     async fn list_games(
         &self,
@@ -60,5 +66,19 @@ impl UnderworldGameApi {
         let result = game_ids(&mut transaction, &auth.0.email).await;
         transaction.commit().await.unwrap();
         Ok(GameIdResponse::GameIds(Json(result)))
+    }
+
+    /// Get the current state of the game. Will return some inner state and views
+    /// of the rooms based on the knowledge gained from all players from the game.
+    #[oai(path = "/:game_id/state", method = "get", operation_id = "game_state")]
+    async fn game_state(
+        &self,
+        pool: Data<&PgPool>,
+        auth: UnderworldApiKeyAuthorization,
+        game_id: Path<String>,
+    ) -> Result<GameStateResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        let view = game_state(&mut transaction, &auth.0.email, &game_id).await?;
+        Ok(GameStateResponse::GameState(Json(view)))
     }
 }
