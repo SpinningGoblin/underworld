@@ -12,6 +12,7 @@ pub enum GameError {
     ItemNotDirectlyUsableError(String),
     ItemNotFoundError(String),
     ItemNotThrowableError(String),
+    JsonProcessingError(String),
     NpcNotFoundError(String),
     PlayerIsDeadError,
     SpellNotFoundError(String),
@@ -91,6 +92,7 @@ impl ResponseError for GameError {
             GameError::FixtureHasNoHiddenCompartment(_) => poem::http::StatusCode::BAD_REQUEST,
             GameError::FixtureHasHiddenCompartmentUnknown(_) => poem::http::StatusCode::BAD_REQUEST,
             GameError::ItemNotThrowableError(_) => poem::http::StatusCode::BAD_REQUEST,
+            GameError::JsonProcessingError(_) => poem::http::StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }
