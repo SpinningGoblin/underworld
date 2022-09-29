@@ -36,6 +36,12 @@ enum RawGameStateResponse {
     GameState(Json<Value>),
 }
 
+#[derive(ApiResponse)]
+enum UnlockResponse {
+    #[oai(status = 201)]
+    Success
+}
+
 pub struct UnderworldGameApi;
 
 #[OpenApi(tag = "UnderworldApiTags::Games", prefix_path = "/games")]
@@ -87,6 +93,20 @@ impl UnderworldGameApi {
         let mut transaction = pool.0.begin().await.unwrap();
         let view = game_state(&mut transaction, &auth.0.email, &game_id).await?;
         Ok(GameStateResponse::GameState(Json(view)))
+    }
+
+    /// Unlock all of the knowledge in the game for all player characters.
+    #[oai(path = "/:game_id/unlock_knowledge", method = "post", operation_id = "unlock_knowledge")]
+    async fn unlock_knowledge(
+        &self,
+        pool: Data<&PgPool>,
+        auth: UnderworldApiKeyAuthorization,
+        game_id: Path<String>,
+    ) -> Result<UnlockResponse> {
+        let mut transaction = pool.0.begin().await.unwrap();
+        crate::game::unlock::unlock_knowledge(&mut transaction, &auth.0.email, &game_id).await?;
+        transaction.commit().await.unwrap();
+        Ok(UnlockResponse::Success)
     }
 
     /// Get the current state of the game. This is a raw export and the inner structure is
