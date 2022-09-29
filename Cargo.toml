@@ -19,5 +19,5 @@ strum_macros = "0.24"
 thiserror = "1.0"
 tokio = { version = "1.21", features = ["rt-multi-thread"] }
 uuid = { version = "1.1", features = ["v4", "fast-rng", "serde"] }
-underworld_core = { git = "https://github.com/SpinningGoblin/underworld_core", rev = "081d3d6e9061d83cfacea21cc3830df0f342f631", features = ["serialization", "openapi"] }
+underworld_core = { git = "https://github.com/SpinningGoblin/underworld_core", rev = "904ca8e2351ede4e0355bfcdf62c315eaa99772b", features = ["serialization", "openapi"] }
 # underworld_core = { path = "../underworld_core", features = ["serialization", "openapi"] }
