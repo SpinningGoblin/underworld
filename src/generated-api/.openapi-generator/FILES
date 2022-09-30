@@ -13,6 +13,7 @@ models/CastSpellOnNpc.ts
 models/CastSpellOnPlayer.ts
 models/Character.ts
 models/CharacterItem.ts
+models/CharacterKnowledge.ts
 models/Consumable.ts
 models/ConsumableEffect.ts
 models/ConsumableEffectName.ts
@@ -23,11 +24,13 @@ models/EquipLocationTag.ts
 models/EventName.ts
 models/Exit.ts
 models/ExitDescriptor.ts
+models/ExitMap.ts
 models/ExitRoom.ts
 models/ExitType.ts
 models/Fixture.ts
 models/FixtureInspected.ts
 models/FixtureItem.ts
+models/FixtureKnowledge.ts
 models/FixtureLooted.ts
 models/FixtureOpened.ts
 models/FixturePosition.ts
@@ -35,6 +38,7 @@ models/FixturePositionDescriptor.ts
 models/FixtureType.ts
 models/FlavourText.ts
 models/GameEvent.ts
+models/GameState.ts
 models/GeneratePlayerCharacter.ts
 models/GenerateRoomsRequest.ts
 models/GenerateSingleRoom.ts
@@ -98,6 +102,7 @@ models/SpellCast.ts
 models/SpellMemory.ts
 models/SpellName.ts
 models/SpellType.ts
+models/Statistics.ts
 models/Stats.ts
 models/Tag.ts
 models/ThrowItemAtNpc.ts
@@ -105,5 +110,6 @@ models/Throwable.ts
 models/ThrowableEffect.ts
 models/ThrowableEffectName.ts
 models/UseItemOnPlayer.ts
+models/World.ts
 models/index.ts
 runtime.ts
