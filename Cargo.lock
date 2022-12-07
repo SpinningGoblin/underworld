@@ -2000,7 +2000,7 @@ dependencies = [
 [[package]]
 name = "underworld_core"
 version = "0.6.0"
-source = "git+https://github.com/SpinningGoblin/underworld_core?rev=1065dff78d558916fa783f3cb00207c218766135#1065dff78d558916fa783f3cb00207c218766135"
+source = "git+https://github.com/SpinningGoblin/underworld_core?rev=4cacf75525d4805814333555b9fc9af3d6e7d8c7#4cacf75525d4805814333555b9fc9af3d6e7d8c7"
 dependencies = [
  "chrono",
  "poem-openapi",
