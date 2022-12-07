@@ -15,8 +15,8 @@ pub async fn by_id(
     "#;
 
     let row: Option<(Value,)> = sqlx::query_as(query)
-        .bind(&username)
-        .bind(&game_state_id)
+        .bind(username)
+        .bind(game_state_id)
         .fetch_optional(transaction)
         .await
         .unwrap();
@@ -42,11 +42,11 @@ pub async fn save(
         do
             update set game_state = $3
     "#;
-    let serialized = serde_json::to_value(&game_state).unwrap();
+    let serialized = serde_json::to_value(game_state).unwrap();
     let game_state_id = game_state.id.to_string();
 
     sqlx::query(query)
-        .bind(&username)
+        .bind(username)
         .bind(&game_state_id)
         .bind(&serialized)
         .execute(transaction)
@@ -62,7 +62,7 @@ pub async fn ids(
 ) -> Result<Vec<String>, GameError> {
     let rows: Vec<String> =
         sqlx::query("select game_state_id from game_states where username = $1")
-            .bind(&username)
+            .bind(username)
             .map(|row: PgRow| row.try_get("game_state_id").unwrap())
             .fetch_all(transaction)
             .await

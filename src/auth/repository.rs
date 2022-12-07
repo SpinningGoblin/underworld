@@ -40,7 +40,7 @@ pub async fn fetch_details_from_mail_token(
     token: &str,
 ) -> Result<Option<UserDetails>, AuthError> {
     let result = sqlx::query("select email from mail_tokens where token = $1")
-        .bind(&token)
+        .bind(token)
         .map(|row: PgRow| UserDetails {
             email: row.get("email"),
         })
@@ -58,7 +58,7 @@ pub async fn valid_api_token(pool: &PgPool, token: &str) -> Result<User, AuthErr
     let select_token_query =
         "select email from api_tokens where token = $1 and deleted_after >= $2";
     let result: Option<User> = sqlx::query(select_token_query)
-        .bind(&token)
+        .bind(token)
         .bind(Utc::now())
         .map(|row: PgRow| User {
             email: row.get("email"),
@@ -99,7 +99,7 @@ async fn insert_new_token(
     sqlx::query("insert into api_tokens (email, token, deleted_after) values ($1, $2, $3)")
         .bind(&user_details.email)
         .bind(&token)
-        .bind(&deleted_after)
+        .bind(deleted_after)
         .execute(transaction)
         .await
         .unwrap();
@@ -134,8 +134,8 @@ pub async fn get_mail_token(
     sqlx::query(query)
         .bind(&user_details.email)
         .bind(&token)
-        .bind(&created_at)
-        .bind(&deleted_after)
+        .bind(created_at)
+        .bind(deleted_after)
         .execute(transaction)
         .await
         .unwrap();

@@ -50,7 +50,7 @@ pub async fn raw_export(
         Some(game_state) => game_state,
         None => return Err(GameError::GameNotFoundError),
     };
-    match serde_json::to_value(&state) {
+    match serde_json::to_value(state) {
         Ok(it) => Ok(it),
         Err(e) => Err(GameError::JsonProcessingError(e.to_string())),
     }

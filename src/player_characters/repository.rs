@@ -9,7 +9,7 @@ pub async fn ids(
     username: &str,
 ) -> Result<Vec<String>, GameError> {
     let rows: Vec<String> = sqlx::query("select pc_id from player_characters where username = $1")
-        .bind(&username)
+        .bind(username)
         .map(|row: PgRow| row.try_get("pc_id").unwrap())
         .fetch_all(transaction)
         .await
@@ -24,7 +24,7 @@ pub async fn save(
     player_character: &PlayerCharacter,
 ) -> Result<(), GameError> {
     let pc_id = player_character.id.to_string();
-    let serialized = serde_json::to_value(&player_character).unwrap();
+    let serialized = serde_json::to_value(player_character).unwrap();
 
     let query = r#"
         insert into player_characters (username, pc_id, pc) values ($1, $2, $3)
@@ -34,7 +34,7 @@ pub async fn save(
     "#;
 
     sqlx::query(query)
-        .bind(&username)
+        .bind(username)
         .bind(&pc_id)
         .bind(&serialized)
         .execute(transaction)
@@ -51,8 +51,8 @@ pub async fn by_id(
 ) -> Result<Option<PlayerCharacter>, GameError> {
     let row: (Value,) =
         sqlx::query_as("select pc from player_characters where username = $1 and pc_id = $2")
-            .bind(&username)
-            .bind(&pc_id)
+            .bind(username)
+            .bind(pc_id)
             .fetch_one(transaction)
             .await
             .unwrap();
@@ -67,7 +67,7 @@ pub async fn current(
 ) -> Result<Option<PlayerCharacter>, GameError> {
     let row: Option<(String,)> =
         sqlx::query_as("select pc_id from current_player_characters where username = $1")
-            .bind(&username)
+            .bind(username)
             .fetch_optional(&mut *transaction)
             .await
             .unwrap();
@@ -92,7 +92,7 @@ pub async fn set_current(
         update set pc_id = $2
     "#;
     sqlx::query(query)
-        .bind(&username)
+        .bind(username)
         .bind(&pc_id)
         .execute(transaction)
         .await
