@@ -9,6 +9,7 @@ pub enum GameError {
     FixtureHasHiddenCompartmentUnknown(String),
     FixtureNotFoundError(String),
     InvalidIdError(String),
+    ItemCannotBeTakenFromFixture(String),
     ItemNotDirectlyUsableError(String),
     ItemNotFoundError(String),
     ItemNotThrowableError(String),
@@ -66,6 +67,9 @@ impl From<underworld_core::errors::Error> for GameError {
             underworld_core::errors::Error::ItemNotThrowableError(it) => {
                 GameError::ItemNotThrowableError(it)
             }
+            underworld_core::errors::Error::ItemCannotBeTakenFromFixture(it) => {
+                GameError::ItemCannotBeTakenFromFixture(it)
+            }
         }
     }
 }
@@ -93,6 +97,7 @@ impl ResponseError for GameError {
             GameError::FixtureHasHiddenCompartmentUnknown(_) => poem::http::StatusCode::BAD_REQUEST,
             GameError::ItemNotThrowableError(_) => poem::http::StatusCode::BAD_REQUEST,
             GameError::JsonProcessingError(_) => poem::http::StatusCode::INTERNAL_SERVER_ERROR,
+            GameError::ItemCannotBeTakenFromFixture(_) => poem::http::StatusCode::BAD_REQUEST,
         }
     }
 }

@@ -39,7 +39,7 @@ enum RawGameStateResponse {
 #[derive(ApiResponse)]
 enum UnlockResponse {
     #[oai(status = 201)]
-    Success
+    Success,
 }
 
 pub struct UnderworldGameApi;
@@ -96,7 +96,11 @@ impl UnderworldGameApi {
     }
 
     /// Unlock all of the knowledge in the game for all player characters.
-    #[oai(path = "/:game_id/unlock_knowledge", method = "post", operation_id = "unlock_knowledge")]
+    #[oai(
+        path = "/:game_id/unlock_knowledge",
+        method = "post",
+        operation_id = "unlock_knowledge"
+    )]
     async fn unlock_knowledge(
         &self,
         pool: Data<&PgPool>,

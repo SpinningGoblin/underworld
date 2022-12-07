@@ -21,6 +21,7 @@ pub enum ActionName {
     MovePlayerItem,
     OpenFixture,
     OpenFixtureHiddenCompartment,
+    PickUpItem,
     QuickLookRoom,
     SellPlayerItem,
     SetCurrentPlayerCharacter,
@@ -197,6 +198,13 @@ pub fn game_actions(game: &Game, _username: &str) -> Vec<PerformAction> {
                 link: get_api_link(&format!("game/{}/throw_item_at_npc", &game_id)),
                 http_action: "POST".to_string(),
                 args: Some(serde_json::to_value(&throw).unwrap()),
+            },
+            Action::PickUpItem(pick_up) => PerformAction {
+                name: ActionName::PickUpItem,
+                description: "Pick up an item in the room".to_string(),
+                link: get_api_link(&format!("game/{}/pick_up_item", &game_id)),
+                http_action: "POST".to_string(),
+                args: Some(serde_json::to_value(&pick_up).unwrap()),
             },
         });
 

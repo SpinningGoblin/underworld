@@ -1,4 +1,4 @@
-use sqlx::{Transaction, Postgres};
+use sqlx::{Postgres, Transaction};
 
 use crate::error::GameError;
 

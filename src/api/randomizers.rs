@@ -206,6 +206,7 @@ impl UnderworldRandomizerApi {
                         possible_species: room_npc_args.possible_species.clone(),
                         possible_life_modifiers: room_npc_args.possible_life_modifiers.clone(),
                         allow_npcs_to_spawn_dead: room_npc_args.allow_npcs_to_spawn_dead,
+                        ghosts: Some(Vec::new()),
                     };
 
                     builder.room_npc_generation_args(core_room_npc_args);

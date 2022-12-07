@@ -19,6 +19,7 @@ pub enum EventName {
     FixtureOpened,
     FixtureViewed,
     GameDangerLevelIncreased,
+    GhostEscapesToTheVoid,
     ItemTakenFromFixture,
     ItemTakenFromNpc,
     NpcCoveredInOil,
@@ -35,6 +36,7 @@ pub enum EventName {
     NpcViewed,
     NpcWeaponReadied,
     PlayerDamagedByPoison,
+    PlayerDropsAllItems,
     PlayerGainedGold,
     PlayerGainsResurrectionAura,
     PlayerGainsRetributionAura,
@@ -44,6 +46,7 @@ pub enum EventName {
     PlayerHitNpc,
     PlayerHitWithAcid,
     PlayerMaxHealthChanged,
+    PlayerPicksUpItem,
     PlayerPoisonLevelChanged,
     PlayerPoisoned,
     PlayerPoisonDurationChanged,
@@ -281,6 +284,18 @@ impl From<Event> for GameEvent {
             },
             Event::NpcCoveredInOil(id) => GameEvent {
                 name: EventName::NpcCoveredInOil,
+                data: Some(serde_json::to_value(&id).unwrap()),
+            },
+            Event::GhostEscapesToTheVoid(escapes) => GameEvent {
+                name: EventName::GhostEscapesToTheVoid,
+                data: Some(serde_json::to_value(&escapes).unwrap()),
+            },
+            Event::PlayerDropsAllItems => GameEvent {
+                name: EventName::PlayerDropsAllItems,
+                data: None,
+            },
+            Event::PlayerPicksUpItem(id) => GameEvent {
+                name: EventName::PlayerPicksUpItem,
                 data: Some(serde_json::to_value(&id).unwrap()),
             },
         }
