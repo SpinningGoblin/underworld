@@ -116,7 +116,7 @@ export class RandomizersApi extends runtime.BaseAPI implements RandomizersApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         const response = await this.request({
             path: `/random/rooms`,

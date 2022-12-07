@@ -33,6 +33,7 @@ export const ActionName = {
     MovePlayerItem: 'move_player_item',
     OpenFixture: 'open_fixture',
     OpenFixtureHiddenCompartment: 'open_fixture_hidden_compartment',
+    PickUpItem: 'pick_up_item',
     QuickLookRoom: 'quick_look_room',
     SellPlayerItem: 'sell_player_item',
     SetCurrentPlayerCharacter: 'set_current_player_character',

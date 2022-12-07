@@ -514,7 +514,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -555,7 +555,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -596,7 +596,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -671,7 +671,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -712,7 +712,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -753,7 +753,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -828,7 +828,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -869,7 +869,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -910,7 +910,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -951,7 +951,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -992,7 +992,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -1033,7 +1033,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -1074,7 +1074,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -1115,7 +1115,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -1156,7 +1156,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication
@@ -1197,7 +1197,7 @@ export class GameActionsApi extends runtime.BaseAPI implements GameActionsApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/json; charset=utf-8';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["UNDERWORLD-TOKEN"] = this.configuration.apiKey("UNDERWORLD-TOKEN"); // UnderworldApiKeyAuthorization authentication

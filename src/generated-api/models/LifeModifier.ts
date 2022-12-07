@@ -18,6 +18,7 @@
  * @export
  */
 export const LifeModifier = {
+    Ghost: 'ghost',
     Skeleton: 'skeleton',
     Vampire: 'vampire',
     Zombie: 'zombie'

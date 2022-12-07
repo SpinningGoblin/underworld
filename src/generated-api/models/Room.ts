@@ -38,6 +38,12 @@ import {
     FlavourTextToJSON,
 } from './FlavourText';
 import {
+    Item,
+    ItemFromJSON,
+    ItemFromJSONTyped,
+    ItemToJSON,
+} from './Item';
+import {
     NpcPosition,
     NpcPositionFromJSON,
     NpcPositionFromJSONTyped,
@@ -116,6 +122,12 @@ export interface Room {
      * @memberof Room
      */
     exits: Array<Exit>;
+    /**
+     * 
+     * @type {Array<Item>}
+     * @memberof Room
+     */
+    loose_items: Array<Item>;
 }
 
 export function RoomFromJSON(json: any): Room {
@@ -137,6 +149,7 @@ export function RoomFromJSONTyped(json: any, ignoreDiscriminator: boolean): Room
         'npc_positions': ((json['npc_positions'] as Array<any>).map(NpcPositionFromJSON)),
         'flavour': !exists(json, 'flavour') ? undefined : FlavourTextFromJSON(json['flavour']),
         'exits': ((json['exits'] as Array<any>).map(ExitFromJSON)),
+        'loose_items': ((json['loose_items'] as Array<any>).map(ItemFromJSON)),
     };
 }
 
@@ -158,6 +171,7 @@ export function RoomToJSON(value?: Room | null): any {
         'npc_positions': ((value.npc_positions as Array<any>).map(NpcPositionToJSON)),
         'flavour': FlavourTextToJSON(value.flavour),
         'exits': ((value.exits as Array<any>).map(ExitToJSON)),
+        'loose_items': ((value.loose_items as Array<any>).map(ItemToJSON)),
     };
 }
 
