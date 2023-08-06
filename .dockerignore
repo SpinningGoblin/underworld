@@ -6,3 +6,4 @@ Dockerfile
 scripts/
 data/
 derrick_garbage/
+frontend/

@@ -18,7 +18,7 @@ FROM chef as builder
 COPY --from=planner /app/recipe.json recipe.json
 RUN cargo +nightly chef cook --release --recipe-path recipe.json
 COPY . .
-RUN cargo build --release --bin underworld_server
+RUN cargo build --release
 
 # Use the slim nightly rust version as our runtime.
 FROM rustlang/rust:nightly-slim as runtime
