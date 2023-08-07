@@ -66,7 +66,7 @@ impl Item {
     }
 
     pub fn decrease_uses(&mut self) {
-        if let Some(mut consumable) = self.consumable.as_mut() {
+        if let Some(consumable) = self.consumable.as_mut() {
             consumable.uses -= 1;
         }
     }
