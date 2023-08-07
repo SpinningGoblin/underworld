@@ -1,0 +1,36 @@
+#[cfg(feature = "bevy_components")]
+use bevy_ecs::prelude::Component;
+#[cfg(feature = "openapi")]
+use poem_openapi::Enum;
+#[cfg(feature = "serialization")]
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "bevy_components", derive(Component))]
+#[cfg_attr(
+    feature = "serialization",
+    derive(Deserialize, Serialize),
+    serde(rename_all = "snake_case")
+)]
+#[cfg_attr(feature = "openapi", derive(Enum), oai(rename_all = "snake_case"))]
+pub enum Size {
+    Average,
+    Huge,
+    Large,
+    Long,
+    Massive,
+    Medium,
+    Narrow,
+    Short,
+    Small,
+    Squat,
+    Tall,
+    Tiny,
+    Wide,
+}
+
+impl Size {
+    pub fn is_average(&self) -> bool {
+        matches!(*self, Size::Medium | Size::Average)
+    }
+}

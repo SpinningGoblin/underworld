@@ -1,0 +1,12 @@
+pub mod character;
+pub mod character_item;
+pub mod exit;
+pub mod fixture;
+pub mod fixture_position;
+pub mod game_state;
+pub mod inventory;
+pub mod item;
+pub mod non_player;
+pub mod npc_position;
+pub mod player;
+pub mod room;

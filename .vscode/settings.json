@@ -11,13 +11,22 @@
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
     "**/target": true,
-    "app/dist": true,
+    "**/dist": true,
     "**/node_modules": true
   },
   "rust-analyzer.procMacro.attributes.enable": true,
   "cSpell.words": [
     "randomizer",
     "randomizers",
-    "underworldserver"
+    "underworldserver",
+    "Dragonkin",
+    "Equippable",
+    "Frogkin",
+    "Lizardkin",
+    "Moblin",
+    "npcs",
+    "Rockoblin",
+    "thiserror",
+    "Turtlekin"
   ]
 }
