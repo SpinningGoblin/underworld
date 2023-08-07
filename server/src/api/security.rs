@@ -7,9 +7,9 @@ use crate::auth::{repository::valid_api_token, User};
 /// ApiKey authorization
 #[derive(SecurityScheme)]
 #[oai(
-    type = "api_key",
+    ty = "api_key",
     key_name = "UNDERWORLD-TOKEN",
-    in = "header",
+    key_in = "header",
     checker = "api_checker"
 )]
 pub struct UnderworldApiKeyAuthorization(pub User);
