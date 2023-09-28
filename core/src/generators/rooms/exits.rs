@@ -38,7 +38,6 @@ pub fn build_exits(entrance_id: Option<Uuid>, args: &BuildExitArgs) -> Vec<Exit>
                 name: None,
             }
         })
-        .into_iter()
         .collect()
 }
 
@@ -90,7 +89,7 @@ fn descriptors(
 
     let mut possible_descriptors: Vec<ExitDescriptor> = exit_type_descriptors
         .into_iter()
-        .chain(material_descriptors.into_iter())
+        .chain(material_descriptors)
         .collect();
 
     if possible_descriptors.is_empty() {

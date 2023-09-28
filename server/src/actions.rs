@@ -208,5 +208,5 @@ pub fn game_actions(game: &Game, _username: &str) -> Vec<PerformAction> {
             },
         });
 
-    game_actions.chain(view_actions.into_iter()).collect()
+    game_actions.chain(view_actions).collect()
 }

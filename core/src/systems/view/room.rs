@@ -21,13 +21,11 @@ pub fn view(
         .map(|fixture_position| {
             super::fixture_position::view(fixture_position, &fixture_args, knows_all)
         })
-        .into_iter()
         .collect();
     let npc_positions: Vec<NpcPositionView> = room
         .npc_positions
         .iter()
         .map(|npc_position| super::npc_position::view(npc_position, &non_player_args, knows_all))
-        .into_iter()
         .collect();
 
     let exits: Vec<ExitView> = room
@@ -38,7 +36,6 @@ pub fn view(
                 exit_visitations.get(&exit.id).cloned().unwrap_or_default();
             super::exit::view(exit, has_visited_connected_room)
         })
-        .into_iter()
         .collect();
 
     RoomView {

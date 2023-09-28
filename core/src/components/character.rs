@@ -126,7 +126,7 @@ impl Character {
         let mut effects: Vec<AttackEffect> = base_attack
             .effects
             .into_iter()
-            .chain(inventory_full_attack.effects.into_iter())
+            .chain(inventory_full_attack.effects)
             .collect();
 
         effects.sort();

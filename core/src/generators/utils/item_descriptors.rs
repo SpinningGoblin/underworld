@@ -123,7 +123,7 @@ pub fn possible_descriptors(
             let tags: Vec<Tag> = item_type
                 .tags()
                 .into_iter()
-                .chain(material.tags().into_iter())
+                .chain(material.tags())
                 .collect();
             matches_tags(&tags)
         }

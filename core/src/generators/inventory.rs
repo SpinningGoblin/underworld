@@ -537,9 +537,9 @@ impl Generator<Inventory> for InventoryPrototype {
         Inventory {
             equipment: equipped_weapons
                 .into_iter()
-                .chain(equipped_wearables.into_iter())
-                .chain(consumables.into_iter())
-                .chain(pots.into_iter())
+                .chain(equipped_wearables)
+                .chain(consumables)
+                .chain(pots)
                 .collect(),
         }
     }
@@ -557,8 +557,7 @@ fn item_type_is_for_tags(item_type: &ItemType, tag: &LocationTag) -> bool {
         | ItemType::Morningstar
         | ItemType::Whip => tag.eq(&LocationTag::Hand) || tag.eq(&LocationTag::Hip),
         ItemType::Dagger | ItemType::ShortSword | ItemType::Dirk => {
-            tag.eq(&LocationTag::Hand)
-                || vec![LocationTag::Hip, LocationTag::HipSheath].contains(tag)
+            tag.eq(&LocationTag::Hand) || [LocationTag::Hip, LocationTag::HipSheath].contains(tag)
         }
         ItemType::Crown
         | ItemType::PlateHelmet
@@ -575,7 +574,7 @@ fn item_type_is_for_tags(item_type: &ItemType, tag: &LocationTag) -> bool {
         ItemType::LoinCloth => tag.eq(&LocationTag::Waist),
         ItemType::LongSword => {
             tag.eq(&LocationTag::Hand)
-                || vec![LocationTag::Hip, LocationTag::HipSheath].contains(tag)
+                || [LocationTag::Hip, LocationTag::HipSheath].contains(tag)
                 || tag.eq(&LocationTag::Back)
         }
         ItemType::Mask => tag.eq(&LocationTag::Face),

@@ -94,7 +94,7 @@ impl Generator<Fixture> for FixturePrototype {
                     .fixture_type
                     .tags()
                     .into_iter()
-                    .chain(material.tags().into_iter())
+                    .chain(material.tags())
                     .collect();
                 matches_tags(&tags)
             }
@@ -160,10 +160,7 @@ impl Generator<Fixture> for FixturePrototype {
             fixture_type: self.fixture_type,
             size,
             descriptors,
-            items: items
-                .into_iter()
-                .chain(hidden_compartment_items.into_iter())
-                .collect(),
+            items: items.into_iter().chain(hidden_compartment_items).collect(),
             has_hidden_compartment: self.has_hidden_compartment,
             can_be_opened: fixture_can_be_opened(&self.fixture_type),
             open: false,

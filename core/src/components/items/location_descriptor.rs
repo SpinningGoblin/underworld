@@ -18,6 +18,7 @@ use super::LocationTag;
     serde(rename_all = "snake_case")
 )]
 #[cfg_attr(feature = "openapi", derive(Enum), oai(rename_all = "snake_case"))]
+#[derive(Default)]
 pub enum LocationDescriptor {
     AlmostFallingGrip,
     ClenchedInFist,
@@ -31,13 +32,8 @@ pub enum LocationDescriptor {
     StrappedToBack,
     StrappedToThigh,
     ClenchedInFists,
+    #[default]
     None,
-}
-
-impl Default for LocationDescriptor {
-    fn default() -> Self {
-        LocationDescriptor::None
-    }
 }
 
 impl LocationDescriptor {

@@ -61,7 +61,7 @@ impl Generator<PlayerCharacter> for PlayerCharacterPrototype {
                 inventory: Inventory {
                     equipment: starter_wearables
                         .into_iter()
-                        .chain(vec![starter_weapon].into_iter())
+                        .chain(vec![starter_weapon])
                         .collect(),
                 },
                 current_effects: Effects::default(),

@@ -100,11 +100,7 @@ impl Inventory {
             .reduce(|accum, item| Attack {
                 num_rolls: accum.num_rolls + item.num_rolls,
                 modifier: accum.modifier + item.modifier,
-                effects: accum
-                    .effects
-                    .into_iter()
-                    .chain(item.effects.into_iter())
-                    .collect(),
+                effects: accum.effects.into_iter().chain(item.effects).collect(),
             })
     }
 

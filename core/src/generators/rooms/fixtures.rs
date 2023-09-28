@@ -69,7 +69,7 @@ fn possible_positions(
 ) -> Vec<FixturePositionDescriptor> {
     let mut possibilities = single_possible_positions(room_type);
 
-    let can_be_broken_on_ground = vec![
+    let can_be_broken_on_ground = [
         FixtureType::StatueWarrior,
         FixtureType::StatueTentacledMonstrosity,
         FixtureType::Pillar,
