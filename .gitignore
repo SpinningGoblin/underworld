@@ -27,5 +27,6 @@ dist-ssr
 /target
 run.sh
 /data
+/book
 
 .env
