@@ -17,7 +17,7 @@ pub async fn by_id(
     let row: Option<(Value,)> = sqlx::query_as(query)
         .bind(username)
         .bind(game_state_id)
-        .fetch_optional(transaction)
+        .fetch_optional(&mut **transaction)
         .await
         .unwrap();
 
@@ -49,7 +49,7 @@ pub async fn save(
         .bind(username)
         .bind(&game_state_id)
         .bind(&serialized)
-        .execute(transaction)
+        .execute(&mut **transaction)
         .await
         .unwrap();
 
@@ -64,7 +64,7 @@ pub async fn ids(
         sqlx::query("select game_state_id from game_states where username = $1")
             .bind(username)
             .map(|row: PgRow| row.try_get("game_state_id").unwrap())
-            .fetch_all(transaction)
+            .fetch_all(&mut **transaction)
             .await
             .unwrap();
 

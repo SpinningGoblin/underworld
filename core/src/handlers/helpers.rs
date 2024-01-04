@@ -106,7 +106,7 @@ pub fn npc_attack_player(
         // If there are no weapons readied, then all the NPC does is ready the weapon.
         let mut weapons = npc.character.inventory.non_readied_weapons();
         weapons.sort_by(|a, b| a.item.num_attack_rolls().cmp(&b.item.num_attack_rolls()));
-        if let Some(weapon) = weapons.get(0) {
+        if let Some(weapon) = weapons.first() {
             events.push(Event::NpcWeaponReadied(NpcWeaponReadied {
                 npc_id: npc.id,
                 item_id: weapon.item.id,

@@ -16,7 +16,7 @@ async fn has_mail_token(transaction: &mut Transaction<'_, Postgres>, email: &str
             .bind(email)
             .bind(Utc::now())
             .map(|row: PgRow| row.get("token"))
-            .fetch_optional(transaction)
+            .fetch_optional(&mut **transaction)
             .await
             .unwrap();
     token.is_some()
@@ -27,7 +27,7 @@ pub async fn delete_dead_mail_tokens(
 ) -> Result<(), AuthError> {
     match sqlx::query("delete from mail_tokens where deleted_after < $1")
         .bind(Utc::now())
-        .execute(transaction)
+        .execute(&mut **transaction)
         .await
     {
         Ok(_) => Ok(()),
@@ -44,7 +44,7 @@ pub async fn fetch_details_from_mail_token(
         .map(|row: PgRow| UserDetails {
             email: row.get("email"),
         })
-        .fetch_optional(transaction)
+        .fetch_optional(&mut **transaction)
         .await
         .unwrap();
 
@@ -83,7 +83,7 @@ async fn try_get_api_token(
         .bind(&user_details.email)
         .bind(Utc::now())
         .map(|row: PgRow| row.get("token"))
-        .fetch_optional(transaction)
+        .fetch_optional(&mut **transaction)
         .await
         .unwrap();
 
@@ -100,7 +100,7 @@ async fn insert_new_token(
         .bind(&user_details.email)
         .bind(&token)
         .bind(deleted_after)
-        .execute(transaction)
+        .execute(&mut **transaction)
         .await
         .unwrap();
     Ok(token)
@@ -136,7 +136,7 @@ pub async fn get_mail_token(
         .bind(&token)
         .bind(created_at)
         .bind(deleted_after)
-        .execute(transaction)
+        .execute(&mut **transaction)
         .await
         .unwrap();
 

@@ -11,7 +11,7 @@ pub async fn ids(
     let rows: Vec<String> = sqlx::query("select pc_id from player_characters where username = $1")
         .bind(username)
         .map(|row: PgRow| row.try_get("pc_id").unwrap())
-        .fetch_all(transaction)
+        .fetch_all(&mut **transaction)
         .await
         .unwrap();
 
@@ -37,7 +37,7 @@ pub async fn save(
         .bind(username)
         .bind(&pc_id)
         .bind(&serialized)
-        .execute(transaction)
+        .execute(&mut **transaction)
         .await
         .unwrap();
 
@@ -53,7 +53,7 @@ pub async fn by_id(
         sqlx::query_as("select pc from player_characters where username = $1 and pc_id = $2")
             .bind(username)
             .bind(pc_id)
-            .fetch_one(transaction)
+            .fetch_one(&mut **transaction)
             .await
             .unwrap();
 
@@ -68,7 +68,7 @@ pub async fn current(
     let row: Option<(String,)> =
         sqlx::query_as("select pc_id from current_player_characters where username = $1")
             .bind(username)
-            .fetch_optional(&mut *transaction)
+            .fetch_optional(&mut **transaction)
             .await
             .unwrap();
 
@@ -94,7 +94,7 @@ pub async fn set_current(
     sqlx::query(query)
         .bind(username)
         .bind(&pc_id)
-        .execute(transaction)
+        .execute(&mut **transaction)
         .await
         .unwrap();
 

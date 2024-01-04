@@ -178,7 +178,7 @@ mod tests {
         assert_eq!(1, room.descriptors.len());
         assert_eq!(
             Descriptor::Freezing,
-            room.descriptors.get(0).unwrap().clone()
+            room.descriptors.first().unwrap().clone()
         );
     }
 }
