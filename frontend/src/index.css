@@ -5,7 +5,8 @@
 @font-face {
   font-family: "monogram-extended";
   font-style: normal;
-  src: local("monogram-extended"),
+  src:
+    local("monogram-extended"),
     url("./fonts/monogram-extended.ttf") format("truetype");
 }
 

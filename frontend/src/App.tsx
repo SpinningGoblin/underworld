@@ -19,42 +19,50 @@ import OptionsIcon from "./images/options.svg";
 import CloseIcon from "./images/close.svg";
 import { useTheme } from "./themes/context";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { wrapForAuth } from "./auth";
 
 export const App = () => {
   const { theme } = useTheme();
   const queryClient = useQueryClient();
   const [gameId, setGameId] = useState<string | undefined>(getCurrentGameId());
-  const { data: room, isLoading: loadingRoom } = useQuery(
-    ["room"],
-    getCurrentRoom,
-    {
-      onError: (err) => {
+  const { data: room, isLoading: loadingRoom } = useQuery({
+    queryKey: ["room"],
+    queryFn: async () => {
+      try {
+        const currentRoom = await wrapForAuth(getCurrentRoom);
+        return currentRoom;
+      } catch (err) {
         if (err instanceof ResponseError && err.response.status === 404) {
           setGameId(undefined);
         }
-      },
+      }
     },
-  );
+  });
 
-  const { data: player, isLoading: loadingPlayer } = useQuery(
-    ["player"],
-    getCurrentPlayer,
-  );
-  const { data: gameIds, isLoading: loadingGameIds } = useQuery(
-    ["game-ids"],
-    getGameIds,
-  );
-  const generateGameMutation = useMutation(generateGame, {
+  const { data: player, isLoading: loadingPlayer } = useQuery({
+    queryKey: ["player"],
+    queryFn: () => wrapForAuth(getCurrentPlayer),
+  });
+
+  const { data: gameIds, isLoading: loadingGameIds } = useQuery({
+    queryKey: ["game-ids"],
+    queryFn: () => wrapForAuth(getGameIds),
+  });
+
+  const generateGameMutation = useMutation({
+    mutationFn: generateGame,
     onSuccess: (game) => {
-      queryClient.invalidateQueries(["game-ids"]);
+      queryClient.invalidateQueries({ queryKey: ["game-ids"] });
       setGameId(game.game_id);
       setEvents([]);
       setLastEvents([]);
     },
   });
-  const generatePlayerMutation = useMutation(generatePlayer, {
+
+  const generatePlayerMutation = useMutation({
+    mutationFn: generatePlayer,
     onSuccess: (player) => {
-      queryClient.setQueryData(["player"], player);
+      queryClient.setQueriesData({ queryKey: ["player"] }, player);
     },
   });
   const [events, setEvents] = useState<Array<GameEvent>>([]);
@@ -104,8 +112,8 @@ export const App = () => {
   useEffect(() => {
     if (gameId) {
       setCurrentGameId(gameId);
-      queryClient.invalidateQueries(["player"]);
-      queryClient.invalidateQueries(["room"]);
+      queryClient.invalidateQueries({ queryKey: ["player"] });
+      queryClient.invalidateQueries({ queryKey: ["room"] });
       console.log(`getting current room ${gameId}`);
     } else {
       setCurrentGameId("");

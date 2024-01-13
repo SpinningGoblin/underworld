@@ -3,16 +3,15 @@ import ReactDOM from "react-dom/client";
 import { HashRouter, Routes, Route } from "react-router-dom";
 
 import { setAuthToken } from "./api/configuration";
-import { getApiToken, removeApiToken } from "./api/tokens";
+import { getApiToken } from "./api/tokens";
 import { App } from "./App";
 import { ThemeWrapper } from "./themes/ThemeWrapper";
 
 import "./index.css";
 import { SignInScreen } from "./screens/SignIn";
 import { EmailSuccessScreen } from "./screens/EmailSuccess";
-import { getMailCallbackUrl, getSignInUrl } from "./api/path";
+import { getMailCallbackUrl } from "./api/path";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ResponseError } from "./generated-api";
 import { TokenProvider } from "./hooks/tokens";
 
 (() => {
@@ -34,13 +33,7 @@ import { TokenProvider } from "./hooks/tokens";
       queries: {
         refetchOnWindowFocus: false,
         retry: false,
-        cacheTime: Infinity,
-        onError: (err) => {
-          if (err instanceof ResponseError && err.response.status === 401) {
-            removeApiToken();
-            window.location.assign(getSignInUrl());
-          }
-        },
+        gcTime: Infinity,
       },
     },
   });
